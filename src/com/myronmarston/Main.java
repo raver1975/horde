@@ -25,7 +25,8 @@ public class Main {
 //                BasslineSynthesizer synth = (BasslineSynthesizer) output.getTrack(0);
 //                RhythmSynthesizer drums = (RhythmSynthesizer) output.getTrack(1);
                 output.getSequencer().drums.randomize();
-                output.getSequencer().bass.randomize();
+                output.getSequencer().bass1.randomize();
+                output.getSequencer().bass2.randomize();
                 output.start();
             }
         }).start();

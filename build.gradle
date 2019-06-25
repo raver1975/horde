@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
 }
 
 group 'com.klemstinegroup'
@@ -28,4 +29,21 @@ sourceSets {
             srcDir 'src'
         }
     }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.myronmarston.Main'
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+}
+
+shadowJar {
+    baseName = 'horde'
+    classifier = null
+    version = null
 }

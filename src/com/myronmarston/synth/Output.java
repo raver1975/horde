@@ -46,17 +46,19 @@ public class Output implements Runnable {
 //        line = AudioFileCreator.getDataLine();
         createOutput();
         line.start();
-        tracks = new Synthesizer[Statics.drumsOn ? 2 : 1];
-        BasslineSynthesizer tb = new BasslineSynthesizer();
-        tracks[0] = tb;
+        tracks = new Synthesizer[Statics.drumsOn ? 3 : 2];
+        BasslineSynthesizer tb1 = new BasslineSynthesizer();
+        BasslineSynthesizer tb2 = new BasslineSynthesizer();
+        tracks[0] = tb1;
+        tracks[1] = tb2;
         RhythmSynthesizer tr = new RhythmSynthesizer();
         if (Statics.drumsOn)
-            tracks[1] = tr;
+            tracks[2] = tr;
 
         delay = new Delay();
         reverb = new Reverb();
 
-        this.sequencer = new AcidSequencer(tb, tr, this);
+        this.sequencer = new AcidSequencer(tb1, tb2, tr, this);
 
         thread = new Thread(this);
         thread.setPriority(10);
@@ -106,21 +108,22 @@ public class Output implements Runnable {
                 this.sequencer.tick();
                 if (Statics.drumsOn) {
                     double[] tmp = null;
-                    tmp = tracks[1].stereoOutput();
-
+                    tmp = tracks[2].stereoOutput();
                     delay.input(tmp[2]);
                     reverb.input(tmp[3]);
-
                     left += tmp[0];
                     right += tmp[1];
                 }
                 if (Statics.synthOn) {
                     double[] tmp = null;
                     tmp = tracks[0].stereoOutput();
-
                     delay.input(tmp[2]);
                     reverb.input(tmp[3]);
-
+                    left += tmp[0];
+                    right += tmp[1];
+                    tmp = tracks[1].stereoOutput();
+                    delay.input(tmp[2]);
+                    reverb.input(tmp[3]);
                     left += tmp[0];
                     right += tmp[1];
                 }
@@ -143,15 +146,15 @@ public class Output implements Runnable {
                 } else if (right < -1.0D) {
                     right = -1.0D;
                 }
-                int sample_left_int = (int)(left * 32767.0D * volume);
-                int sample_right_int = (int)(right * 32767.0D * volume);
+                int sample_left_int = (int) (left * 32767.0D * volume);
+                int sample_right_int = (int) (right * 32767.0D * volume);
 
 
-                buffer[i] = ((byte)(sample_left_int & 0xFF));
-                buffer[(i + 1)] = ((byte)(sample_left_int >> 8 & 0xFF));
+                buffer[i] = ((byte) (sample_left_int & 0xFF));
+                buffer[(i + 1)] = ((byte) (sample_left_int >> 8 & 0xFF));
 
-                buffer[(i + 2)] = ((byte)(sample_right_int & 0xFF));
-                buffer[(i + 3)] = ((byte)(sample_right_int >> 8 & 0xFF));
+                buffer[(i + 2)] = ((byte) (sample_right_int & 0xFF));
+                buffer[(i + 3)] = ((byte) (sample_right_int >> 8 & 0xFF));
             }
 
 //            if (Statics.export) {
@@ -169,18 +172,18 @@ public class Output implements Runnable {
         dispose();
     }
 
-    private void createOutput()
-    {
+    private void createOutput() {
         AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100.0F, 16, 2, 4, 44100.0F, false);
         try {
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-            if (!AudioSystem.isLineSupported(info)) {}
+            if (!AudioSystem.isLineSupported(info)) {
+            }
 
 
-            line = (SourceDataLine)AudioSystem.getLine(info);
+            line = (SourceDataLine) AudioSystem.getLine(info);
             line.open(format, 16384);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
     }
 
     public static byte[] FloatArray2ByteArray(float[] values) {
