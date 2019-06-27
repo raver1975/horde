@@ -111,7 +111,7 @@ public class Instrument extends AbstractNotationElement {
      * 
      * @return the midi instrument object
      */
-    protected javax.sound.midi.Instrument getMidiInstrument() {
+    public javax.sound.midi.Instrument getMidiInstrument() {
         return midiInstrument;
     }        
     

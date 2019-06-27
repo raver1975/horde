@@ -8,36 +8,43 @@ import com.myronmarston.music.OutputManager;
 import com.myronmarston.music.scales.InvalidKeySignatureException;
 import com.myronmarston.music.settings.FractalPiece;
 import com.myronmarston.synth.Output;
+import com.myronmarston.synth.Sequencer;
 
 import javax.sound.midi.MidiUnavailableException;
 import java.io.IOException;
 
 public class Main {
 
-    public Main() throws GermIsEmptyException, InvalidKeySignatureException, NoteStringParseException, IOException, MidiUnavailableException {
+    public Main() {
+        System.out.println("acid audio system starting");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Output output = new Output();
-                output.getSequencer().setBpm(120);
-                output.getSequencer().randomizeRhythm();
-                output.getSequencer().randomizeSequence();
+
+                 for (Sequencer s:output.getSequencer()) {
+                    s.setBpm(120d);
+                    s.randomizeSequence();
+                }
 //                BasslineSynthesizer synth = (BasslineSynthesizer) output.getTrack(0);
 //                RhythmSynthesizer drums = (RhythmSynthesizer) output.getTrack(1);
-                output.getSequencer().drums.randomize();
-                output.getSequencer().bass1.randomize();
-                output.getSequencer().bass2.randomize();
+//                output.getSequencer()[2].drums.randomize();
+//                output.getSequencer().bassline1.randomize();
+//                output.getSequencer().bass2.randomize();
                 output.start();
+                output.setVolume(.75d);
+
+
             }
         }).start();
-
+        System.out.println("acid audio system started");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-
+/*
         FractalPiece fp = new FractalPiece();
         fp.createDefaultSettings();
 //        fp.setGermString("G4,1/4,MF A4,1/8,F B4,1/8,F G4,1/4,MF");
@@ -60,11 +67,11 @@ public class Main {
         OutputManager om = fp.createPieceResultOutputManager();
         om.saveWavFile("test" + (cnt++) + ".wav");
         AudioFileCreator afc = new AudioFileCreator(om);
-        afc.playAudio();
-//}
+        //afc.playAudio();
+//}*/
     }
 
-    public static void main(String[] args) throws GermIsEmptyException, InvalidKeySignatureException, NoteStringParseException, IOException, MidiUnavailableException {
+    public static void main(String[] args) {
         new Main();
     }
 }

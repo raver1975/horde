@@ -1,7 +1,9 @@
 package com.myronmarston.synth;
 
 import com.myronmarston.music.AudioFileCreator;
+import com.myronmarston.music.Instrument;
 
+import javax.sound.midi.Sequence;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -12,10 +14,8 @@ import java.nio.ByteOrder;
 public class Output implements Runnable {
     private static Thread thread = null;
     private static Synthesizer[] tracks;
-    private AcidSequencer sequencer;
+    private Sequencer sequencer[];
 
-    private static double left;
-    private static double right;
     public static double volume = 1D;
     public static double SAMPLE_RATE = 44100;
     private static final int BUFFER_SIZE = 16384;
@@ -26,11 +26,14 @@ public class Output implements Runnable {
     private static boolean paused = false;
     private static SourceDataLine line = null;
 
+    double left = 0.0D;
+    double right = 0.0D;
+
     public static double getVolume() {
         return volume;
     }
 
-    static void setVolume(double value) {
+    public static void setVolume(double value) {
         volume = value;
     }
 
@@ -46,19 +49,31 @@ public class Output implements Runnable {
 //        line = AudioFileCreator.getDataLine();
         createOutput();
         line.start();
-        tracks = new Synthesizer[Statics.drumsOn ? 3 : 2];
+        tracks = new Synthesizer[Statics.drumsOn ? 2 : 1];
         BasslineSynthesizer tb1 = new BasslineSynthesizer();
-        BasslineSynthesizer tb2 = new BasslineSynthesizer();
+        tb1.controlChange(39,64);
+
         tracks[0] = tb1;
-        tracks[1] = tb2;
         RhythmSynthesizer tr = new RhythmSynthesizer();
+        tr.controlChange(36,64);
         if (Statics.drumsOn)
-            tracks[2] = tr;
+            tracks[1] = tr;
 
         delay = new Delay();
         reverb = new Reverb();
-
-        this.sequencer = new AcidSequencer(tb1, tb2, tr, this);
+        this.sequencer = new Sequencer[InstrumentSequencer.maxChannels];
+//        this.sequencer[0] = new AcidSequencer(tb1,  tr);
+        for (String inst: Instrument.AVAILABLE_INSTRUMENTS){
+            System.out.println(inst);
+        }
+        for (int it=0;it<this.sequencer.length-1;it++) {
+            this.sequencer[it] = new InstrumentSequencer(AudioFileCreator.getDataLine(),it);
+        }
+        this.sequencer[this.sequencer.length-1] = new InstrumentSequencer(AudioFileCreator.getDataLine(),"Cello");
+//        this.sequencer[2] = new InstrumentSequencer(AudioFileCreator.getDataLine(), 1);
+//        this.sequencer[2] = new InstrumentSequencer(AudioFileCreator.getDataLine(), 2);
+//        this.sequencer[3] = new InstrumentSequencer(AudioFileCreator.getDataLine(), 3);
+//        this.sequencer[4] = new InstrumentSequencer(AudioFileCreator.getDataLine(), 4);
 
         thread = new Thread(this);
         thread.setPriority(10);
@@ -101,14 +116,13 @@ public class Output implements Runnable {
                 continue;
             }
             for (int i = 0; i < buffer.length; i += 4) {
-                left = right = 0.0D;
-                double left = 0.0D;
-                double right = 0.0D;
 
-                this.sequencer.tick();
+                for (Sequencer sequencer : sequencer) {
+                    sequencer.tick();
+                }
                 if (Statics.drumsOn) {
                     double[] tmp = null;
-                    tmp = tracks[2].stereoOutput();
+                    tmp = tracks[1].stereoOutput();
                     delay.input(tmp[2]);
                     reverb.input(tmp[3]);
                     left += tmp[0];
@@ -121,11 +135,11 @@ public class Output implements Runnable {
                     reverb.input(tmp[3]);
                     left += tmp[0];
                     right += tmp[1];
-                    tmp = tracks[1].stereoOutput();
-                    delay.input(tmp[2]);
-                    reverb.input(tmp[3]);
-                    left += tmp[0];
-                    right += tmp[1];
+//                    tmp = tracks[1].stereoOutput();
+//                    delay.input(tmp[2]);
+//                    reverb.input(tmp[3]);
+//                    left += tmp[0];
+//                    right += tmp[1];
                 }
 
                 double[] del = delay.output();
@@ -173,28 +187,7 @@ public class Output implements Runnable {
     }
 
     private void createOutput() {
-        AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100.0F, 16, 2, 4, 44100.0F, false);
-        try {
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-            if (!AudioSystem.isLineSupported(info)) {
-            }
-
-
-            line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(format, 16384);
-        } catch (Exception e) {
-        }
-    }
-
-    public static byte[] FloatArray2ByteArray(float[] values) {
-        ByteBuffer buffer = ByteBuffer.allocate(4 * values.length);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-
-        for (float value : values) {
-            buffer.putFloat(value);
-        }
-
-        return buffer.array();
+        line = AudioFileCreator.getDataLine();
     }
 
     public void dispose() {
@@ -202,10 +195,9 @@ public class Output implements Runnable {
         line.drain();
         line.stop();
         line.close();
-
     }
 
-    public AcidSequencer getSequencer() {
+    public Sequencer[] getSequencer() {
         return this.sequencer;
     }
 

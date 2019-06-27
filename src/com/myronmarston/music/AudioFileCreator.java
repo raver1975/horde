@@ -38,7 +38,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.ByteArrayOutputStream;
@@ -68,7 +71,7 @@ public class AudioFileCreator {
     }
 
 
-    public static SourceDataLine getDataLine(){
+    public static SourceDataLine getDataLine() {
         int resolution = 16;
         int channels = 2;
         int frameSize = channels * resolution / 8;
@@ -77,8 +80,8 @@ public class AudioFileCreator {
         SourceDataLine res = null;
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
         try {
-            res = (SourceDataLine) AudioSystem.getLine(info);
-            res.open(audioFormat);
+            res = (SourceDataLine) AudioSystem.getMixer(AudioSystem.getMixerInfo()[0]).getLine(info);
+            res.open(audioFormat,16384);
             res.start();
         } catch (LineUnavailableException e) {
             e.printStackTrace();
@@ -88,7 +91,7 @@ public class AudioFileCreator {
 
     public void playAudio() throws MidiUnavailableException, IOException {
 
-        SourceDataLine res=getDataLine();
+        SourceDataLine res = getDataLine();
 
         AudioSynthesizer synth = null;
         AudioInputStream stream1 = null;
@@ -132,8 +135,8 @@ public class AudioFileCreator {
      *
      * @param wavFileName the file name to save to
      * @throws MidiUnavailableException if there is a midi
-     *                                                   error
-     * @throws IOException                       if there is an I/O error
+     *                                  error
+     * @throws IOException              if there is an I/O error
      */
     protected void saveWavFile(final String wavFileName) throws MidiUnavailableException, IOException {
         AudioSynthesizer synth = null;
@@ -186,8 +189,8 @@ public class AudioFileCreator {
      * @param mp3FileName the mp3 file
      * @return the number of bytes written to the file
      * @throws UnsupportedAudioFileException if the given
-     *                                                           wav file is in an unsupported format
-     * @throws IOException                               if there is an I/O error
+     *                                       wav file is in an unsupported format
+     * @throws IOException                   if there is an I/O error
      */
     private static int convertWavToMp3(String wavFileName, String mp3FileName) throws UnsupportedAudioFileException, IOException {
         AudioInputStream streamToConvert = null;
@@ -235,17 +238,21 @@ public class AudioFileCreator {
      *
      * @return the audio synthesizer
      * @throws MidiUnavailableException if the audio
-     *                                                   synthesizer cannot be found
+     *                                  synthesizer cannot be found
      */
-    protected static AudioSynthesizer getAudioSynthesizer() throws MidiUnavailableException {
+    public static AudioSynthesizer getAudioSynthesizer() throws MidiUnavailableException {
         // First check if default synthesizer is AudioSynthesizer.
-        Synthesizer synth = MidiSystem.getSynthesizer();
-        if (synth instanceof AudioSynthesizer) return (AudioSynthesizer) synth;
+        Synthesizer synth1 = MidiSystem.getSynthesizer();
+        if (synth1 instanceof AudioSynthesizer) {
+            return (AudioSynthesizer) synth1;
+        }
 
         // now check the others...        
         for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) {
             MidiDevice device = MidiSystem.getMidiDevice(info);
-            if (device instanceof AudioSynthesizer) return (AudioSynthesizer) device;
+            if (device instanceof AudioSynthesizer) {
+                return (AudioSynthesizer) device;
+            }
         }
 
         throw new MidiUnavailableException("The AudioSynthesizer is not available.");

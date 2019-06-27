@@ -12,5 +12,7 @@
    {
      bpm = bpm;
    }
+
+     public abstract void randomizeSequence();
  }
 
