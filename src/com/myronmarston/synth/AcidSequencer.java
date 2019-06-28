@@ -5,8 +5,6 @@ import java.util.ArrayList;
 public class AcidSequencer extends Sequencer{
     public BasslineSynthesizer bass1;
     public BasslinePattern bassline1;
-//    public BasslineSynthesizer bass2;
-//    public BasslinePattern bassline2;
 
     public RhythmSynthesizer drums;
     public int[][] rhythm;
@@ -22,7 +20,6 @@ public class AcidSequencer extends Sequencer{
 
     public AcidSequencer(BasslineSynthesizer bass1, RhythmSynthesizer drums) {
         this.bass1 = bass1;
-//        this.bass2 = bass2;
         this.drums = drums;
 
         randomizeRhythm();
@@ -34,7 +31,6 @@ public class AcidSequencer extends Sequencer{
     }
 
     public void randomizeSequence() {
-//        if (!Statics.drumsSelected) {
         double[] basicCoeffs = {0.5D, 0.5D, 0.5D, 0.5D};
         double[] bassCoeffs = new double[16];
         boolean preferBassDrum = Math.random() > 0.5D;
@@ -44,7 +40,6 @@ public class AcidSequencer extends Sequencer{
         }
         for (int i = 0; i < this.rhythm[0].length; i++) {
             bassCoeffs[i] = basicCoeffs[(i % 4)];
-
             if (((this.rhythm[0][i] > 0) && (preferBassDrum))
                     || ((preferSnareDrum) && ((this.rhythm[1][i] > 0) || (this.rhythm[4][i] > 0))))
                 bassCoeffs[i] *= 4.0D;
@@ -60,16 +55,6 @@ public class AcidSequencer extends Sequencer{
         markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
         markov.addKid(new Markov(Harmony.SCALE_HUNGARIAN_MINOR, 0.5D));
         this.bassline1 = createBassline(this.patternLength, (int[]) (int[]) markov.getKid().getContent(), bassCoeffs);
-
-//			this.bass.randomize();
-//        } else {
-
-//        }
-
-//		double newBpm = 100.0D + Math.random() * 60.0D;
-//		this.shuffle = ((newBpm < 120.0D) && (Math.random() > 0.33D));
-//		setBpm(newBpm);
-
         Markov delayTimes = new Markov(null, 0.0D);
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 2, 0.5D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 3, 2.0D));
@@ -95,7 +80,6 @@ public class AcidSequencer extends Sequencer{
                                     this.bassline1.accent[this.step] ? 127
                                             : 80);
                 }
-
                 for (int ch = 0; ch < this.rhythm.length; ch++) {
                     if (this.rhythm[ch][this.step] != 0) {
                         int vol = 255;
@@ -111,11 +95,6 @@ public class AcidSequencer extends Sequencer{
                         this.drums.noteOn(ch + 32, vol);
                     }
                 }
-//				if (this.step == 0) {
-//					if (this.evenPattern)
-//						this.drums.noteOn(0, 127);
-//					this.evenPattern = (!this.evenPattern);
-//				}
                 if (this.shuffle)
                     setBpm(this.bpm);
             } else {

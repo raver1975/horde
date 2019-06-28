@@ -10,7 +10,7 @@
  
    public void setBpm(double bpm)
    {
-     bpm = bpm;
+     this.bpm = bpm;
    }
 
      public abstract void randomizeSequence();
