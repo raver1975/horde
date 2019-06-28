@@ -38,11 +38,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
+import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -70,8 +69,25 @@ public class AudioFileCreator {
         this.outputManager = outputManager;
     }
 
+    public static TargetDataLine getTargetDataLine() {
+        int resolution = 16;
+        int channels = 2;
+        int frameSize = channels * resolution / 8;
+        int sampleRate = 44100;
+        AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, resolution, channels, frameSize, sampleRate, false);
+        TargetDataLine res = null;
+//        DataLine.Info info = new DataLine.Info(TargetDataLine.class, audioFormat);
+        try {
+            res = AudioSystem.getTargetDataLine(audioFormat);
+            res.open(audioFormat,16384);
+            res.start();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
 
-    public static SourceDataLine getDataLine() {
+    public static SourceDataLine getSourceDataLine() {
         int resolution = 16;
         int channels = 2;
         int frameSize = channels * resolution / 8;
@@ -80,7 +96,7 @@ public class AudioFileCreator {
         SourceDataLine res = null;
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
         try {
-            res = (SourceDataLine) AudioSystem.getMixer(AudioSystem.getMixerInfo()[0]).getLine(info);
+            res = AudioSystem.getSourceDataLine(audioFormat);
             res.open(audioFormat,16384);
             res.start();
         } catch (LineUnavailableException e) {
@@ -91,7 +107,7 @@ public class AudioFileCreator {
 
     public void playAudio() throws MidiUnavailableException, IOException {
 
-        SourceDataLine res = getDataLine();
+        SourceDataLine res = getSourceDataLine();
 
         AudioSynthesizer synth = null;
         AudioInputStream stream1 = null;

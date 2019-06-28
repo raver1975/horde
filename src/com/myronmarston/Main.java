@@ -17,33 +17,27 @@ public class Main {
 
     public Main() {
         System.out.println("acid audio system starting");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Output output = new Output();
+        Output output = new Output();
 
-                 for (Sequencer s:output.getSequencer()) {
-                    s.setBpm(120d);
-                    s.randomizeSequence();
-                }
+        for (Sequencer s:output.getSequencer()) {
+            s.setBpm(120d);
+            s.randomizeSequence();
+        }
 //                BasslineSynthesizer synth = (BasslineSynthesizer) output.getTrack(0);
 //                RhythmSynthesizer drums = (RhythmSynthesizer) output.getTrack(1);
 //                output.getSequencer()[2].drums.randomize();
 //                output.getSequencer().bassline1.randomize();
 //                output.getSequencer().bass2.randomize();
-                output.start();
-                output.setVolume(.75d);
-
-
-            }
-        }).start();
+        output.setVolume(1d);
+        output.start();
         System.out.println("acid audio system started");
         try {
-            Thread.sleep(3000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        output.dispose();
+        System.exit(0);
 /*
         FractalPiece fp = new FractalPiece();
         fp.createDefaultSettings();

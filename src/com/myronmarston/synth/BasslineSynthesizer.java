@@ -78,10 +78,10 @@ public class BasslineSynthesizer
     public void randomize() {
         if (Math.random() > 0.5D) {
             this.osc.setWavetable(WAVETABLE_SQUARE);
-            Statics.waveSquare=true;
+            Statics.waveSquare = true;
         } else {
             this.osc.setWavetable(WAVETABLE_SAW);
-            Statics.waveSquare=false;
+            Statics.waveSquare = false;
         }
         cutoff.setValue(Math.random() * 3866.0D + 100.0D);
         resonance.setValue(Math.random());
@@ -126,7 +126,7 @@ public class BasslineSynthesizer
             }
 
             this.out = (this.distortion.distort(this.filter.filter(this.osc.tick() * this.aeg.tick())) * 1.66D);
-            return this.out;
+            return this.out * vol_i;
         }
 
         return 0.0D;
@@ -154,10 +154,9 @@ public class BasslineSynthesizer
         if (this.osc.getWavetable() == WAVETABLE_SAW) {
             this.osc.setWavetable(WAVETABLE_SQUARE);
             Statics.waveSquare = true;
-        }
-        else {
+        } else {
             this.osc.setWavetable(WAVETABLE_SAW);
-            Statics.waveSquare=false;
+            Statics.waveSquare = false;
         }
     }
 
@@ -203,8 +202,9 @@ public class BasslineSynthesizer
             case 39:  // volume
                 newValue = value / 127.0D;
                 if (newValue >= 0d && newValue <= 2d) {
-                    Output.setVolume((value / 127.0D));
-                    this.vol_i = (Output.getVolume() * 2.0D);
+//                    Output.setVolume((value / 127.0D));
+                    this.vol_i = newValue;
+                    System.out.println("bassline volume set to:"+vol_i);
                     if (this.vol_i > 1.0D) {
                         this.distortion.setGain(1.0D / ((this.vol_i - 1.0D) * 50.0D + 1.0D));
                         this.vol_i = 1.0D;
