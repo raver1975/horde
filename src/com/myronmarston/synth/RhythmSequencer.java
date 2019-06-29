@@ -21,11 +21,13 @@ public class RhythmSequencer extends Sequencer {
         randomizeSequence();
     }
 
-    private void randomizeRhythm() {
+    public void randomizeRhythm() {
         this.rhythm = createRhythm(this.patternLength);
     }
 
     public void randomizeSequence() {
+        System.out.println("here!");
+        synth.randomize();
         double[] basicCoeffs = {0.5D, 0.5D, 0.5D, 0.5D};
         double[] bassCoeffs = new double[16];
         boolean preferBassDrum = Math.random() > 0.5D;

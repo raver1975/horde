@@ -74,10 +74,10 @@ public class Output implements Runnable {
         BasslineSynthesizer tb2 = new BasslineSynthesizer();
         RhythmSynthesizer tr1 = new RhythmSynthesizer();
         RhythmSynthesizer tr2 = new RhythmSynthesizer();
-        tracks[0] = tr1;
-        tracks[1] = tr2;
-        tracks[2] = tb1;
-        tracks[3] = tb2;
+        tracks[0] = tr2;
+        tracks[1] = tr1;
+        tracks[2] = tb2;
+        tracks[3] = tb1;
 //        tracks[1] = tr;
         this.sequencer[this.sequencer.length - 4] = new RhythmSequencer(tb1);
         this.sequencer[this.sequencer.length - 3] = new RhythmSequencer( tb2);

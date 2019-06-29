@@ -10,34 +10,31 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.SourceDataLine;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InstrumentSequencer extends Sequencer {
     private final String inst;
-    private final SourceDataLine sourceDataLine;
     AudioInputStream ais1;
-    ArrayList<Integer> noteOn = new ArrayList<Integer>();
+    private ArrayList<Integer> noteOn = new ArrayList<Integer>();
     private AudioSynthesizer audioSynthesizer = null;
-    public BasslinePattern bassline1;
-    public int[][] rhythm;
+    private BasslinePattern bassline1;
+    private int[][] rhythm;
     private boolean shuffle;
     private int samplesPerSequencerUpdate;
     public int tick = 0;
     public int step = 0;
     private boolean sixteenth_note = true;
-    int channel = 0;
-    public static String[] channels = new String[16];
+    private int channel = 0;
+    private static String[] channels = new String[16];
     private int patternLength = 16;
 
-    public InstrumentSequencer(int channel) {
+    InstrumentSequencer(int channel) {
         this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel);
     }
 
-    public InstrumentSequencer(String inst, int channel) {
+    private InstrumentSequencer(String inst, int channel) {
         this.inst = inst;
-        this.sourceDataLine = AudioFileCreator.getSourceDataLine();
         randomizeRhythm();
         randomizeSequence();
         this.channel = channel;
@@ -169,8 +166,8 @@ public class InstrumentSequencer extends Sequencer {
                 this.samplesPerSequencerUpdate -= (int) (this.samplesPerSequencerUpdate * 0.33D);
     }
 
-    public BasslinePattern createBassline(int length, int[] scale,
-                                          double[] weights) {
+    private BasslinePattern createBassline(int length, int[] scale,
+                                           double[] weights) {
         BasslinePattern pattern = new BasslinePattern(length);
         pattern.clear();
         int prevNote = 0;
@@ -185,16 +182,16 @@ public class InstrumentSequencer extends Sequencer {
             if (Math.random() * noteProb < probability) {
                 Markov m = new Markov(null, 0.0D);
 
-                for (int j = 0; j < scale.length; j++) {
+                for (int value : scale) {
                     int prob = 1;
-                    if (scale[j] == 0)
+                    if (value == 0)
                         prob *= 2;
-                    if (scale[j] == prevNote)
+                    if (value == prevNote)
                         prob *= 3;
-                    if ((scale[j] == prevNote - 1)
-                            || (scale[j] == prevNote + 2))
+                    if ((value == prevNote - 1)
+                            || (value == prevNote + 2))
                         prob *= 2;
-                    m.addKid(new Markov(scale[j], prob));
+                    m.addKid(new Markov(value, prob));
                 }
 
                 int note = (Integer) m.getKid().getContent();
@@ -244,7 +241,7 @@ public class InstrumentSequencer extends Sequencer {
         return pattern;
     }
 
-    public int[][] createRhythm(int patternLength) {
+    private int[][] createRhythm(int patternLength) {
         int[] nothing = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
         int[][] bdTemplates = {
@@ -346,29 +343,29 @@ public class InstrumentSequencer extends Sequencer {
         private Object content;
         private ArrayList<Markov> kids;
 
-        public Markov(Object content, double weight) {
+        Markov(Object content, double weight) {
             this.weight = weight;
             this.content = content;
             this.kids = new ArrayList();
         }
 
-        public double getWeight() {
+        double getWeight() {
             return this.weight;
         }
 
-        public boolean hasKids() {
+        boolean hasKids() {
             return !this.kids.isEmpty();
         }
 
-        public void addKid(Markov m) {
+        void addKid(Markov m) {
             this.kids.add(m);
         }
 
-        public Object getContent() {
+        Object getContent() {
             return this.content;
         }
 
-        public Markov getKid() {
+        Markov getKid() {
             double totalWeight = 0.0D;
             for (Markov m : this.kids) {
                 totalWeight += m.getWeight();
@@ -389,7 +386,7 @@ public class InstrumentSequencer extends Sequencer {
         private RhythmEvolver() {
         }
 
-        public int[] evolve(int[] beat, double[] weights) {
+        int[] evolve(int[] beat, double[] weights) {
             InstrumentSequencer.Markov strategies = new InstrumentSequencer.Markov(null,
                     0.0D);
             strategies.addKid(new InstrumentSequencer.Markov(new AdditionStrategy(),

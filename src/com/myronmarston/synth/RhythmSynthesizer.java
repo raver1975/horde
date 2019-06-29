@@ -82,11 +82,9 @@ public class RhythmSynthesizer
     private double aux2Amt;
     private boolean is808BassDrum;
     private boolean is808SnareDrum;
-    private double left;
-    private double right;
     private double vol_i = 1f;
 
-    public RhythmSynthesizer() {
+    RhythmSynthesizer() {
         this.bd = new CubicOscillator();
         this.bd.setSample(bds);
         this.bd.setSamplingFrequency(Output.SAMPLE_RATE);
@@ -185,7 +183,7 @@ public class RhythmSynthesizer
         randomize();
     }
 
-    public void randomize() {
+    private void randomize() {
         controlChange(33, (int) (Math.random() * 127.0D));
         controlChange(34, (int) (Math.random() * 127.0D));
         controlChange(35, (int) (Math.random() * 127.0D));
@@ -202,11 +200,7 @@ public class RhythmSynthesizer
         tmp *= tmp;
         this.bddist.setGain(tmp + 0.05D);
 
-        if (Math.random() > 0.8D)
-            this.is808BassDrum = true;
-        else {
-            this.is808BassDrum = false;
-        }
+        this.is808BassDrum = Math.random() > 0.8D;
         if (Math.random() > 0.66D) {
             this.is808SnareDrum = true;
             this.sd808mix1 = Math.random();
@@ -256,7 +250,7 @@ public class RhythmSynthesizer
         }
     }
 
-    public void setBpm(double value) {
+    void setBpm(double value) {
     }
 
     public double monoOutput() {
@@ -272,7 +266,9 @@ public class RhythmSynthesizer
     }
 
     public double[] stereoOutput() {
-        this.aux = (this.left = this.right = 0.0D);
+        double left;
+        double right;
+        this.aux = (left = right = 0.0D);
         this.bd.setFrequency(52.0D + this.bdpeg.tick());
         double bds;
         if (this.is808BassDrum)
@@ -298,9 +294,9 @@ public class RhythmSynthesizer
 
         this.aux += sds + (chs + ohs) * 0.66D + cps + crs + (perc1 + perc2) * 2.0D;
 
-        this.left += bds + (sds + perc2) * 0.66D + (chs + perc1 + ohs) * 1.33D + cps + crs * 0.5D;
-        this.right += bds + (sds + perc2) * 1.33D + (chs + perc1 + ohs) * 0.66D + cps + crs * 1.5D;
-        return new double[]{this.left * vol_i, this.right * vol_i, this.aux * this.aux1Amt * vol_i, this.aux * this.aux2Amt * vol_i};
+        left += bds + (sds + perc2) * 0.66D + (chs + perc1 + ohs) * 1.33D + cps + crs * 0.5D;
+        right += bds + (sds + perc2) * 1.33D + (chs + perc1 + ohs) * 0.66D + cps + crs * 1.5D;
+        return new double[]{left * vol_i, right * vol_i, this.aux * this.aux1Amt * vol_i, this.aux * this.aux2Amt * vol_i};
     }
 
 
@@ -340,7 +336,7 @@ public class RhythmSynthesizer
         return 0.0D;
     }
 
-    public void controlChange(int controller, int value) {
+    void controlChange(int controller, int value) {
         switch (controller) {
             case 39:
                 this.vol_i = value / 127d;
@@ -404,7 +400,7 @@ public class RhythmSynthesizer
         }
     }
 
-    public void noteOn(int note, int velocity) {
+    void noteOn(int note, int velocity) {
         double vel = velocity / 255.0D;
         switch (note) {
             case 32:
@@ -451,7 +447,7 @@ public class RhythmSynthesizer
         }
     }
 
-    public void noteOff(int note) {
+    private void noteOff(int note) {
     }
 
     public void noteOff(int note, int velocity) {

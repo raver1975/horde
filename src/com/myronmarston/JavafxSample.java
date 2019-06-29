@@ -70,7 +70,7 @@ public class JavafxSample extends Application {
         for (int i = 0; i < 16; i++) {
             final Slider slider = (Slider) scene.lookup("#midi-sl-" + (i + 1));
             final ToggleButton onButton = (ToggleButton) scene.lookup("#midi-bt-" + (i + 1));
-            final Button shuffuleButton = (Button) scene.lookup("#midi-shuffle-" + (i + 1));
+            final Button shuffleButton = (Button) scene.lookup("#midi-shuffle-" + (i + 1));
             final int finalI = i;
             slider.valueProperty().addListener(new ChangeListener<Number>() {
                 public void changed(ObservableValue<? extends Number> ov,
@@ -103,17 +103,18 @@ public class JavafxSample extends Application {
             GridPane.setHalignment(onButton, HPos.CENTER);
             GridPane.setValignment(onButton, VPos.CENTER);
 
-            shuffuleButton.setOnAction(new EventHandler<ActionEvent>() {
+            shuffleButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     output.getSequencer()[finalI].randomizeSequence();
-                    System.out.println("shuffle clicked:"+finalI);
+                    output.getSequencer()[finalI].randomizeRhythm();
+                    System.out.println("shuffle clicked:"+(finalI+1));
                 }
             });
-            GridPane.setFillWidth(shuffuleButton, true);
-            GridPane.setFillHeight(shuffuleButton, true);
-            GridPane.setHalignment(shuffuleButton, HPos.CENTER);
-            GridPane.setValignment(shuffuleButton, VPos.CENTER);
+            GridPane.setFillWidth(shuffleButton, true);
+            GridPane.setFillHeight(shuffleButton, true);
+            GridPane.setHalignment(shuffleButton, HPos.CENTER);
+            GridPane.setValignment(shuffleButton, VPos.CENTER);
 
             onButton.setSelected(false);
 

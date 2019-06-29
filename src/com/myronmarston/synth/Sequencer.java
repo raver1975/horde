@@ -23,5 +23,6 @@ public abstract class Sequencer {
     }
 
     public abstract void randomizeSequence();
+    public abstract void randomizeRhythm();
 }
 

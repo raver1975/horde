@@ -18,7 +18,7 @@ public class DrumSequencer extends Sequencer {
         randomizeSequence();
     }
 
-    private void randomizeRhythm() {
+    public void randomizeRhythm() {
         int patternLength = 16;
         this.drums = createRhythm(patternLength);
     }
