@@ -15,10 +15,10 @@ import java.util.HashMap;
 
 public class InstrumentSequencer extends Sequencer {
     public String instrument;
-    AudioInputStream ais1;
+    AudioInputStream audioInputStream;
     private ArrayList<Integer> noteOn = new ArrayList<Integer>();
     private AudioSynthesizer audioSynthesizer = null;
-    private BasslinePattern bassline1;
+    private BasslinePattern bassline;
     private int[][] rhythm;
     private boolean shuffle;
     private int samplesPerSequencerUpdate;
@@ -28,17 +28,15 @@ public class InstrumentSequencer extends Sequencer {
     public int channel = 0;
     private static String[] channels = new String[16];
     private int patternLength = 16;
+    private boolean drum;
 
-    InstrumentSequencer(int channel) {
-        this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel);
+    InstrumentSequencer(int channel,boolean drum) {
+        this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel,drum);
     }
 
-    public String getInstrument() {
-        return instrument;
-    }
-
-    private InstrumentSequencer(String inst, int channel) {
+    private InstrumentSequencer(String inst, int channel,boolean drum) {
         this.instrument = inst;
+        drum=drum;
         randomizeRhythm();
         randomizeSequence();
         this.channel = channel;
@@ -50,10 +48,14 @@ public class InstrumentSequencer extends Sequencer {
             int frameSize = channels * resolution / 8;
             int sampleRate = 44100;
             AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, resolution, channels, frameSize, sampleRate, false);
-            ais1 = audioSynthesizer.openStream(audioFormat, new HashMap<String, Object>());
+            audioInputStream = audioSynthesizer.openStream(audioFormat, new HashMap<String, Object>());
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getInstrument() {
+        return instrument;
     }
 
     public void randomizeRhythm() {
@@ -83,7 +85,7 @@ public class InstrumentSequencer extends Sequencer {
         markov.addKid(new Markov(Harmony.SCALE_MELODIC_MINOR, 2.0D));
         markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
         markov.addKid(new Markov(Harmony.SCALE_HUNGARIAN_MINOR, 0.5D));
-        this.bassline1 = createBassline(this.patternLength, (int[]) (int[]) markov.getKid().getContent(), bassCoeffs);
+        this.bassline = createBassline(this.patternLength, (int[]) (int[]) markov.getKid().getContent(), bassCoeffs);
         Markov delayTimes = new Markov(null, 0.0D);
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 2, 0.5D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 3, 2.0D));
@@ -95,29 +97,61 @@ public class InstrumentSequencer extends Sequencer {
     }
 
 
+
     public void tick() {
         if (this.tick == 0) {
             if (this.sixteenth_note) {
-                if ((!this.bassline1.pause[this.step])
-                        && (this.bassline1.note[this.step] != -1)) {
-                    try {
-                        int pitch = this.bassline1.note[this.step] + 36 + (this.bassline1.isTransUp(this.step) ? 12 : 0) - (this.bassline1.isTransDown(this.step) ? 12 : 0);
-                        int vel = (int) ((this.bassline1.accent[this.step] ? 127 : 80) * vol);
-                        setChannel(channel);
-                        noteOn.add(pitch);
+                if (!drum) {
+                    if ((!this.bassline.pause[this.step])
+                            && (this.bassline.note[this.step] != -1)) {
+                        try {
+                            int pitch = this.bassline.note[this.step] + 36 + (this.bassline.isTransUp(this.step) ? 12 : 0) - (this.bassline.isTransDown(this.step) ? 12 : 0);
+                            int vel = (int) ((this.bassline.accent[this.step] ? 127 : 80) * vol);
+                            setChannel(channel);
+                            noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
-                        audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
-                    } catch (MidiUnavailableException e) {
-                        e.printStackTrace();
-                    } catch (InvalidMidiDataException e) {
-                        e.printStackTrace();
-                    }
+                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                        } catch (MidiUnavailableException e) {
+                            e.printStackTrace();
+                        } catch (InvalidMidiDataException e) {
+                            e.printStackTrace();
+                        }
 
+                    }
+                }
+                if (drum) {
+                    for (int ch = 0; ch < this.rhythm.length; ch++) {
+                        if (this.rhythm[ch][this.step] != 0) {
+                            int vol1 = 255;
+                            if ((this.step > 1) && (this.step < 15)
+                                    && (this.rhythm[ch][(this.step - 1)] != 0)) {
+                                vol1 = (int) (vol1 * 0.66D);
+                            }
+                            if (this.step % 4 != 0)
+                                vol1 = (int) (vol1 * 0.66D);
+                            if (this.step % 2 != 0) {
+                                vol1 = (int) (vol1 * 0.66D);
+                            }
+                            int pitch = this.bassline.note[this.step] + 36 + (this.bassline.isTransUp(this.step) ? 12 : 0) - (this.bassline.isTransDown(this.step) ? 12 : 0);
+                            int vel = (int) ((this.bassline.accent[this.step] ? 127 : 80) * vol);
+                            setChannel(channel);
+                            noteOn.add(pitch);
+//                        System.out.println(pitch + "\t" + vel);
+                            try {
+                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, ch+32, (int) (vol1*vol)), -1);
+                            } catch (MidiUnavailableException e) {
+                                e.printStackTrace();
+                            } catch (InvalidMidiDataException e) {
+                                e.printStackTrace();
+                            }
+//                            this.drums.noteOn(ch + 32, vol);
+                        }
+                    }
                 }
                 if (this.shuffle)
                     setBpm(this.bpm);
             } else {
-                if (!this.bassline1.slide[this.step]) {
+                if (!this.bassline.slide[this.step]) {
                     for (int n : noteOn) {
                         try {
                             setChannel(channel);

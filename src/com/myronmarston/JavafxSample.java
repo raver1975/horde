@@ -90,7 +90,7 @@ public class JavafxSample extends Application {
                         onButton.setStyle("-fx-background-color: #99ff99");
                     } else {
                         output.getSequencer()[finalI].setVolume(0);
-                        onButton.setStyle("-fx-background-color: #ddddddd");
+                        onButton.setStyle("-fx-background-color: #dddddd");
                     }
                 }
             });

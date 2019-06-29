@@ -38,6 +38,7 @@ public class Output implements Runnable {
     private static boolean paused = false;
     private SourceDataLine sourceLine = null;
     private OutputStream audioWriter = null;
+
     public static Delay getDelay() {
         return delay;
     }
@@ -60,9 +61,9 @@ public class Output implements Runnable {
         ArrayList<InputStream> streams = new ArrayList<InputStream>();
         this.sequencer = new Sequencer[20];
         for (int it = 0; it < this.sequencer.length - 4; it++) {
-            InstrumentSequencer its = new InstrumentSequencer(it);
+            InstrumentSequencer its = new InstrumentSequencer(it, it == 9);
             this.sequencer[it] = its;
-            streams.add(its.ais1);
+            streams.add(its.audioInputStream);
         }
         streams.add(pin1);
         streams.add(pin2);
@@ -79,10 +80,10 @@ public class Output implements Runnable {
         tracks[2] = tb2;
         tracks[3] = tb1;
 //        tracks[1] = tr;
-        this.sequencer[this.sequencer.length - 4] = new RhythmSequencer(tb1);
-        this.sequencer[this.sequencer.length - 3] = new RhythmSequencer( tb2);
-        this.sequencer[this.sequencer.length - 2] = new DrumSequencer(tr1);
-        this.sequencer[this.sequencer.length - 1] = new DrumSequencer(tr2);
+        this.sequencer[this.sequencer.length - 4] = new BasslineSequencer(tb1);
+        this.sequencer[this.sequencer.length - 3] = new BasslineSequencer(tb2);
+        this.sequencer[this.sequencer.length - 2] = new RhythmSequencer(tr1);
+        this.sequencer[this.sequencer.length - 1] = new RhythmSequencer(tr2);
 //        this.sequencer[this.sequencer.length - 1].setVolume(1f);
         tb1.controlChange(39, 127);
         tb2.controlChange(39, 127);
@@ -302,8 +303,8 @@ public class Output implements Runnable {
     public void dispose() {
         running = false;
         try {
-            audioWriter.close();
             rawToWave(new File("test.wav"), new File("testconv.wav"));
+            audioWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -340,7 +341,7 @@ public class Output implements Runnable {
             writeString(output, "WAVE"); // format
             writeString(output, "fmt "); // subchunk 1 id
             writeInt(output, 16); // subchunk 1 size
-            writeShort(output, (short) 1); // audio format (1 = PCM)
+            writeShort(output, (short) 1); // audioInputStream format (1 = PCM)
             writeShort(output, (short) channels); // number of channels
             writeInt(output, samplerate); // sample rate
             writeInt(output, samplerate * channels * bitspersample / 8); // byte rate   == SampleRate * NumChannels * BitsPerSample/8
