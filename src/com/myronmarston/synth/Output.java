@@ -301,22 +301,8 @@ public class Output implements Runnable {
 
     public void dispose() {
         running = false;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    audioWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
         try {
+            audioWriter.close();
             rawToWave(new File("test.wav"), new File("testconv.wav"));
         } catch (IOException e) {
             e.printStackTrace();

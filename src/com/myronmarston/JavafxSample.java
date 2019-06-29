@@ -5,19 +5,16 @@ import com.myronmarston.synth.InstrumentSequencer;
 import com.myronmarston.synth.Output;
 import com.myronmarston.synth.Resources;
 import com.myronmarston.synth.Sequencer;
-import com.sun.tools.javac.jvm.Items;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,7 +29,6 @@ import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -40,23 +36,6 @@ public class JavafxSample extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         final Output output = new Output();
-       /* //creating a Group object
-        Group group = new Group();
-
-        //Creating a Scene by passing the group object, height and width
-        Scene scene = new Scene(group, 600, 300);
-
-        //setting color to the scene
-        scene.setFill(Color.BROWN);
-
-        //Setting the title to Stage.
-        primaryStage.setTitle("The Horde");
-
-        //Adding the scene to Stage
-        primaryStage.setScene(scene);
-
-        //Displaying the contents of the stage
-        primaryStage.show();*/
         Parent root = null;
         try {
             root = FXMLLoader.load(new File("data/gui.fxml").toURL());
@@ -72,8 +51,8 @@ public class JavafxSample extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
-                Platform.exit();
                 output.dispose();
+                Platform.exit();
                 System.exit(0);
             }
         });
