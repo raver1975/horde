@@ -3,6 +3,7 @@ package com.myronmarston;
 import com.myronmarston.music.Instrument;
 import com.myronmarston.synth.InstrumentSequencer;
 import com.myronmarston.synth.Output;
+import com.myronmarston.synth.Resources;
 import com.myronmarston.synth.Sequencer;
 import com.sun.tools.javac.jvm.Items;
 import javafx.application.Application;
@@ -29,6 +30,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class JavafxSample extends Application {
@@ -52,8 +56,15 @@ public class JavafxSample extends Application {
 
         //Displaying the contents of the stage
         primaryStage.show();*/
-
-        Parent root = FXMLLoader.load(new File("gui.fxml").toURL());
+        Parent root =null;
+        try {
+           root=FXMLLoader.load(new File("data/gui.fxml").toURL());
+       }
+       catch(FileNotFoundException e){
+           ClassLoader cl = Resources.class.getClassLoader();
+           URL url = this.getClass().getClassLoader().getResource("gui.fxml");
+           root=FXMLLoader.load(url);
+       }
 
         Scene scene = new Scene(root);
 
@@ -119,6 +130,7 @@ public class JavafxSample extends Application {
                     System.out.println("shuffle clicked:" + (finalI + 1));
                 }
             });
+            shuffleButton.setText("*");
             GridPane.setFillWidth(shuffleButton, true);
             GridPane.setFillHeight(shuffleButton, true);
             GridPane.setHalignment(shuffleButton, HPos.CENTER);

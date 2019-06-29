@@ -3,8 +3,11 @@
  import java.io.ByteArrayOutputStream;
  import java.io.File;
  import java.io.FileInputStream;
+ import java.io.FileNotFoundException;
  import java.io.IOException;
  import java.io.InputStream;
+
+ import static jdk.xml.internal.SecuritySupport.getClassLoader;
 
  public class Resources
  {
@@ -47,7 +50,14 @@
        //InputStream in = loader.getClass().getResourceAsStream(name);
 //    	 FileHandle file1 = Gdx.files.internal("data/"+name);
     	 File file1=new File("data/"+name);
-    	 InputStream in=new FileInputStream(file1);
+       InputStream in = null;
+       try {
+           in= new FileInputStream(file1);
+         }
+    	 catch (FileNotFoundException e){
+           ClassLoader cl = Resources.class.getClassLoader();
+           in = cl.getResourceAsStream(name);
+         }
 
        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
        int array_size = 1024;

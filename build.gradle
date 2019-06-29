@@ -35,6 +35,9 @@ sourceSets {
         java {
             srcDir 'src'
         }
+        resources {
+            srcDir 'data'
+        }
     }
 }
 
@@ -45,7 +48,9 @@ jar {
 
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        sourceSets.main.output
     }
+
 
 }
 
