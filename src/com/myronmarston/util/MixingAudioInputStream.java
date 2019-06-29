@@ -41,6 +41,7 @@ package com.myronmarston.util;/*
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -92,69 +93,47 @@ public class MixingAudioInputStream
         }
     }
 
-    /**
-     * The maximum of the frame length of the input stream is calculated and
-     * returned. If at least one of the input streams has length
-     * <code>AudioInputStream.NOT_SPECIFIED</code>, this value is returned.
-     */
-    public long getFrameLength() {
-        long lLengthInFrames = 0;
-        Iterator streamIterator = m_audioInputStreamList.iterator();
-        while (streamIterator.hasNext()) {
-            AudioInputStream stream = (AudioInputStream) streamIterator.next();
-            long lLength = stream.getFrameLength();
-            if (lLength == AudioSystem.NOT_SPECIFIED) {
-                return AudioSystem.NOT_SPECIFIED;
-            } else {
-                lLengthInFrames = Math.max(lLengthInFrames, lLength);
-            }
-        }
-        return lLengthInFrames;
-    }
 
-    public int read()
-            throws IOException {
-        if (DEBUG) {
-            out("MixingAudioInputStream.read(): begin");
-        }
-        int nSample = 0;
-        int nCount = 0;
-        Iterator streamIterator = m_audioInputStreamList.iterator();
-        while (streamIterator.hasNext()) {
-            AudioInputStream stream = (AudioInputStream) streamIterator.next();
-            int nByte = stream.read();
-            if (nByte == -1) {
-                /*
-                 The end of this stream has been signaled.
-                 We remove the stream from our list.
-                 */
-                streamIterator.remove();
-                continue;
-            } else {
-                /*
-                 what about signed/unsigned?
-                 */
-                nSample += nByte;
-                nCount++;
-            }
-        }
-        nSample /= nCount;
-        if (DEBUG) {
-            out("MixingAudioInputStream.read(): end");
-        }
-        return (byte) (nSample & 0xFF);
-    }
+//    public int read()
+//            throws IOException {
+//        if (DEBUG) {
+//            out("MixingAudioInputStream.read(): begin");
+//        }
+//        int nSample = 0;
+//        Iterator streamIterator = m_audioInputStreamList.iterator();
+//        while (streamIterator.hasNext()) {
+//            AudioInputStream stream = (AudioInputStream) streamIterator.next();
+//            int nByte = stream.read();
+//            if (nByte == -1) {
+//                /*
+//                 The end of this stream has been signaled.
+//                 We remove the stream from our list.
+//                 */
+//                streamIterator.remove();
+//                continue;
+//            } else {
+//                /*
+//                 what about signed/unsigned?
+//                 */
+//                nSample += nByte;
+//            }
+//        }
+//        if (DEBUG) {
+//            out("MixingAudioInputStream.read(): end");
+//        }
+//        return (byte) ((nSample) & 0xFF);
+//    }
 
-    public void read(byte[] buffer1, byte[] buffer2) {
-        try {
-            read(buffer1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (int i = 0; i < buffer1.length; i++) {
-            buffer1[i] = (byte) (((buffer1[i] + buffer2[i])/2)& 0xFF);
-        }
-    }
+//    public void read(byte[] buffer1, byte[] buffer2) {
+//        try {
+//            read(buffer1);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        for (int i = 0; i < buffer1.length; i++) {
+//            buffer1[i] = (byte) (((buffer1[i] + buffer2[i])/2) & 0xFF);
+//        }
+//    }
 
     public int read(byte[] abData, int nOffset, int nLength)
             throws IOException {
@@ -189,7 +168,7 @@ public class MixingAudioInputStream
             }
             Iterator streamIterator = m_audioInputStreamList.iterator();
             while (streamIterator.hasNext()) {
-                AudioInputStream stream = (AudioInputStream) streamIterator.next();
+                InputStream stream = (InputStream) streamIterator.next();
                 if (DEBUG) {
                     out("MixingAudioInputStream.read(byte[], int, int): AudioInputStream: " + stream);
                 }
@@ -211,6 +190,7 @@ public class MixingAudioInputStream
                 for (int nChannel = 0; nChannel < nChannels; nChannel++) {
                     int nBufferOffset = nChannel * nSampleSize;
                     int nSampleToAdd = 0;
+
                     if (encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         switch (nSampleSize) {
                             case 1:
@@ -233,11 +213,41 @@ public class MixingAudioInputStream
                         nSampleToAdd = TConversionTool.ulaw2linear(abBuffer[nBufferOffset]);
                     }
                     anMixedSamples[nChannel] += nSampleToAdd;
+
                 } // loop over channels
             } // loop over streams
             if (DEBUG) {
                 out("MixingAudioInputStream.read(byte[], int, int): starting to write to buffer passed by caller");
             }
+//            for (int i = 0; i < buffer2.length; i += frameSize) {
+//                for (int nChannel = 0; nChannel < nChannels; nChannel++) {
+//                    int nBufferOffset = nChannel * nSampleSize;
+//                    int nSampleToAdd = 0;
+//                    if (encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
+//                        switch (nSampleSize) {
+//                            case 1:
+//                                nSampleToAdd = buffer2[nBufferOffset+i];
+//                                break;
+//                            case 2:
+//                                nSampleToAdd = TConversionTool.bytesToInt16(buffer2, nBufferOffset+i, bBigEndian);
+//                                break;
+//                            case 3:
+//                                nSampleToAdd = TConversionTool.bytesToInt24(buffer2, nBufferOffset+i, bBigEndian);
+//                                break;
+//                            case 4:
+//                                nSampleToAdd = TConversionTool.bytesToInt32(buffer2, nBufferOffset+i, bBigEndian);
+//                                break;
+//                        }
+//                    } // TODO: pcm unsigned
+//                    else if (encoding.equals(AudioFormat.Encoding.ALAW)) {
+//                        nSampleToAdd = TConversionTool.alaw2linear(buffer2[nBufferOffset+i]);
+//                    } else if (encoding.equals(AudioFormat.Encoding.ULAW)) {
+//                        nSampleToAdd = TConversionTool.ulaw2linear(buffer2[nBufferOffset+i]);
+//                    }
+//                    anMixedSamples[nChannel] += nSampleToAdd;
+//                } // loop over channels
+//            }
+
             for (int nChannel = 0; nChannel < nChannels; nChannel++) {
                 if (DEBUG) {
                     out("MixingAudioInputStream.read(byte[], int, int): channel: " + nChannel);
@@ -267,6 +277,7 @@ public class MixingAudioInputStream
                 } else if (encoding.equals(AudioFormat.Encoding.ULAW)) {
                     abData[nBufferOffset] = TConversionTool.linear2ulaw(anMixedSamples[nChannel]);
                 }
+
             } // (final) loop over channels
         } // loop over frames
         if (DEBUG) {
@@ -286,7 +297,7 @@ public class MixingAudioInputStream
             throws IOException {
         Iterator streamIterator = m_audioInputStreamList.iterator();
         while (streamIterator.hasNext()) {
-            AudioInputStream stream = (AudioInputStream) streamIterator.next();
+            InputStream stream = (InputStream) streamIterator.next();
             stream.skip(lLength);
         }
         return lLength;
@@ -301,7 +312,7 @@ public class MixingAudioInputStream
         int nAvailable = 0;
         Iterator streamIterator = m_audioInputStreamList.iterator();
         while (streamIterator.hasNext()) {
-            AudioInputStream stream = (AudioInputStream) streamIterator.next();
+            InputStream stream = (InputStream) streamIterator.next();
             nAvailable = Math.min(nAvailable, stream.available());
         }
         return nAvailable;
@@ -318,7 +329,7 @@ public class MixingAudioInputStream
     public void mark(int nReadLimit) {
         Iterator streamIterator = m_audioInputStreamList.iterator();
         while (streamIterator.hasNext()) {
-            AudioInputStream stream = (AudioInputStream) streamIterator.next();
+            InputStream stream = (InputStream) streamIterator.next();
             stream.mark(nReadLimit);
         }
     }
@@ -330,7 +341,7 @@ public class MixingAudioInputStream
             throws IOException {
         Iterator streamIterator = m_audioInputStreamList.iterator();
         while (streamIterator.hasNext()) {
-            AudioInputStream stream = (AudioInputStream) streamIterator.next();
+            InputStream stream = (InputStream) streamIterator.next();
             stream.reset();
         }
     }
@@ -341,7 +352,7 @@ public class MixingAudioInputStream
     public boolean markSupported() {
         Iterator streamIterator = m_audioInputStreamList.iterator();
         while (streamIterator.hasNext()) {
-            AudioInputStream stream = (AudioInputStream) streamIterator.next();
+            InputStream stream = (InputStream) streamIterator.next();
             if (!stream.markSupported()) {
                 return false;
             }

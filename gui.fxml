@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="386.0000999999975" prefWidth="590.999977929685" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <children>
+    <GridPane alignment="CENTER" gridLinesVisible="false" layoutX="14.0" layoutY="14.0" prefHeight="187.0" prefWidth="563.0">
+      <children>
+        <Slider id="midi-sl-1" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-1" mnemonicParsing="false" prefHeight="54.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-2" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-2" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-3" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-3" mnemonicParsing="false" text="" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-4" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-4" mnemonicParsing="false" text="" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-5" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-5" mnemonicParsing="false" text="" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-6" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-6" mnemonicParsing="false" text="" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-7" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-7" mnemonicParsing="false" text="" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-8" mnemonicParsing="false" text="" GridPane.columnIndex="7" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-8" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-9" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-9" mnemonicParsing="false" text="" GridPane.columnIndex="8" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-10" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="9" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-10" mnemonicParsing="false" text="" GridPane.columnIndex="9" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-11" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="10" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-11" mnemonicParsing="false" text="" GridPane.columnIndex="10" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-12" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="11" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-13" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="12" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-14" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="13" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-15" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="14" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-16" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="15" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-12" mnemonicParsing="false" text="" GridPane.columnIndex="11" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-13" mnemonicParsing="false" text="" GridPane.columnIndex="12" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-14" mnemonicParsing="false" text="" GridPane.columnIndex="13" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-15" mnemonicParsing="false" text="" GridPane.columnIndex="14" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-16" mnemonicParsing="false" text="" GridPane.columnIndex="15" GridPane.rowIndex="0" />
+      </children>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints maxHeight="90.0" minHeight="0.0" prefHeight="24.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="233.0" minHeight="10.0" prefHeight="161.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+    <GridPane gridLinesVisible="true" layoutX="14.0" layoutY="326.0" prefHeight="60.0" prefWidth="572.0">
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+    </GridPane>
+  </children>
+</AnchorPane>

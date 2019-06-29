@@ -28,7 +28,7 @@ public class Main {
 //                output.getSequencer()[2].drums.randomize();
 //                output.getSequencer().bassline1.randomize();
 //                output.getSequencer().bass2.randomize();
-        output.setVolume(1d);
+//        output.setVolume(1d);
         output.start();
         System.out.println("acid audio system started");
         try {

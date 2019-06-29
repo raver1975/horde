@@ -1,58 +1,27 @@
 package com.myronmarston.synth;
 
-import com.myronmarston.music.AudioFileCreator;
-import com.myronmarston.music.Instrument;
-import com.sun.media.sound.AudioSynthesizer;
-
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiEvent;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.ShortMessage;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.SourceDataLine;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class InstrumentSequencer extends Sequencer {
-    private final String inst;
-    private final SourceDataLine sourceDataLine;
-    AudioInputStream ais1;
-    ArrayList<Integer> noteOn = new ArrayList<Integer>();
-    private AudioSynthesizer audioSynthesizer = null;
+public class RhythmSequencer extends Sequencer{
+    public BasslineSynthesizer bass1;
     public BasslinePattern bassline1;
+    public RhythmSynthesizer drums;
     public int[][] rhythm;
+    public double bpm;
     private boolean shuffle;
     private int samplesPerSequencerUpdate;
     public int tick = 0;
     public int step = 0;
     private boolean sixteenth_note = true;
-    int channel = 0;
-    public static String[] channels = new String[16];
+
     private int patternLength = 16;
 
-    public InstrumentSequencer(int channel) {
-        this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel);
-    }
+    public RhythmSequencer(BasslineSynthesizer bass1, RhythmSynthesizer drums) {
+        this.bass1 = bass1;
+        this.drums = drums;
 
-    public InstrumentSequencer(String inst, int channel) {
-        this.inst = inst;
-        this.sourceDataLine = AudioFileCreator.getSourceDataLine();
         randomizeRhythm();
         randomizeSequence();
-        this.channel = channel;
-        System.out.println("inst:" + inst + "\tchannel:" + channel);
-        try {
-            audioSynthesizer = AudioFileCreator.getAudioSynthesizer();
-            int resolution = 16;
-            int channels = 2;
-            int frameSize = channels * resolution / 8;
-            int sampleRate = 44100;
-            AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, resolution, channels, frameSize, sampleRate, false);
-            ais1 = audioSynthesizer.openStream(audioFormat, new HashMap<String, Object>());
-        } catch (MidiUnavailableException e) {
-            e.printStackTrace();
-        }
     }
 
     public void randomizeRhythm() {
@@ -78,6 +47,7 @@ public class InstrumentSequencer extends Sequencer {
                 bassCoeffs[i] *= 2.0D;
             }
         }
+
         Markov markov = new Markov(null, 0.0D);
         markov.addKid(new Markov(Harmony.SCALE_MELODIC_MINOR, 2.0D));
         markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
@@ -93,41 +63,41 @@ public class InstrumentSequencer extends Sequencer {
                 (Integer) delayTimes.getKid().getContent());
     }
 
-
     public void tick() {
         if (this.tick == 0) {
             if (this.sixteenth_note) {
                 if ((!this.bassline1.pause[this.step])
                         && (this.bassline1.note[this.step] != -1)) {
-                    try {
-                        int pitch = this.bassline1.note[this.step] + 36 + (this.bassline1.isTransUp(this.step) ? 12 : 0) - (this.bassline1.isTransDown(this.step) ? 12 : 0);
-                        int vel = (int) ((this.bassline1.accent[this.step] ? 127 : 80) * vol);
-                        setChannel(channel);
-                        noteOn.add(pitch);
-//                        System.out.println(pitch + "\t" + vel);
-                        audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
-                    } catch (MidiUnavailableException e) {
-                        e.printStackTrace();
-                    } catch (InvalidMidiDataException e) {
-                        e.printStackTrace();
+                    this.bass1
+                            .noteOn(this.bassline1.note[this.step]
+                                            + 36
+                                            + (this.bassline1.isTransUp(this.step) ? 12
+                                            : 0)
+                                            - (this.bassline1.isTransDown(this.step) ? 12
+                                            : 0),
+                                    this.bassline1.accent[this.step] ? 127
+                                            : 80);
+                }
+                for (int ch = 0; ch < this.rhythm.length; ch++) {
+                    if (this.rhythm[ch][this.step] != 0) {
+                        int vol = 255;
+                        if ((this.step > 1) && (this.step < 15)
+                                && (this.rhythm[ch][(this.step - 1)] != 0)) {
+                            vol = (int) (vol * 0.66D);
+                        }
+                        if (this.step % 4 != 0)
+                            vol = (int) (vol * 0.66D);
+                        if (this.step % 2 != 0) {
+                            vol = (int) (vol * 0.66D);
+                        }
+                        this.drums.noteOn(ch + 32, vol);
                     }
-
                 }
                 if (this.shuffle)
                     setBpm(this.bpm);
             } else {
                 if (!this.bassline1.slide[this.step]) {
-                    for (int n : noteOn) {
-                        try {
-                            setChannel(channel);
-                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
-                        } catch (MidiUnavailableException e) {
-                            e.printStackTrace();
-                        } catch (InvalidMidiDataException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    noteOn.clear();
+                    this.bass1.noteOff();
                 }
 
                 this.step += 1;
@@ -144,23 +114,12 @@ public class InstrumentSequencer extends Sequencer {
         }
     }
 
-    private void setChannel(int channel) {
-        if (!inst.equals(channels[channel])) {
-            this.channel = channel;
-            channels[channel] = inst;
-            Instrument instrument = Instrument.getInstrument(inst);
-            MidiEvent programChangeMidiEvent = instrument.getProgramChangeMidiEvent(channel);
-            try {
-                audioSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
-            } catch (MidiUnavailableException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void setBpm(double value) {
         this.bpm = value;
-        this.samplesPerSequencerUpdate = (int) (Output.SAMPLE_RATE / (this.bpm / 60.0D) / 8.0D);
+        this.bass1.setBpm(value);
+        this.drums.setBpm(value);
+        this.samplesPerSequencerUpdate = (int) (Output.SAMPLE_RATE
+                / (this.bpm / 60.0D) / 8.0D);
 
         if (this.shuffle)
             if (this.step % 2 == 0)
@@ -209,20 +168,26 @@ public class InstrumentSequencer extends Sequencer {
                 prevNote = note;
                 note += transpose;
                 pattern.note[i] = (byte) note;
+
                 pattern.pause[i] = false;
+
                 if ((!pattern.pause[i])
                         && ((i == 0) || (!pattern.slide[(i - 1)]))) {
                     if (Math.random() * 6.0D < probability) {
                         pattern.accent[i] = true;
                     }
+
                 }
+
                 double noteTranspProb = 0.12D;
+
                 if ((Math.random() < noteTranspProb) && (note + transpose < 12)) {
                     pattern.transUp[i] = true;
                 } else if ((Math.random() < noteTranspProb)
                         && (note + transpose > -12)) {
                     pattern.transDown[i] = true;
                 }
+
                 while ((Math.random() * sustainWeight > weights[((i + 1) % weights.length)])
                         && (i < length)) {
                     pattern.slide[i] = true;
@@ -280,6 +245,7 @@ public class InstrumentSequencer extends Sequencer {
         int hat = (int) (Math.random() * hhTemplates.length);
         int[] hhTemplate = hhTemplates[hat];
         int[] ohTemplate = ohTemplates[hat];
+        int[] loopTemplate = loopTemplates[(int) (Math.random() * loopTemplates.length)];
 
         RhythmEvolver rc = new RhythmEvolver();
 
@@ -336,9 +302,9 @@ public class InstrumentSequencer extends Sequencer {
         return r;
     }
 
-    private interface SyncopationStrategy {
-        int[] execute(int[] paramArrayOfInt,
-                      double[] paramArrayOfDouble);
+    private static abstract interface SyncopationStrategy {
+        public abstract int[] execute(int[] paramArrayOfInt,
+                                      double[] paramArrayOfDouble);
     }
 
     private class Markov {
@@ -390,16 +356,16 @@ public class InstrumentSequencer extends Sequencer {
         }
 
         public int[] evolve(int[] beat, double[] weights) {
-            InstrumentSequencer.Markov strategies = new InstrumentSequencer.Markov(null,
+            RhythmSequencer.Markov strategies = new RhythmSequencer.Markov(null,
                     0.0D);
-            strategies.addKid(new InstrumentSequencer.Markov(new AdditionStrategy(),
+            strategies.addKid(new RhythmSequencer.Markov(new AdditionStrategy(),
                     1.0D));
-            strategies.addKid(new InstrumentSequencer.Markov(new AccentStrategy(),
+            strategies.addKid(new RhythmSequencer.Markov(new AccentStrategy(),
                     1.0D));
             strategies
-                    .addKid(new InstrumentSequencer.Markov(new MoveStrategy(), 1.0D));
+                    .addKid(new RhythmSequencer.Markov(new MoveStrategy(), 1.0D));
 
-            InstrumentSequencer.SyncopationStrategy ss = (InstrumentSequencer.SyncopationStrategy) strategies
+            RhythmSequencer.SyncopationStrategy ss = (RhythmSequencer.SyncopationStrategy) strategies
                     .getKid().getContent();
             ss.execute(beat, weights);
 
@@ -407,20 +373,20 @@ public class InstrumentSequencer extends Sequencer {
         }
 
         private class AccentStrategy implements
-                InstrumentSequencer.SyncopationStrategy {
+                RhythmSequencer.SyncopationStrategy {
             private AccentStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                InstrumentSequencer.Markov m = new InstrumentSequencer.Markov(null, 0.0D);
+                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 1) {
-                        m.addKid(new InstrumentSequencer.Markov(i,
+                        m.addKid(new RhythmSequencer.Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    InstrumentSequencer.Markov m2 = m.getKid();
+                    RhythmSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 2;
                 }
                 return source;
@@ -428,54 +394,54 @@ public class InstrumentSequencer extends Sequencer {
         }
 
         private class RemovalStrategy implements
-                InstrumentSequencer.SyncopationStrategy {
+                RhythmSequencer.SyncopationStrategy {
             private RemovalStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                InstrumentSequencer.Markov m = new InstrumentSequencer.Markov(null, 0.0D);
+                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] > 0) {
-                        m.addKid(new InstrumentSequencer.Markov(i,
+                        m.addKid(new RhythmSequencer.Markov(i,
                                 1.0D / weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    InstrumentSequencer.Markov m2 = m.getKid();
+                    RhythmSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 0;
                 }
                 return source;
             }
         }
 
-        private class MoveStrategy implements InstrumentSequencer.SyncopationStrategy {
+        private class MoveStrategy implements RhythmSequencer.SyncopationStrategy {
             private MoveStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                InstrumentSequencer.RhythmEvolver.RemovalStrategy remove = new InstrumentSequencer.RhythmEvolver.RemovalStrategy();
+                RhythmSequencer.RhythmEvolver.RemovalStrategy remove = new RhythmSequencer.RhythmEvolver.RemovalStrategy();
                 source = remove.execute(source, weights);
-                InstrumentSequencer.RhythmEvolver.AdditionStrategy add = new InstrumentSequencer.RhythmEvolver.AdditionStrategy();
+                RhythmSequencer.RhythmEvolver.AdditionStrategy add = new RhythmSequencer.RhythmEvolver.AdditionStrategy();
                 source = add.execute(source, weights);
                 return source;
             }
         }
 
         private class AdditionStrategy implements
-                InstrumentSequencer.SyncopationStrategy {
+                RhythmSequencer.SyncopationStrategy {
             private AdditionStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                InstrumentSequencer.Markov m = new InstrumentSequencer.Markov(null, 0.0D);
+                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 0) {
-                        m.addKid(new InstrumentSequencer.Markov(i,
+                        m.addKid(new RhythmSequencer.Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    InstrumentSequencer.Markov m2 = m.getKid();
+                    RhythmSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 1;
                 }
                 return source;

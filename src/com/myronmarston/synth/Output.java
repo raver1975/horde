@@ -2,16 +2,11 @@ package com.myronmarston.synth;
 
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.util.MixingAudioInputStream;
+
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.Line;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,29 +22,22 @@ public class Output implements Runnable {
     private MixingAudioInputStream mixingAudioInputStream;
     private Sequencer[] sequencer;
 
-    public static double volume = 1D;
     public static double SAMPLE_RATE = 44100;
-    private static final int BUFFER_SIZE = 16384;
-    private byte[] buffer = new byte[BUFFER_SIZE];
+    public static final int BUFFER_SIZE = 16384;
+    private byte[] buffer1 = new byte[BUFFER_SIZE];
     private byte[] buffer2 = new byte[BUFFER_SIZE];
+    private byte[] buffer3 = new byte[BUFFER_SIZE];
+    private byte[] buffer4 = new byte[BUFFER_SIZE];
+    private InputStream pin1 = new ByteArrayInputStream(buffer1);
+    private InputStream pin2 = new ByteArrayInputStream(buffer2);
+    private InputStream pin3 = new ByteArrayInputStream(buffer3);
+    private InputStream pin4 = new ByteArrayInputStream(buffer4);
     private static boolean running = false;
     private static Reverb reverb;
     private static Delay delay;
     private static boolean paused = false;
     private SourceDataLine sourceLine = null;
     private OutputStream audioWriter = null;
-
-    private double left = 0.0D;
-    private double right = 0.0D;
-
-    public static double getVolume() {
-        return volume;
-    }
-
-    public static void setVolume(double value) {
-        volume = value;
-    }
-
     public static Delay getDelay() {
         return delay;
     }
@@ -59,38 +47,52 @@ public class Output implements Runnable {
     }
 
     public Output() {
-        soundSystem();
+//        soundSystem();
         sourceLine = AudioFileCreator.getSourceDataLine();
         try {
             audioWriter = new BufferedOutputStream(new FileOutputStream("test.wav"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        tracks = new Synthesizer[Statics.drumsOn ? 2 : 1];
+        tracks = new Synthesizer[4];
         delay = new Delay();
         reverb = new Reverb();
-        ArrayList<AudioInputStream> streams = new ArrayList<AudioInputStream>();
-        this.sequencer = new Sequencer[3];
-        for (int it = 0; it < this.sequencer.length - 1; it++) {
+        ArrayList<InputStream> streams = new ArrayList<InputStream>();
+        this.sequencer = new Sequencer[16];
+        for (int it = 0; it < this.sequencer.length - 4; it++) {
             InstrumentSequencer its = new InstrumentSequencer(it);
             this.sequencer[it] = its;
             streams.add(its.ais1);
         }
+        streams.add(pin1);
+        streams.add(pin2);
+        streams.add(pin3);
+        streams.add(pin4);
         AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
         mixingAudioInputStream = new MixingAudioInputStream(audioFormat, streams);
         BasslineSynthesizer tb1 = new BasslineSynthesizer();
+        BasslineSynthesizer tb2 = new BasslineSynthesizer();
+        RhythmSynthesizer tr1 = new RhythmSynthesizer();
+        RhythmSynthesizer tr2 = new RhythmSynthesizer();
         tracks[0] = tb1;
-        RhythmSynthesizer tr = new RhythmSynthesizer();
-        if (Statics.drumsOn)
-            tracks[1] = tr;
-        this.sequencer[this.sequencer.length - 1] = new AcidSequencer(tb1, tr);
-        tb1.controlChange(39, 20);
-        tr.controlChange(39, 127);
+        tracks[1] = tb2;
+        tracks[2] = tr1;
+        tracks[3] = tr2;
+//        tracks[1] = tr;
+        this.sequencer[this.sequencer.length - 4] = new RhythmSequencer(tb1, tr1);
+        this.sequencer[this.sequencer.length - 3] = new RhythmSequencer(tb2, tr2);
+        this.sequencer[this.sequencer.length - 2] = new DrumSequencer(tb1, tr1);
+        this.sequencer[this.sequencer.length - 1] = new DrumSequencer(tb2, tr2);
+//        this.sequencer[this.sequencer.length - 1].setVolume(1f);
+        tb1.controlChange(39, 127);
+        tb2.controlChange(39, 127);
+        tr1.controlChange(39, 127);
+        tr2.controlChange(39, 127);
         thread = new Thread(this);
         thread.setPriority(10);
     }
 
-    private void soundSystem() {
+    /*private void soundSystem() {
         Mixer mixer = AudioSystem.getMixer(null); // default mixer
         try {
             mixer.open();
@@ -158,7 +160,7 @@ public class Output implements Runnable {
                 System.out.println("\ttarget:\t" + l.toString());
             }
         }
-    }
+    }*/
 
     public void start() {
         running = true;
@@ -187,6 +189,19 @@ public class Output implements Runnable {
     }
 
     public void run() {
+        double[] tmp = null;
+        double[] del = null;
+        double[] rev = null;
+        int sample_left_int1 = 0;
+        int sample_right_int1 = 0;
+        int sample_left_int2 = 0;
+        int sample_right_int2 = 0;
+        int sample_left_int3 = 0;
+        int sample_right_int3 = 0;
+        int sample_left_int4 = 0;
+        int sample_right_int4 = 0;
+
+        byte[] buffer5 = new byte[BUFFER_SIZE];
         while (running) {
             if (paused) {
                 try {
@@ -196,74 +211,92 @@ public class Output implements Runnable {
                 }
                 continue;
             }
-            for (int i = 0; i < buffer.length; i += 4) {
-
+            for (int i = 0; i < buffer1.length; i += 4) {
                 for (Sequencer sequencer : sequencer) {
                     sequencer.tick();
                 }
+                double right1 = 0.0D;
+                double left1 = right1 = 0;
+                double right2 = 0.0D;
+                double left2 = right2 = 0;
+                double right3 = 0.0D;
+                double left3 = right3 = 0;
+                double right4 = 0.0D;
+                double left4 = right4 = 0;
 
-                if (Statics.drumsOn) {
-                    double[] tmp = null;
-                    tmp = tracks[1].stereoOutput();
-                    delay.input(tmp[2]);
-                    reverb.input(tmp[3]);
-                    left = (left + tmp[0]) / 2;
-                    right = (right + tmp[1]) / 2;
-                }
-                if (Statics.synthOn) {
-                    double[] tmp = null;
-                    tmp = tracks[0].stereoOutput();
-                    delay.input(tmp[2]);
-                    reverb.input(tmp[3]);
-                    left = (left + tmp[0]) / 2;
-                    right = (right + tmp[1]) / 2;
-//                    tmp = tracks[1].stereoOutput();
-//                    delay.input(tmp[2]);
-//                    reverb.input(tmp[3]);
-//                    left += tmp[0];
-//                    right += tmp[1];
-                }
+                tmp = tracks[0].stereoOutput();
+                left1 += tmp[0];
+                right1 += tmp[1];
 
-                double[] del = delay.output();
-                left = (left+del[0])/2;
-                right = (right+del[1])/2;
+                tmp = tracks[1].stereoOutput();
+//                delay.input(tmp[2]);
+//                reverb.input(tmp[3]);
+                left2 += tmp[0];
+                right2 += tmp[1];
 
-                double[] rev = reverb.process();
-                left += (left+rev[0])/2;
-                right += (right+rev[1])/2;
+                tmp = tracks[2].stereoOutput();
+//                delay.input(tmp[2]);
+//                reverb.input(tmp[3]);
+                left3 += tmp[0];
+                right3 += tmp[1];
 
-
-                if (left > 1.0D) {
-                    left = 1.0D;
-                } else if (left < -1.0D)
-                    left = -1.0D;
-                if (right > 1.0D) {
-                    right = 1.0D;
-                } else if (right < -1.0D) {
-                    right = -1.0D;
-                }
-                int sample_left_int = (int) (left * 32767.0D * volume);
-                int sample_right_int = (int) (right * 32767.0D * volume);
+                tmp = tracks[3].stereoOutput();
+//                delay.input(tmp[2]);
+//                reverb.input(tmp[3]);
+                left4 += tmp[0];
+                right4 += tmp[1];
 
 
-                buffer[i] = ((byte) (sample_left_int & 0xFF));
-                buffer[(i + 1)] = ((byte) (sample_left_int >> 8 & 0xFF));
+//                del = delay.output();
+//                left2 += del[0];
+//                right2 += del[1];
+//
+//                rev = reverb.process();
+//                left2 += rev[0];
+//                right2 += rev[1];
 
-                buffer[(i + 2)] = ((byte) (sample_right_int & 0xFF));
-                buffer[(i + 3)] = ((byte) (sample_right_int >> 8 & 0xFF));
+                sample_left_int1 = (int) (left1 * 32767.0D * sequencer[sequencer.length - 1].getVolume());
+                sample_right_int1 = (int) (right1 * 32767.0D * sequencer[sequencer.length - 1].getVolume());
+                sample_left_int2 = (int) (left2 * 32767.0D * sequencer[sequencer.length - 2].getVolume());
+                sample_right_int2 = (int) (right2 * 32767.0D * sequencer[sequencer.length - 2].getVolume());
+                sample_left_int3 = (int) (left3 * 32767.0D * sequencer[sequencer.length - 3].getVolume());
+                sample_right_int3 = (int) (right3 * 32767.0D * sequencer[sequencer.length - 3].getVolume());
+                sample_left_int4 = (int) (left4 * 32767.0D * sequencer[sequencer.length - 4].getVolume());
+                sample_right_int4 = (int) (right4 * 32767.0D * sequencer[sequencer.length - 4].getVolume());
+
+                buffer1[i] = ((byte) (sample_left_int1 & 0xFF));
+                buffer1[(i + 1)] = ((byte) (sample_left_int1 >> 8 & 0xFF));
+                buffer1[(i + 2)] = ((byte) (sample_right_int1 & 0xFF));
+                buffer1[(i + 3)] = ((byte) (sample_right_int1 >> 8 & 0xFF));
+
+                buffer2[i] = ((byte) (sample_left_int2 & 0xFF));
+                buffer2[(i + 1)] = ((byte) (sample_left_int2 >> 8 & 0xFF));
+                buffer2[(i + 2)] = ((byte) (sample_right_int2 & 0xFF));
+                buffer2[(i + 3)] = ((byte) (sample_right_int2 >> 8 & 0xFF));
+
+                buffer3[i] = ((byte) (sample_left_int3 & 0xFF));
+                buffer3[(i + 1)] = ((byte) (sample_left_int3 >> 8 & 0xFF));
+                buffer3[(i + 2)] = ((byte) (sample_right_int3 & 0xFF));
+                buffer3[(i + 3)] = ((byte) (sample_right_int3 >> 8 & 0xFF));
+
+                buffer4[i] = ((byte) (sample_left_int4 & 0xFF));
+                buffer4[(i + 1)] = ((byte) (sample_left_int4 >> 8 & 0xFF));
+                buffer4[(i + 2)] = ((byte) (sample_right_int4 & 0xFF));
+                buffer4[(i + 3)] = ((byte) (sample_right_int4 >> 8 & 0xFF));
             }
-            mixingAudioInputStream.read(buffer2, buffer);
-
-            sourceLine.write(buffer, 0, BUFFER_SIZE);
             try {
-                audioWriter.write(buffer);
+                pin1.reset();
+                pin2.reset();
+                pin3.reset();
+                pin4.reset();
+                mixingAudioInputStream.read(buffer5);
+                audioWriter.write(buffer5);
+                sourceLine.write(buffer5, 0, BUFFER_SIZE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
         dispose();
-
     }
 
     public void dispose() {

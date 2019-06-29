@@ -78,18 +78,16 @@ public class BasslineSynthesizer
     public void randomize() {
         if (Math.random() > 0.5D) {
             this.osc.setWavetable(WAVETABLE_SQUARE);
-            Statics.waveSquare = true;
         } else {
             this.osc.setWavetable(WAVETABLE_SAW);
-            Statics.waveSquare = false;
         }
         cutoff.setValue(Math.random() * 3866.0D + 100.0D);
         resonance.setValue(Math.random());
-//     if (Math.random() > 0.66D)
-//       controlChange(39, (int)(64.0D + Math.random() * 63.0D));
-//     else {
-//       controlChange(39, 63);
-//     }
+     if (Math.random() > 0.66D)
+       controlChange(39, (int)(64.0D + Math.random() * 63.0D));
+     else {
+       controlChange(39, 63);
+     }
         this.envMod = Math.random();
         this.decay = (Math.random() * 19.875D + 0.125D);
         this.accent = (Math.random() * 0.5D + Math.random() * 0.2D);
@@ -109,7 +107,7 @@ public class BasslineSynthesizer
     }
 
     public final double monoOutput() {
-        return this.decimator.calc(monoOutputI(), monoOutputI());
+        return this.decimator.calc(monoOutputI(), monoOutputI()) * vol_i;
     }
 
     public final double monoOutputI() {
@@ -126,18 +124,18 @@ public class BasslineSynthesizer
             }
 
             this.out = (this.distortion.distort(this.filter.filter(this.osc.tick() * this.aeg.tick())) * 1.66D);
-            return this.out * vol_i;
+            return this.out;
         }
 
         return 0.0D;
     }
 
     public double getAux1() {
-        return this.out * this.aux1Amt;
+        return this.out * this.aux1Amt * vol_i;
     }
 
     public double getAux2() {
-        return this.out * this.aux2Amt;
+        return this.out * this.aux2Amt * vol_i;
     }
 
     public void setBpm(double bpm) {
@@ -150,13 +148,11 @@ public class BasslineSynthesizer
         return new double[]{tmp, tmp, this.out * this.aux1Amt, this.out * this.aux2Amt};
     }
 
-    public void switchWaveform() {
-        if (this.osc.getWavetable() == WAVETABLE_SAW) {
+    public void setWaveform(boolean waveSqure) {
+        if (waveSqure) {
             this.osc.setWavetable(WAVETABLE_SQUARE);
-            Statics.waveSquare = true;
         } else {
             this.osc.setWavetable(WAVETABLE_SAW);
-            Statics.waveSquare = false;
         }
     }
 
@@ -167,44 +163,44 @@ public class BasslineSynthesizer
     public void controlChange(int controller, int value) {
 
         switch (controller) {
-            case 34: //cutoff
+            case MSG_CC_CUTOFF: //cutoff
                 double newValue = value / 127.0D * 4800.0D + 200.0D;
                 if (newValue > 0d && newValue < 4000d) {
                     this.cutoff.setValue(newValue);
                 }
                 break;
-            case 35: //resonance
+            case MSG_CC_RESONANCE: //resonance
                 newValue = value / 127.0D;
                 if (newValue > -.2d && newValue <= 1.0d) {
                     this.resonance.setValue(newValue);
                 }
                 break;
-            case 36: //envelop
+            case MSG_CC_ENVMOD: //envelop
                 newValue = value / 127.0D;
                 if (newValue > -.2d && newValue <= 1.3d) {
                     this.envMod = (newValue);
                 }
                 break;
-            case 33:  //tune
+            case MSG_CC_TUNE:  //tune
                 newValue = value / 127.0F * 2.0F - 1.0F;
                 if (newValue > -0.9d && newValue < 4d) {
                     this.tune = Math.pow(2.0D, newValue);
                     this.osc.setFrequency(this.frequency * this.tune);
                 }
                 break;
-            case 37:  //decay
+            case MSG_CC_DECAY:  //decay
                 newValue = 1.0D - value / 127.0D;
                 if (newValue > 0d && newValue < 1d) {
                     this.decay = (newValue * 19.875D + 0.125D);
                     this.feg.setDecay(this.decay);
                 }
                 break;
-            case 39:  // volume
+            case MSG_CC_VOLUME:  // volume
                 newValue = value / 127.0D;
                 if (newValue >= 0d && newValue <= 2d) {
 //                    Output.setVolume((value / 127.0D));
                     this.vol_i = newValue;
-                    System.out.println("bassline volume set to:"+vol_i);
+                    System.out.println("bassline volume set to:" + vol_i);
                     if (this.vol_i > 1.0D) {
                         this.distortion.setGain(1.0D / ((this.vol_i - 1.0D) * 50.0D + 1.0D));
                         this.vol_i = 1.0D;
@@ -213,7 +209,7 @@ public class BasslineSynthesizer
                     }
                 }
                 break;
-            case 38:
+            case MSG_CC_ACCENT:
                 newValue = value / 127.0D;
                 if (newValue >= 0d && newValue <= 1d) {
                     this.accent = (newValue);

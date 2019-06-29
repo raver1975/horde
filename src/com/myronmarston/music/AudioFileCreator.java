@@ -19,6 +19,7 @@
 
 package com.myronmarston.music;
 
+import com.myronmarston.synth.Output;
 import com.myronmarston.util.FileHelper;
 import com.sun.media.sound.AudioSynthesizer;
 import org.tritonus.share.sampled.*;
@@ -79,7 +80,7 @@ public class AudioFileCreator {
 //        DataLine.Info info = new DataLine.Info(TargetDataLine.class, audioFormat);
         try {
             res = AudioSystem.getTargetDataLine(audioFormat);
-            res.open(audioFormat,16384);
+            res.open(audioFormat,Output.BUFFER_SIZE);
             res.start();
         } catch (LineUnavailableException e) {
             e.printStackTrace();
@@ -97,7 +98,7 @@ public class AudioFileCreator {
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
         try {
             res = AudioSystem.getSourceDataLine(audioFormat);
-            res.open(audioFormat,16384);
+            res.open(audioFormat, Output.BUFFER_SIZE);
             res.start();
         } catch (LineUnavailableException e) {
             e.printStackTrace();

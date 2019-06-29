@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
 }
 
 group 'com.klemstinegroup'
@@ -17,10 +18,16 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.simpleframework', name: 'simple-xml', version: '2.7.1'
     compile group: 'com.googlecode.soundlibs', name: 'tritonus-share', version: '0.3.7.4'
+    implementation 'org.openjfx:javafx:12.0.1'
+}
+
+javafx {
+    version = "12.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml' ,'javafx.base', 'javafx.graphics','javafx.media','javafx.swing','javafx.web']
 }
 
 application {
-    mainClassName = 'com.myronmarston.Main'
+    mainClassName = 'com.myronmarston.JavafxSample'
 }
 
 sourceSets {

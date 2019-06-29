@@ -82,8 +82,8 @@ public class RhythmSynthesizer
     private double aux2Amt;
     private boolean is808BassDrum;
     private boolean is808SnareDrum;
-    double left;
-    double right;
+    private double left;
+    private double right;
     private double vol_i = 1f;
 
     public RhythmSynthesizer() {
