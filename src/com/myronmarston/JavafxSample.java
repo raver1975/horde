@@ -1,11 +1,17 @@
 package com.myronmarston;
 
+import com.myronmarston.music.Instrument;
+import com.myronmarston.synth.InstrumentSequencer;
 import com.myronmarston.synth.Output;
 import com.myronmarston.synth.Sequencer;
+import com.sun.tools.javac.jvm.Items;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +21,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
@@ -22,6 +29,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class JavafxSample extends Application {
     @Override
@@ -108,7 +116,7 @@ public class JavafxSample extends Application {
                 public void handle(ActionEvent event) {
                     output.getSequencer()[finalI].randomizeSequence();
                     output.getSequencer()[finalI].randomizeRhythm();
-                    System.out.println("shuffle clicked:"+(finalI+1));
+                    System.out.println("shuffle clicked:" + (finalI + 1));
                 }
             });
             GridPane.setFillWidth(shuffleButton, true);
@@ -119,6 +127,36 @@ public class JavafxSample extends Application {
             onButton.setSelected(false);
 
         }
+        ArrayList<String> arr = new ArrayList<String>();
+        ObservableList<String> observableList = FXCollections.observableList(arr);
+        observableList.addAll(Instrument.AVAILABLE_INSTRUMENTS);
+        for (int i = 0; i < 12; i++) {
+
+            final ChoiceBox cb = (ChoiceBox) scene.lookup("#midi-instrument-" + (i + 1));
+            if (i == 9) {
+                cb.setVisible(false);
+                continue;
+            }
+            System.out.println(cb);
+            cb.setItems(observableList);
+            cb.getSelectionModel().select(((InstrumentSequencer) output.getSequencer()[i]).getInstrument());
+            cb.setMinWidth(100d);
+//            cb.setPrefWidth(Double.POSITIVE_INFINITY);
+//            GridPane.setFillWidth(cb, true);
+//            GridPane.setFillHeight(cb, true);
+            GridPane.setHalignment(cb, HPos.CENTER);
+            GridPane.setValignment(cb, VPos.CENTER);
+            final int finalI = i;
+            cb.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    ((InstrumentSequencer) output.getSequencer()[finalI]).instrument = (String) cb.getItems().get(newValue.intValue());
+                    ((InstrumentSequencer) output.getSequencer()[finalI]).setChannel();
+                    System.out.println("changing to instrument:" + cb.getSelectionModel().getSelectedItem().toString() + "\t" + "on channel:" + ((InstrumentSequencer) output.getSequencer()[finalI]).channel);
+                }
+            });
+        }
+
         primaryStage.setScene(scene);
         primaryStage.show();
 

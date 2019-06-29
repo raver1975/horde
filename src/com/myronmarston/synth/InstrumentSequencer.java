@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InstrumentSequencer extends Sequencer {
-    private final String inst;
+    public String instrument;
     AudioInputStream ais1;
     private ArrayList<Integer> noteOn = new ArrayList<Integer>();
     private AudioSynthesizer audioSynthesizer = null;
@@ -25,7 +25,7 @@ public class InstrumentSequencer extends Sequencer {
     public int tick = 0;
     public int step = 0;
     private boolean sixteenth_note = true;
-    private int channel = 0;
+    public int channel = 0;
     private static String[] channels = new String[16];
     private int patternLength = 16;
 
@@ -33,12 +33,16 @@ public class InstrumentSequencer extends Sequencer {
         this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel);
     }
 
+    public String getInstrument() {
+        return instrument;
+    }
+
     private InstrumentSequencer(String inst, int channel) {
-        this.inst = inst;
+        this.instrument = inst;
         randomizeRhythm();
         randomizeSequence();
         this.channel = channel;
-        System.out.println("inst:" + inst + "\tchannel:" + channel);
+        System.out.println("instrument:" + inst + "\tchannel:" + channel);
         try {
             audioSynthesizer = AudioFileCreator.getAudioSynthesizer();
             int resolution = 16;
@@ -141,11 +145,15 @@ public class InstrumentSequencer extends Sequencer {
         }
     }
 
-    private void setChannel(int channel) {
-        if (!inst.equals(channels[channel])) {
+    public void setChannel(){
+        setChannel(channel);
+    }
+
+    public void setChannel(int channel) {
+        if (!instrument.equals(channels[channel])) {
             this.channel = channel;
-            channels[channel] = inst;
-            Instrument instrument = Instrument.getInstrument(inst);
+            channels[channel] = instrument;
+            Instrument instrument = Instrument.getInstrument(this.instrument);
             MidiEvent programChangeMidiEvent = instrument.getProgramChangeMidiEvent(channel);
             try {
                 audioSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
