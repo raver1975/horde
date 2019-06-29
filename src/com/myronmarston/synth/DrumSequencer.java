@@ -2,11 +2,9 @@ package com.myronmarston.synth;
 
 import java.util.ArrayList;
 
-public class DrumSequencer extends Sequencer{
-    private BasslineSynthesizer bass1;
-    private BasslinePattern bassline1;
-    private RhythmSynthesizer drums;
-    private int[][] rhythm;
+public class RhythmSequencer extends Sequencer {
+    public RhythmSynthesizer synth;
+    private int[][] drums;
     private double bpm;
     private boolean shuffle;
     private int samplesPerSequencerUpdate;
@@ -14,45 +12,18 @@ public class DrumSequencer extends Sequencer{
     public int step = 0;
     private boolean sixteenth_note = true;
 
-    private int patternLength = 16;
-
-    DrumSequencer(BasslineSynthesizer bass1, RhythmSynthesizer drums) {
-        this.bass1 = bass1;
-        this.drums = drums;
-
+    RhythmSequencer(RhythmSynthesizer drums) {
+        this.synth = drums;
         randomizeRhythm();
         randomizeSequence();
     }
 
     private void randomizeRhythm() {
-        this.rhythm = createRhythm(this.patternLength);
+        int patternLength = 16;
+        this.drums = createRhythm(patternLength);
     }
 
     public void randomizeSequence() {
-        double[] basicCoeffs = {0.5D, 0.5D, 0.5D, 0.5D};
-        double[] bassCoeffs = new double[16];
-        boolean preferBassDrum = Math.random() > 0.5D;
-        boolean preferSnareDrum = Math.random() > 0.5D;
-        if ((!preferBassDrum) && (!preferSnareDrum)) {
-            preferBassDrum = preferSnareDrum = true;
-        }
-        for (int i = 0; i < this.rhythm[0].length; i++) {
-            bassCoeffs[i] = basicCoeffs[(i % 4)];
-            if (((this.rhythm[0][i] > 0) && (preferBassDrum))
-                    || ((preferSnareDrum) && ((this.rhythm[1][i] > 0) || (this.rhythm[4][i] > 0))))
-                bassCoeffs[i] *= 4.0D;
-            if (this.rhythm[3][i] > 0)
-                bassCoeffs[i] *= 2.0D;
-            if (this.rhythm[4][i] > 0) {
-                bassCoeffs[i] *= 2.0D;
-            }
-        }
-
-        Markov markov = new Markov(null, 0.0D);
-        markov.addKid(new Markov(Harmony.SCALE_MELODIC_MINOR, 2.0D));
-        markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
-        markov.addKid(new Markov(Harmony.SCALE_HUNGARIAN_MINOR, 0.5D));
-        this.bassline1 = createBassline(this.patternLength, (int[]) (int[]) markov.getKid().getContent(), bassCoeffs);
         Markov delayTimes = new Markov(null, 0.0D);
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 2, 0.5D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 3, 2.0D));
@@ -66,23 +37,11 @@ public class DrumSequencer extends Sequencer{
     public void tick() {
         if (this.tick == 0) {
             if (this.sixteenth_note) {
-                if ((!this.bassline1.pause[this.step])
-                        && (this.bassline1.note[this.step] != -1)) {
-                    this.bass1
-                            .noteOn(this.bassline1.note[this.step]
-                                            + 36
-                                            + (this.bassline1.isTransUp(this.step) ? 12
-                                            : 0)
-                                            - (this.bassline1.isTransDown(this.step) ? 12
-                                            : 0),
-                                    this.bassline1.accent[this.step] ? 127
-                                            : 80);
-                }
-                for (int ch = 0; ch < this.rhythm.length; ch++) {
-                    if (this.rhythm[ch][this.step] != 0) {
+                for (int ch = 0; ch < this.drums.length; ch++) {
+                    if (this.drums[ch][this.step] != 0) {
                         int vol = 255;
                         if ((this.step > 1) && (this.step < 15)
-                                && (this.rhythm[ch][(this.step - 1)] != 0)) {
+                                && (this.drums[ch][(this.step - 1)] != 0)) {
                             vol = (int) (vol * 0.66D);
                         }
                         if (this.step % 4 != 0)
@@ -90,23 +49,17 @@ public class DrumSequencer extends Sequencer{
                         if (this.step % 2 != 0) {
                             vol = (int) (vol * 0.66D);
                         }
-                        this.drums.noteOn(ch + 32, vol);
+                        this.synth.noteOn(ch + 32, vol);
                     }
                 }
                 if (this.shuffle)
                     setBpm(this.bpm);
             } else {
-                if (!this.bassline1.slide[this.step]) {
-                    this.bass1.noteOff();
-                }
-
                 this.step += 1;
             }
             this.sixteenth_note = (!this.sixteenth_note);
         }
-
         this.tick += 1;
-
         if (this.tick >= this.samplesPerSequencerUpdate) {
             this.tick = 0;
             if (this.step == 16)
@@ -116,11 +69,8 @@ public class DrumSequencer extends Sequencer{
 
     public void setBpm(double value) {
         this.bpm = value;
-        this.bass1.setBpm(value);
-        this.drums.setBpm(value);
-        this.samplesPerSequencerUpdate = (int) (Output.SAMPLE_RATE
-                / (this.bpm / 60.0D) / 8.0D);
-
+        this.synth.setBpm(value);
+        this.samplesPerSequencerUpdate = (int) (Output.SAMPLE_RATE / (this.bpm / 60.0D) / 8.0D);
         if (this.shuffle)
             if (this.step % 2 == 0)
                 this.samplesPerSequencerUpdate += (int) (this.samplesPerSequencerUpdate * 0.33D);
@@ -128,36 +78,29 @@ public class DrumSequencer extends Sequencer{
                 this.samplesPerSequencerUpdate -= (int) (this.samplesPerSequencerUpdate * 0.33D);
     }
 
-    private BasslinePattern createBassline(int length, int[] scale,
-                                           double[] weights) {
+    public BasslinePattern createBassline(int length, int[] scale, double[] weights) {
         BasslinePattern pattern = new BasslinePattern(length);
         pattern.clear();
         int prevNote = 0;
         int transpose = (int) (Math.random() * 12.0D - 12.0D);
-
         double sustainWeight = Math.random() * 3.0D + 0.5D;
         double noteProb = Math.random() * 3.0D + 0.5D;
-
         for (int i = 0; i < length; i++) {
             double probability = weights[(i % weights.length)];
-
             if (Math.random() * noteProb < probability) {
                 Markov m = new Markov(null, 0.0D);
-
-                for (int value : scale) {
+                for (int j = 0; j < scale.length; j++) {
                     int prob = 1;
-                    if (value == 0)
+                    if (scale[j] == 0)
                         prob *= 2;
-                    if (value == prevNote)
+                    if (scale[j] == prevNote)
                         prob *= 3;
-                    if ((value == prevNote - 1)
-                            || (value == prevNote + 2))
+                    if ((scale[j] == prevNote - 1)
+                            || (scale[j] == prevNote + 2))
                         prob *= 2;
-                    m.addKid(new Markov(value, prob));
+                    m.addKid(new Markov(scale[j], prob));
                 }
-
                 int note = (Integer) m.getKid().getContent();
-
                 if ((Math.abs(note - prevNote) > 7) && (Math.random() > 0.5D)) {
                     if (prevNote > note)
                         note += 12;
@@ -168,9 +111,7 @@ public class DrumSequencer extends Sequencer{
                 prevNote = note;
                 note += transpose;
                 pattern.note[i] = (byte) note;
-
                 pattern.pause[i] = false;
-
                 if ((!pattern.pause[i])
                         && ((i == 0) || (!pattern.slide[(i - 1)]))) {
                     if (Math.random() * 6.0D < probability) {
@@ -178,16 +119,13 @@ public class DrumSequencer extends Sequencer{
                     }
 
                 }
-
                 double noteTranspProb = 0.12D;
-
                 if ((Math.random() < noteTranspProb) && (note + transpose < 12)) {
                     pattern.transUp[i] = true;
                 } else if ((Math.random() < noteTranspProb)
                         && (note + transpose > -12)) {
                     pattern.transDown[i] = true;
                 }
-
                 while ((Math.random() * sustainWeight > weights[((i + 1) % weights.length)])
                         && (i < length)) {
                     pattern.slide[i] = true;
@@ -200,12 +138,10 @@ public class DrumSequencer extends Sequencer{
                     }
                     i++;
                 }
-
             } else {
                 pattern.pause[i] = true;
             }
         }
-
         return pattern;
     }
 
@@ -354,16 +290,16 @@ public class DrumSequencer extends Sequencer{
         }
 
         int[] evolve(int[] beat, double[] weights) {
-            Markov strategies = new Markov(null,
+            RhythmSequencer.Markov strategies = new RhythmSequencer.Markov(null,
                     0.0D);
-            strategies.addKid(new Markov(new AdditionStrategy(),
+            strategies.addKid(new RhythmSequencer.Markov(new AdditionStrategy(),
                     1.0D));
-            strategies.addKid(new Markov(new AccentStrategy(),
+            strategies.addKid(new RhythmSequencer.Markov(new AccentStrategy(),
                     1.0D));
             strategies
-                    .addKid(new Markov(new MoveStrategy(), 1.0D));
+                    .addKid(new RhythmSequencer.Markov(new MoveStrategy(), 1.0D));
 
-            SyncopationStrategy ss = (SyncopationStrategy) strategies
+            RhythmSequencer.SyncopationStrategy ss = (RhythmSequencer.SyncopationStrategy) strategies
                     .getKid().getContent();
             ss.execute(beat, weights);
 
@@ -371,20 +307,20 @@ public class DrumSequencer extends Sequencer{
         }
 
         private class AccentStrategy implements
-                SyncopationStrategy {
+                RhythmSequencer.SyncopationStrategy {
             private AccentStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                Markov m = new Markov(null, 0.0D);
+                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 1) {
-                        m.addKid(new Markov(i,
+                        m.addKid(new RhythmSequencer.Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    Markov m2 = m.getKid();
+                    RhythmSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 2;
                 }
                 return source;
@@ -392,54 +328,54 @@ public class DrumSequencer extends Sequencer{
         }
 
         private class RemovalStrategy implements
-                SyncopationStrategy {
+                RhythmSequencer.SyncopationStrategy {
             private RemovalStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                Markov m = new Markov(null, 0.0D);
+                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] > 0) {
-                        m.addKid(new Markov(i,
+                        m.addKid(new RhythmSequencer.Markov(i,
                                 1.0D / weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    Markov m2 = m.getKid();
+                    RhythmSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 0;
                 }
                 return source;
             }
         }
 
-        private class MoveStrategy implements SyncopationStrategy {
+        private class MoveStrategy implements RhythmSequencer.SyncopationStrategy {
             private MoveStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                RhythmEvolver.RemovalStrategy remove = new RhythmEvolver.RemovalStrategy();
+                RhythmSequencer.RhythmEvolver.RemovalStrategy remove = new RhythmSequencer.RhythmEvolver.RemovalStrategy();
                 source = remove.execute(source, weights);
-                RhythmEvolver.AdditionStrategy add = new RhythmEvolver.AdditionStrategy();
+                RhythmSequencer.RhythmEvolver.AdditionStrategy add = new RhythmSequencer.RhythmEvolver.AdditionStrategy();
                 source = add.execute(source, weights);
                 return source;
             }
         }
 
         private class AdditionStrategy implements
-                SyncopationStrategy {
+                RhythmSequencer.SyncopationStrategy {
             private AdditionStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                Markov m = new Markov(null, 0.0D);
+                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 0) {
-                        m.addKid(new Markov(i,
+                        m.addKid(new RhythmSequencer.Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    Markov m2 = m.getKid();
+                    RhythmSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 1;
                 }
                 return source;
