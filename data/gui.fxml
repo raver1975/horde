@@ -12,7 +12,6 @@
     <GridPane alignment="CENTER" gridLinesVisible="false" layoutX="14.0" layoutY="13.0" prefHeight="446.0001220703125" prefWidth="563.0">
       <children>
         <Slider id="midi-sl-1" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <ToggleButton id="midi-bt-1" mnemonicParsing="false" prefHeight="54.0" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
         <Slider id="midi-sl-2" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <ToggleButton id="midi-bt-2" mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
         <Slider id="midi-sl-3" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
@@ -167,6 +166,7 @@
             </FXCollections>
           </items>
         </ChoiceBox>
+        <ToggleButton id="midi-bt-1" mnemonicParsing="false" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -187,11 +187,11 @@
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       </columnConstraints>
       <rowConstraints>
-        <RowConstraints maxHeight="90.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="233.0" minHeight="10.0" prefHeight="221.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="233.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="233.0" minHeight="0.0" prefHeight="131.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="233.0" minHeight="0.0" prefHeight="38.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="102.0" minHeight="0.0" prefHeight="52.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="234.0" minHeight="10.0" prefHeight="203.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="233.0" minHeight="0.0" prefHeight="81.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="233.0" minHeight="0.0" prefHeight="88.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="233.0" minHeight="0.0" prefHeight="23.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
   </children>

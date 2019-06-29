@@ -26,6 +26,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -56,15 +57,14 @@ public class JavafxSample extends Application {
 
         //Displaying the contents of the stage
         primaryStage.show();*/
-        Parent root =null;
+        Parent root = null;
         try {
-           root=FXMLLoader.load(new File("data/gui.fxml").toURL());
-       }
-       catch(FileNotFoundException e){
-           ClassLoader cl = Resources.class.getClassLoader();
-           URL url = this.getClass().getClassLoader().getResource("gui.fxml");
-           root=FXMLLoader.load(url);
-       }
+            root = FXMLLoader.load(new File("data/gui.fxml").toURL());
+        } catch (FileNotFoundException e) {
+            ClassLoader cl = Resources.class.getClassLoader();
+            URL url = this.getClass().getClassLoader().getResource("gui.fxml");
+            root = FXMLLoader.load(url);
+        }
 
         Scene scene = new Scene(root);
 
@@ -107,6 +107,8 @@ public class JavafxSample extends Application {
             slider.setValue(63);
             GridPane.setFillHeight(slider, true);
             GridPane.setHalignment(slider, HPos.CENTER);
+            onButton.setFont(new Font(shuffleButton.getFont().getName(), 16));
+            onButton.setText("");
             onButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -130,7 +132,8 @@ public class JavafxSample extends Application {
                     System.out.println("shuffle clicked:" + (finalI + 1));
                 }
             });
-            shuffleButton.setText("*");
+            shuffleButton.setFont(new Font(shuffleButton.getFont().getName(), 16));
+            shuffleButton.setText("\u21BB");
             GridPane.setFillWidth(shuffleButton, true);
             GridPane.setFillHeight(shuffleButton, true);
             GridPane.setHalignment(shuffleButton, HPos.CENTER);
