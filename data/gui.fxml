@@ -9,7 +9,7 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="473.0000999999975" prefWidth="623.999977929685" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
   <children>
-    <GridPane alignment="CENTER" gridLinesVisible="false" layoutX="14.0" layoutY="13.0" prefHeight="446.0001220703125" prefWidth="563.0">
+    <GridPane alignment="CENTER" gridLinesVisible="false" layoutX="13.0" layoutY="13.0" prefHeight="446.0001220703125" prefWidth="563.0">
       <children>
         <Slider id="midi-sl-1" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <Slider id="midi-sl-2" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -28,20 +28,20 @@
         <Slider id="midi-sl-8" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
         <Slider id="midi-sl-9" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="8" GridPane.rowIndex="1" />
         <ToggleButton id="midi-bt-9" mnemonicParsing="false" text="" GridPane.columnIndex="8" GridPane.rowIndex="0" />
-        <Slider id="midi-sl-10" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="9" GridPane.rowIndex="1" />
-        <ToggleButton id="midi-bt-10" mnemonicParsing="false" text="" GridPane.columnIndex="9" GridPane.rowIndex="0" />
-        <Slider id="midi-sl-11" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="10" GridPane.rowIndex="1" />
-        <ToggleButton id="midi-bt-11" mnemonicParsing="false" text="" GridPane.columnIndex="10" GridPane.rowIndex="0" />
-        <Slider id="midi-sl-12" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="11" GridPane.rowIndex="1" />
-        <Slider id="midi-sl-13" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="12" GridPane.rowIndex="1" />
-        <Slider id="midi-sl-14" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="13" GridPane.rowIndex="1" />
-        <Slider id="midi-sl-15" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="14" GridPane.rowIndex="1" />
-        <Slider id="midi-sl-16" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="15" GridPane.rowIndex="1" />
-        <ToggleButton id="midi-bt-12" mnemonicParsing="false" text="" GridPane.columnIndex="11" GridPane.rowIndex="0" />
-        <ToggleButton id="midi-bt-13" mnemonicParsing="false" text="" GridPane.columnIndex="12" GridPane.rowIndex="0" />
-        <ToggleButton id="midi-bt-14" mnemonicParsing="false" text="" GridPane.columnIndex="13" GridPane.rowIndex="0" />
-        <ToggleButton id="midi-bt-15" mnemonicParsing="false" text="" GridPane.columnIndex="14" GridPane.rowIndex="0" />
-        <ToggleButton id="midi-bt-16" mnemonicParsing="false" text="" GridPane.columnIndex="15" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-11" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="9" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-11" mnemonicParsing="false" text="" GridPane.columnIndex="9" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-12" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="10" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-12" mnemonicParsing="false" text="" GridPane.columnIndex="10" GridPane.rowIndex="0" />
+        <Slider id="midi-sl-13" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="11" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-14" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="12" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-15" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="13" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-16" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="14" GridPane.rowIndex="1" />
+        <Slider id="midi-sl-10" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="15" GridPane.rowIndex="1" />
+        <ToggleButton id="midi-bt-13" mnemonicParsing="false" text="" GridPane.columnIndex="11" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-14" mnemonicParsing="false" text="" GridPane.columnIndex="12" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-15" mnemonicParsing="false" text="" GridPane.columnIndex="13" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-16" mnemonicParsing="false" text="" GridPane.columnIndex="14" GridPane.rowIndex="0" />
+        <ToggleButton id="midi-bt-10" mnemonicParsing="false" text="" GridPane.columnIndex="15" GridPane.rowIndex="0" />
         <Button id="midi-shuffle-1" mnemonicParsing="false" text="R" GridPane.columnIndex="0" GridPane.rowIndex="2" />
         <Button id="midi-shuffle-2" mnemonicParsing="false" text="R" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         <Button id="midi-shuffle-3" mnemonicParsing="false" text="R" GridPane.columnIndex="2" GridPane.rowIndex="2" />
@@ -51,13 +51,13 @@
         <Button id="midi-shuffle-7" mnemonicParsing="false" text="R" GridPane.columnIndex="6" GridPane.rowIndex="2" />
         <Button id="midi-shuffle-8" mnemonicParsing="false" text="R" GridPane.columnIndex="7" GridPane.rowIndex="2" />
         <Button id="midi-shuffle-9" mnemonicParsing="false" text="R" GridPane.columnIndex="8" GridPane.rowIndex="2" />
-        <Button id="midi-shuffle-10" mnemonicParsing="false" text="R" GridPane.columnIndex="9" GridPane.rowIndex="2" />
-        <Button id="midi-shuffle-11" mnemonicParsing="false" text="R" GridPane.columnIndex="10" GridPane.rowIndex="2" />
-        <Button id="midi-shuffle-12" mnemonicParsing="false" text="R" GridPane.columnIndex="11" GridPane.rowIndex="2" />
-        <Button id="midi-shuffle-13" mnemonicParsing="false" text="R" GridPane.columnIndex="12" GridPane.rowIndex="2" />
-        <Button id="midi-shuffle-14" mnemonicParsing="false" text="R" GridPane.columnIndex="13" GridPane.rowIndex="2" />
-        <Button id="midi-shuffle-15" mnemonicParsing="false" text="R" GridPane.columnIndex="14" GridPane.rowIndex="2" />
-        <Button id="midi-shuffle-16" mnemonicParsing="false" text="R" GridPane.columnIndex="15" GridPane.rowIndex="2" />
+        <Button id="midi-shuffle-11" mnemonicParsing="false" text="R" GridPane.columnIndex="9" GridPane.rowIndex="2" />
+        <Button id="midi-shuffle-12" mnemonicParsing="false" text="R" GridPane.columnIndex="10" GridPane.rowIndex="2" />
+        <Button id="midi-shuffle-13" mnemonicParsing="false" text="R" GridPane.columnIndex="11" GridPane.rowIndex="2" />
+        <Button id="midi-shuffle-14" mnemonicParsing="false" text="R" GridPane.columnIndex="12" GridPane.rowIndex="2" />
+        <Button id="midi-shuffle-15" mnemonicParsing="false" text="R" GridPane.columnIndex="13" GridPane.rowIndex="2" />
+        <Button id="midi-shuffle-16" mnemonicParsing="false" text="R" GridPane.columnIndex="14" GridPane.rowIndex="2" />
+        <Button id="midi-shuffle-10" mnemonicParsing="false" text="R" GridPane.columnIndex="15" GridPane.rowIndex="2" />
         <ChoiceBox id="midi-instrument-1" rotate="-90.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
           <items>
             <FXCollections fx:factory="observableArrayList">
@@ -139,7 +139,7 @@
             </FXCollections>
           </items>
         </ChoiceBox>
-        <ChoiceBox id="midi-instrument-10" rotate="-90.0" GridPane.columnIndex="9" GridPane.rowIndex="3">
+        <ChoiceBox id="midi-instrument-11" rotate="-90.0" GridPane.columnIndex="9" GridPane.rowIndex="3">
           <items>
             <FXCollections fx:factory="observableArrayList">
               <String fx:value="Item 1" />
@@ -148,16 +148,7 @@
             </FXCollections>
           </items>
         </ChoiceBox>
-        <ChoiceBox id="midi-instrument-11" rotate="-90.0" GridPane.columnIndex="10" GridPane.rowIndex="3">
-          <items>
-            <FXCollections fx:factory="observableArrayList">
-              <String fx:value="Item 1" />
-              <String fx:value="Item 2" />
-              <String fx:value="Item 3" />
-            </FXCollections>
-          </items>
-        </ChoiceBox>
-        <ChoiceBox id="midi-instrument-12" rotate="-90.0" GridPane.columnIndex="11" GridPane.rowIndex="3">
+        <ChoiceBox id="midi-instrument-12" rotate="-90.0" GridPane.columnIndex="10" GridPane.rowIndex="3">
           <items>
             <FXCollections fx:factory="observableArrayList">
               <String fx:value="Item 1" />
@@ -167,6 +158,15 @@
           </items>
         </ChoiceBox>
         <ToggleButton id="midi-bt-1" mnemonicParsing="false" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <ChoiceBox id="midi-instrument-10" prefWidth="35.0" rotate="-90.0" GridPane.columnIndex="15" GridPane.rowIndex="3">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ChoiceBox>
       </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
