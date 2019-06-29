@@ -65,7 +65,7 @@ public class JavafxSample extends Application {
 //        output.setVolume(1d);
         output.start();
         System.out.println("acid audio system started");
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 20; i++) {
             final Slider slider = (Slider) scene.lookup("#midi-sl-" + (i + 1));
             final ToggleButton onButton = (ToggleButton) scene.lookup("#midi-bt-" + (i + 1));
             final Button shuffleButton = (Button) scene.lookup("#midi-shuffle-" + (i + 1));
@@ -109,7 +109,7 @@ public class JavafxSample extends Application {
                     System.out.println("shuffle clicked:" + (finalI + 1));
                 }
             });
-            shuffleButton.setFont(new Font(shuffleButton.getFont().getName(), 20));
+            shuffleButton.setFont(new Font(shuffleButton.getFont().getName(), 16));
             shuffleButton.setText("\u21BB");
             GridPane.setFillWidth(shuffleButton, true);
             GridPane.setFillHeight(shuffleButton, true);
@@ -122,7 +122,7 @@ public class JavafxSample extends Application {
         ArrayList<String> arr = new ArrayList<String>();
         ObservableList<String> observableList = FXCollections.observableList(arr);
         observableList.addAll(Instrument.AVAILABLE_INSTRUMENTS);
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 16; i++) {
 
             final ChoiceBox cb = (ChoiceBox) scene.lookup("#midi-instrument-" + (i + 1));
             if (i == 9) {

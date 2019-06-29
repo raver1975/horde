@@ -58,7 +58,7 @@ public class Output implements Runnable {
         delay = new Delay();
         reverb = new Reverb();
         ArrayList<InputStream> streams = new ArrayList<InputStream>();
-        this.sequencer = new Sequencer[16];
+        this.sequencer = new Sequencer[20];
         for (int it = 0; it < this.sequencer.length - 4; it++) {
             InstrumentSequencer its = new InstrumentSequencer(it);
             this.sequencer[it] = its;
