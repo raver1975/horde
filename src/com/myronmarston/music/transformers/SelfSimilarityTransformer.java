@@ -27,7 +27,7 @@ import com.myronmarston.util.Fraction;
 
 /**
  * Transformer that applies the self-similarity algorithm to the given NoteList.
- * This can apply to the pitch, rhythm and/or volume, depending on the 
+ * This can apply to the pitch, drums and/or volume, depending on the
  * SelfSimilaritySettings.  
  * Example: G5 A5 B5 G5 -> G5 A5 B5 G5, A5 B5 C6 A5, B5 C6 D6 B5, G5 A5 B5 G5
  * 
@@ -39,7 +39,7 @@ public class SelfSimilarityTransformer implements Transformer {
     /**
      * Gets the self-similarity settings to be used by this transformer.  
      * Guarenteed to never be null.  The settings determine whether or not 
-     * self-similarity is applied to the pitch, rhythm and/or volume.
+     * self-similarity is applied to the pitch, drums and/or volume.
      * 
      * @return the self-similarity settings
      */
@@ -62,7 +62,7 @@ public class SelfSimilarityTransformer implements Transformer {
      * self-similarity settings.
      * 
      * @param applyToPitch true to apply self-similarity to the pitch
-     * @param applyToRhythm true to apply self-similarity to the rhythm
+     * @param applyToRhythm true to apply self-similarity to the drums
      * @param applyToVolume true to apply self-similarity to the volume
      * @param selfSimilarityIterations number of times to apply self-similarity
      *        to the germ
@@ -139,7 +139,7 @@ public class SelfSimilarityTransformer implements Transformer {
     private NoteList transform_rhythm(NoteList input, Note firstNote, Note inputNote) {
         if (!this.getSettings().getApplyToRhythm()) return input;                
         
-        // scale the rhythm...
+        // scale the drums...
         assert (inputNote.getDuration().compareTo(0) > 0) : inputNote.getDuration(); // we would get div-by-zero below if the duration is zero, and less than zero is nonsensical
         RhythmicDurationTransformer rhythmScaler = new RhythmicDurationTransformer(firstNote.getDuration().dividedBy(inputNote.getDuration()));
         return rhythmScaler.transform(input);

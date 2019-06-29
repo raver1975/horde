@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -68,23 +69,26 @@ public class JavafxSample extends Application {
         System.out.println("acid audio system started");
         for (int i = 0; i < 16; i++) {
             final Slider slider = (Slider) scene.lookup("#midi-sl-" + (i + 1));
-            final ToggleButton button = (ToggleButton) scene.lookup("#midi-bt-" + (i + 1));
+            final ToggleButton onButton = (ToggleButton) scene.lookup("#midi-bt-" + (i + 1));
+            final Button shuffuleButton = (Button) scene.lookup("#midi-shuffle-" + (i + 1));
             final int finalI = i;
             slider.valueProperty().addListener(new ChangeListener<Number>() {
                 public void changed(ObservableValue<? extends Number> ov,
                                     Number old_val, Number new_val) {
-                    output.getSequencer()[finalI].setVolume(new_val.doubleValue() / 127d);
-                    if (new_val.intValue() == 0) {
-                        button.setSelected(false);
-                    } else if (!button.isSelected()) {
-                        button.setSelected(true);
+                    if (onButton.isSelected()) {
+                        output.getSequencer()[finalI].setVolume(new_val.doubleValue() / 127d);
                     }
+//                    if (new_val.intValue() == 0) {
+//                        button.setSelected(false);
+//                    } else if (!button.isSelected()) {
+//                        button.setSelected(true);
+//                    }
                 }
             });
             slider.setValue(63);
             GridPane.setFillHeight(slider, true);
             GridPane.setHalignment(slider, HPos.CENTER);
-            button.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            onButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (newValue) {
@@ -94,11 +98,25 @@ public class JavafxSample extends Application {
                     }
                 }
             });
-            GridPane.setFillWidth(button, true);
-            GridPane.setFillHeight(button, true);
-            GridPane.setHalignment(button, HPos.CENTER);
-            GridPane.setValignment(button, VPos.CENTER);
-            button.setSelected(false);
+            GridPane.setFillWidth(onButton, true);
+            GridPane.setFillHeight(onButton, true);
+            GridPane.setHalignment(onButton, HPos.CENTER);
+            GridPane.setValignment(onButton, VPos.CENTER);
+
+            shuffuleButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    output.getSequencer()[finalI].randomizeSequence();
+                    System.out.println("shuffle clicked:"+finalI);
+                }
+            });
+            GridPane.setFillWidth(shuffuleButton, true);
+            GridPane.setFillHeight(shuffuleButton, true);
+            GridPane.setHalignment(shuffuleButton, HPos.CENTER);
+            GridPane.setValignment(shuffuleButton, VPos.CENTER);
+
+            onButton.setSelected(false);
+
         }
         primaryStage.setScene(scene);
         primaryStage.show();

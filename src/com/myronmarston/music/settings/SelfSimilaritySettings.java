@@ -57,7 +57,7 @@ public class SelfSimilaritySettings extends AbstractPublisher {
      * @param applyToPitch whether or not to apply self-similarity to the 
      *        pitches
      * @param applyToRhythm whether or not to apply self-similarity to the 
-     *        rhythm
+     *        drums
      * @param applyToVolume whether or not to apply self-similarity to the 
      *        volume
      * @param selfSimilarityIterations number of times to iteratively apply
@@ -95,8 +95,8 @@ public class SelfSimilaritySettings extends AbstractPublisher {
     }
     
     /**
-     * Gets whether or not to apply self-similarity to the rhythm of the germ.
-     * For example, if true, a germ rhythm of 1/4 1/8 1/4 would become
+     * Gets whether or not to apply self-similarity to the drums of the germ.
+     * For example, if true, a germ drums of 1/4 1/8 1/4 would become
      * 1/4 1/8 1/4, 1/8 1/16 1/8, 1/4 1/8 1/4.
      * 
      * @return whether or not to apply self-similarity to the pitch
@@ -106,8 +106,8 @@ public class SelfSimilaritySettings extends AbstractPublisher {
     }
 
     /**
-     * Sets whether or not to apply self-similarity to the rhythm of the germ.
-     * For example, if true, a germ rhythm of 1/4 1/8 1/4 would become
+     * Sets whether or not to apply self-similarity to the drums of the germ.
+     * For example, if true, a germ drums of 1/4 1/8 1/4 would become
      * 1/4 1/8 1/4, 1/8 1/16 1/8, 1/4 1/8 1/4.
      * 
      * @param val whether or not to apply self-similarity to the pitch
@@ -183,7 +183,7 @@ public class SelfSimilaritySettings extends AbstractPublisher {
     
     /**
      * Gets whether or not self-similarity should be applied to something 
-     * (pitch, rhythm or volume).
+     * (pitch, drums or volume).
      * 
      * @return true if self-similarity should be applied to something
      */

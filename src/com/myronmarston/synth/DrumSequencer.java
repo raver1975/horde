@@ -2,7 +2,7 @@ package com.myronmarston.synth;
 
 import java.util.ArrayList;
 
-public class RhythmSequencer extends Sequencer {
+public class DrumSequencer extends Sequencer {
     public RhythmSynthesizer synth;
     private int[][] drums;
     private double bpm;
@@ -12,7 +12,7 @@ public class RhythmSequencer extends Sequencer {
     public int step = 0;
     private boolean sixteenth_note = true;
 
-    RhythmSequencer(RhythmSynthesizer drums) {
+    DrumSequencer(RhythmSynthesizer drums) {
         this.synth = drums;
         randomizeRhythm();
         randomizeSequence();
@@ -290,16 +290,16 @@ public class RhythmSequencer extends Sequencer {
         }
 
         int[] evolve(int[] beat, double[] weights) {
-            RhythmSequencer.Markov strategies = new RhythmSequencer.Markov(null,
+            DrumSequencer.Markov strategies = new DrumSequencer.Markov(null,
                     0.0D);
-            strategies.addKid(new RhythmSequencer.Markov(new AdditionStrategy(),
+            strategies.addKid(new DrumSequencer.Markov(new AdditionStrategy(),
                     1.0D));
-            strategies.addKid(new RhythmSequencer.Markov(new AccentStrategy(),
+            strategies.addKid(new DrumSequencer.Markov(new AccentStrategy(),
                     1.0D));
             strategies
-                    .addKid(new RhythmSequencer.Markov(new MoveStrategy(), 1.0D));
+                    .addKid(new DrumSequencer.Markov(new MoveStrategy(), 1.0D));
 
-            RhythmSequencer.SyncopationStrategy ss = (RhythmSequencer.SyncopationStrategy) strategies
+            DrumSequencer.SyncopationStrategy ss = (DrumSequencer.SyncopationStrategy) strategies
                     .getKid().getContent();
             ss.execute(beat, weights);
 
@@ -307,20 +307,20 @@ public class RhythmSequencer extends Sequencer {
         }
 
         private class AccentStrategy implements
-                RhythmSequencer.SyncopationStrategy {
+                DrumSequencer.SyncopationStrategy {
             private AccentStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
+                DrumSequencer.Markov m = new DrumSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 1) {
-                        m.addKid(new RhythmSequencer.Markov(i,
+                        m.addKid(new DrumSequencer.Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    RhythmSequencer.Markov m2 = m.getKid();
+                    DrumSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 2;
                 }
                 return source;
@@ -328,54 +328,54 @@ public class RhythmSequencer extends Sequencer {
         }
 
         private class RemovalStrategy implements
-                RhythmSequencer.SyncopationStrategy {
+                DrumSequencer.SyncopationStrategy {
             private RemovalStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
+                DrumSequencer.Markov m = new DrumSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] > 0) {
-                        m.addKid(new RhythmSequencer.Markov(i,
+                        m.addKid(new DrumSequencer.Markov(i,
                                 1.0D / weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    RhythmSequencer.Markov m2 = m.getKid();
+                    DrumSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 0;
                 }
                 return source;
             }
         }
 
-        private class MoveStrategy implements RhythmSequencer.SyncopationStrategy {
+        private class MoveStrategy implements DrumSequencer.SyncopationStrategy {
             private MoveStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                RhythmSequencer.RhythmEvolver.RemovalStrategy remove = new RhythmSequencer.RhythmEvolver.RemovalStrategy();
+                DrumSequencer.RhythmEvolver.RemovalStrategy remove = new DrumSequencer.RhythmEvolver.RemovalStrategy();
                 source = remove.execute(source, weights);
-                RhythmSequencer.RhythmEvolver.AdditionStrategy add = new RhythmSequencer.RhythmEvolver.AdditionStrategy();
+                DrumSequencer.RhythmEvolver.AdditionStrategy add = new DrumSequencer.RhythmEvolver.AdditionStrategy();
                 source = add.execute(source, weights);
                 return source;
             }
         }
 
         private class AdditionStrategy implements
-                RhythmSequencer.SyncopationStrategy {
+                DrumSequencer.SyncopationStrategy {
             private AdditionStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                RhythmSequencer.Markov m = new RhythmSequencer.Markov(null, 0.0D);
+                DrumSequencer.Markov m = new DrumSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 0) {
-                        m.addKid(new RhythmSequencer.Markov(i,
+                        m.addKid(new DrumSequencer.Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    RhythmSequencer.Markov m2 = m.getKid();
+                    DrumSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 1;
                 }
                 return source;

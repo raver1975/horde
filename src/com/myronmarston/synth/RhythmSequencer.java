@@ -2,10 +2,10 @@ package com.myronmarston.synth;
 
 import java.util.ArrayList;
 
-public class BasslineSequencer extends Sequencer {
+public class RhythmSequencer extends Sequencer {
     private BasslineSynthesizer synth;
     private BasslinePattern pattern;
-//    private int[][] rhythm;
+    private int[][] rhythm;
     private double bpm;
     private boolean shuffle;
     private int samplesPerSequencerUpdate;
@@ -15,15 +15,15 @@ public class BasslineSequencer extends Sequencer {
 
     private int patternLength = 16;
 
-    BasslineSequencer(BasslineSynthesizer synth) {
+    RhythmSequencer(BasslineSynthesizer synth) {
         this.synth = synth;
-//        randomizeRhythm();
+        randomizeRhythm();
         randomizeSequence();
     }
 
-//    private void randomizeRhythm() {
-//        this.rhythm = createRhythm(this.patternLength);
-//    }
+    private void randomizeRhythm() {
+        this.rhythm = createRhythm(this.patternLength);
+    }
 
     public void randomizeSequence() {
         double[] basicCoeffs = {0.5D, 0.5D, 0.5D, 0.5D};
@@ -33,17 +33,17 @@ public class BasslineSequencer extends Sequencer {
         if ((!preferBassDrum) && (!preferSnareDrum)) {
             preferBassDrum = preferSnareDrum = true;
         }
-//        for (int i = 0; i < this.rhythm[0].length; i++) {
-//            bassCoeffs[i] = basicCoeffs[(i % 4)];
-//            if (((this.rhythm[0][i] > 0) && (preferBassDrum))
-//                    || ((preferSnareDrum) && ((this.rhythm[1][i] > 0) || (this.rhythm[4][i] > 0))))
-//                bassCoeffs[i] *= 4.0D;
-//            if (this.rhythm[3][i] > 0)
-//                bassCoeffs[i] *= 2.0D;
-//            if (this.rhythm[4][i] > 0) {
-//                bassCoeffs[i] *= 2.0D;
-//            }
-//        }
+        for (int i = 0; i < this.rhythm[0].length; i++) {
+            bassCoeffs[i] = basicCoeffs[(i % 4)];
+            if (((this.rhythm[0][i] > 0) && (preferBassDrum))
+                    || ((preferSnareDrum) && ((this.rhythm[1][i] > 0) || (this.rhythm[4][i] > 0))))
+                bassCoeffs[i] *= 4.0D;
+            if (this.rhythm[3][i] > 0)
+                bassCoeffs[i] *= 2.0D;
+            if (this.rhythm[4][i] > 0) {
+                bassCoeffs[i] *= 2.0D;
+            }
+        }
 
         Markov markov = new Markov(null, 0.0D);
         markov.addKid(new Markov(Harmony.SCALE_MELODIC_MINOR, 2.0D));
@@ -63,25 +63,24 @@ public class BasslineSequencer extends Sequencer {
     public void tick() {
         if (this.tick == 0) {
             if (this.sixteenth_note) {
-//                if ((!this.pattern.pause[this.step])
-//                        && (this.pattern.note[this.step] != -1)) {
-//                    this.synth
-//                            .noteOn(this.pattern.note[this.step]
-//                                            + 36
-//                                            + (this.pattern.isTransUp(this.step) ? 12
-//                                            : 0)
-//                                            - (this.pattern.isTransDown(this.step) ? 12
-//                                            : 0),
-//                                    this.pattern.accent[this.step] ? 127
-//                                            : 80);
-//                }
+                if ((!this.pattern.pause[this.step])
+                        && (this.pattern.note[this.step] != -1)) {
+                    this.synth
+                            .noteOn(this.pattern.note[this.step]
+                                            + 36
+                                            + (this.pattern.isTransUp(this.step) ? 12
+                                            : 0)
+                                            - (this.pattern.isTransDown(this.step) ? 12
+                                            : 0),
+                                    this.pattern.accent[this.step] ? 127
+                                            : 80);
+                }
                 if (this.shuffle)
                     setBpm(this.bpm);
             } else {
-//                if (!this.pattern.slide[this.step]) {
-//                    this.synth.noteOff();
-//                }
-//
+                if (!this.pattern.slide[this.step]) {
+                    this.synth.noteOff();
+                }
                 this.step += 1;
             }
             this.sixteenth_note = (!this.sixteenth_note);

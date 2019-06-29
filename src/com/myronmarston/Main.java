@@ -24,9 +24,9 @@ public class Main {
             s.randomizeSequence();
         }
 //                BasslineSynthesizer synth = (BasslineSynthesizer) output.getTrack(0);
-//                RhythmSynthesizer drums = (RhythmSynthesizer) output.getTrack(1);
-//                output.getSequencer()[2].drums.randomize();
-//                output.getSequencer().bassline1.randomize();
+//                RhythmSynthesizer synth = (RhythmSynthesizer) output.getTrack(1);
+//                output.getSequencer()[2].synth.randomize();
+//                output.getSequencer().paattern.randomize();
 //                output.getSequencer().bass2.randomize();
 //        output.setVolume(1d);
         output.start();
