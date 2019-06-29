@@ -81,7 +81,7 @@ public class JavafxSample extends Application {
             slider.setValue(63);
             GridPane.setFillHeight(slider, true);
             GridPane.setHalignment(slider, HPos.CENTER);
-            onButton.setText("");
+            onButton.setText(" ");
             onButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -109,7 +109,7 @@ public class JavafxSample extends Application {
                     System.out.println("shuffle clicked:" + (finalI + 1));
                 }
             });
-            shuffleButton.setFont(new Font(shuffleButton.getFont().getName(), 16));
+            shuffleButton.setFont(new Font(shuffleButton.getFont().getName(), 12));
             shuffleButton.setText("\u21BB");
             GridPane.setFillWidth(shuffleButton, true);
             GridPane.setFillHeight(shuffleButton, true);
@@ -132,10 +132,7 @@ public class JavafxSample extends Application {
             System.out.println(cb);
             cb.setItems(observableList);
             cb.getSelectionModel().select(((InstrumentSequencer) output.getSequencer()[i]).getInstrument());
-            cb.setMinWidth(100d);
-//            cb.setPrefWidth(Double.POSITIVE_INFINITY);
-//            GridPane.setFillWidth(cb, true);
-//            GridPane.setFillHeight(cb, true);
+            cb.setMinWidth(150d);
             GridPane.setHalignment(cb, HPos.CENTER);
             GridPane.setValignment(cb, VPos.CENTER);
             final int finalI = i;
