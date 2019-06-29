@@ -107,18 +107,20 @@ public class JavafxSample extends Application {
             slider.setValue(63);
             GridPane.setFillHeight(slider, true);
             GridPane.setHalignment(slider, HPos.CENTER);
-            onButton.setFont(new Font(shuffleButton.getFont().getName(), 16));
             onButton.setText("");
             onButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (newValue) {
                         output.getSequencer()[finalI].setVolume(slider.getValue() / 127d);
+                        onButton.setStyle("-fx-background-color: #00ff00");
                     } else {
                         output.getSequencer()[finalI].setVolume(0);
+                        onButton.setStyle("-fx-background-color: #ff0000");
                     }
                 }
             });
+            onButton.setStyle("-fx-background-color: #ff0000");
             GridPane.setFillWidth(onButton, true);
             GridPane.setFillHeight(onButton, true);
             GridPane.setHalignment(onButton, HPos.CENTER);
@@ -132,7 +134,7 @@ public class JavafxSample extends Application {
                     System.out.println("shuffle clicked:" + (finalI + 1));
                 }
             });
-            shuffleButton.setFont(new Font(shuffleButton.getFont().getName(), 16));
+            shuffleButton.setFont(new Font(shuffleButton.getFont().getName(), 20));
             shuffleButton.setText("\u21BB");
             GridPane.setFillWidth(shuffleButton, true);
             GridPane.setFillHeight(shuffleButton, true);
