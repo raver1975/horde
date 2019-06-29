@@ -97,11 +97,6 @@ public class JavafxSample extends Application {
                     if (onButton.isSelected()) {
                         output.getSequencer()[finalI].setVolume(new_val.doubleValue() / 127d);
                     }
-//                    if (new_val.intValue() == 0) {
-//                        button.setSelected(false);
-//                    } else if (!button.isSelected()) {
-//                        button.setSelected(true);
-//                    }
                 }
             });
             slider.setValue(63);
@@ -113,14 +108,15 @@ public class JavafxSample extends Application {
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (newValue) {
                         output.getSequencer()[finalI].setVolume(slider.getValue() / 127d);
-                        onButton.setStyle("-fx-background-color: #00ff00");
+                        onButton.setStyle("-fx-background-color: #99ff99");
                     } else {
                         output.getSequencer()[finalI].setVolume(0);
-                        onButton.setStyle("-fx-background-color: #ff0000");
+                        onButton.setStyle("-fx-background-color: #ddddddd");
                     }
                 }
             });
-            onButton.setStyle("-fx-background-color: #ff0000");
+            onButton.setStyle("-fx-background-color: #dddddd");
+            onButton.setSelected(true);
             GridPane.setFillWidth(onButton, true);
             GridPane.setFillHeight(onButton, true);
             GridPane.setHalignment(onButton, HPos.CENTER);
