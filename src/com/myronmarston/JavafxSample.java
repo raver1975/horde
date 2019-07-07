@@ -98,7 +98,7 @@ public class JavafxSample extends Application {
             });
             slider.setValue(63);
             GridPane.setFillHeight(slider, true);
-            GridPane.setHalignment(slider, HPos.CENTER);
+//            GridPane.setHalignment(slider, HPos.CENTER);
             onButton.setText(" ");
             onButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
