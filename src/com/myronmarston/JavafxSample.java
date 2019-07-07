@@ -5,6 +5,7 @@ import com.myronmarston.synth.InstrumentSequencer;
 import com.myronmarston.synth.Output;
 import com.myronmarston.synth.Resources;
 import com.myronmarston.synth.Sequencer;
+import eu.hansolo.fx.regulators.Regulator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -65,6 +66,23 @@ public class JavafxSample extends Application {
 //        output.setVolume(1d);
         output.start();
         System.out.println("acid audio system started");
+        for (int i = 0; i < 5; i++) {
+            final Regulator regulator1= (Regulator) scene.lookup("#synth1-knob-" + (i + 1));
+            final Regulator regulator2= (Regulator) scene.lookup("#synth2-knob-" + (i + 1));
+            final int finalI = i;
+            regulator1.targetValueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    System.out.println("synth1:"+finalI+"\t"+newValue);
+                }
+            });
+            regulator2.targetValueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    System.out.println("synth2:"+finalI+"\t"+newValue);
+                }
+            });
+        }
         for (int i = 0; i < 20; i++) {
             final Slider slider = (Slider) scene.lookup("#midi-sl-" + (i + 1));
             final ToggleButton onButton = (ToggleButton) scene.lookup("#midi-bt-" + (i + 1));

@@ -7,7 +7,6 @@
  import java.io.IOException;
  import java.io.InputStream;
 
- import static jdk.xml.internal.SecuritySupport.getClassLoader;
 
  public class Resources
  {
