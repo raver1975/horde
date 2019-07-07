@@ -28,7 +28,7 @@ javafx {
 
 application {
 //    mainClassName = 'eu.hansolo.fx.regulators.Main'
-    mainClassName = 'com.myronmarston.JavafxSample'
+    mainClassName = 'com.klemstine.TheHorde'
 }
 
 sourceSets {
@@ -44,7 +44,7 @@ sourceSets {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.myronmarston.JavafxSample'
+        attributes 'Main-Class': 'com.klemstine.TheHorde'
     }
 
     from {

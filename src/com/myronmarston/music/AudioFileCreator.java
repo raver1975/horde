@@ -19,7 +19,7 @@
 
 package com.myronmarston.music;
 
-import com.myronmarston.synth.Output;
+import com.klemstine.synth.Output;
 import com.myronmarston.util.FileHelper;
 import com.sun.media.sound.AudioSynthesizer;
 import org.tritonus.share.sampled.*;
@@ -39,7 +39,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
