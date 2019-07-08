@@ -240,9 +240,11 @@ public class RegulatorBuilder<B extends RegulatorBuilder<B>> {
                 CONTROL.setColor(((ObjectProperty<Color>) properties.get(key)).get());
             } else if ("decimals".equals(key)) {
                 CONTROL.setDecimals(((IntegerProperty) properties.get(key)).get());
-            } else if ("barColor".equals(key)) {
-                CONTROL.setBarColor(((ObjectProperty<Color>) properties.get(key)).get());
-            } else if ("symbolPath".equals(key)) {
+            }
+//            else if ("barColor".equals(key)) {
+//                CONTROL.setBarColor(((ObjectProperty<Color>) properties.get(key)).get());
+//            }
+            else if ("symbolPath".equals(key)) {
                 CONTROL.setSymbolPath(((DoubleProperty) properties.get("symbolScaleX")).get(),
                                       ((DoubleProperty) properties.get("symbolScaleY")).get(),
                                       ((StringProperty) properties.get(key)).get());

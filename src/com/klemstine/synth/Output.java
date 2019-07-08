@@ -18,12 +18,13 @@ import java.util.ArrayList;
 
 public class Output implements Runnable {
     private static Thread thread = null;
-    private static Synthesizer[] tracks;
+    public static double SAMPLE_RATE = 44100;
+    public static final int BUFFER_SIZE = 16384;
+
+    private Synthesizer[] synthesizers;
     private MixingAudioInputStream mixingAudioInputStream;
     private Sequencer[] sequencer;
 
-    public static double SAMPLE_RATE = 44100;
-    public static final int BUFFER_SIZE = 16384;
     private byte[] buffer1 = new byte[BUFFER_SIZE];
     private byte[] buffer2 = new byte[BUFFER_SIZE];
     private byte[] buffer3 = new byte[BUFFER_SIZE];
@@ -32,10 +33,10 @@ public class Output implements Runnable {
     private InputStream pin2 = new ByteArrayInputStream(buffer2);
     private InputStream pin3 = new ByteArrayInputStream(buffer3);
     private InputStream pin4 = new ByteArrayInputStream(buffer4);
-    private static boolean running = false;
-    private static Reverb reverb;
-    private static Delay delay;
-    private static boolean paused = false;
+    private boolean running = false;
+    private Reverb reverb;
+    private Delay delay;
+    private boolean paused = false;
     private SourceDataLine sourceLine = null;
     private OutputStream audioWriter = null;
 
@@ -49,11 +50,15 @@ public class Output implements Runnable {
     double left4 = 0.0D;
 
 
-    public static Delay getDelay() {
+    public Delay getDelay() {
         return delay;
     }
 
-    public static Reverb getReverb() {
+    public Synthesizer[] getSynthesizers() {
+        return synthesizers;
+    }
+
+    public Reverb getReverb() {
         return reverb;
     }
 
@@ -65,7 +70,7 @@ public class Output implements Runnable {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        tracks = new Synthesizer[4];
+        synthesizers = new Synthesizer[4];
         delay = new Delay();
         reverb = new Reverb();
         ArrayList<InputStream> streams = new ArrayList<InputStream>();
@@ -85,11 +90,11 @@ public class Output implements Runnable {
         BasslineSynthesizer tb2 = new BasslineSynthesizer();
         RhythmSynthesizer tr1 = new RhythmSynthesizer();
         RhythmSynthesizer tr2 = new RhythmSynthesizer();
-        tracks[0] = tr2;
-        tracks[1] = tr1;
-        tracks[2] = tb2;
-        tracks[3] = tb1;
-//        tracks[1] = tr;
+        synthesizers[0] = tr2;
+        synthesizers[1] = tr1;
+        synthesizers[2] = tb2;
+        synthesizers[3] = tb1;
+//        synthesizers[1] = tr;
         this.sequencer[this.sequencer.length - 4] = new BasslineSequencer(tb1);
         this.sequencer[this.sequencer.length - 3] = new BasslineSequencer(tb2);
         this.sequencer[this.sequencer.length - 2] = new RhythmSequencer(tr1);
@@ -187,15 +192,15 @@ public class Output implements Runnable {
     }
 
 
-    public static boolean isPaused() {
+    public boolean isPaused() {
         return paused;
     }
 
-    public static void pause() {
+    public void pause() {
         paused = true;
     }
 
-    public static void resume() {
+    public void resume() {
         paused = false;
     }
 
@@ -232,23 +237,23 @@ public class Output implements Runnable {
                 left3 = right3 = 0;
                 left4 = right4 = 0;
 
-                tmp = tracks[0].stereoOutput();
+                tmp = synthesizers[0].stereoOutput();
                 left1 += tmp[0];
                 right1 += tmp[1];
 
-                tmp = tracks[1].stereoOutput();
+                tmp = synthesizers[1].stereoOutput();
 //                delay.input(tmp[2]);
 //                reverb.input(tmp[3]);
                 left2 += tmp[0];
                 right2 += tmp[1];
 
-                tmp = tracks[2].stereoOutput();
+                tmp = synthesizers[2].stereoOutput();
 //                delay.input(tmp[2]);
 //                reverb.input(tmp[3]);
                 left3 += tmp[0];
                 right3 += tmp[1];
 
-                tmp = tracks[3].stereoOutput();
+                tmp = synthesizers[3].stereoOutput();
 //                delay.input(tmp[2]);
 //                reverb.input(tmp[3]);
                 left4 += tmp[0];

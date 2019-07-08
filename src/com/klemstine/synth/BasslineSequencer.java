@@ -57,9 +57,9 @@ public class BasslineSequencer extends Sequencer {
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 3, 2.0D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 4, 1.0D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 8, 1.0D));
-        Output.getDelay().setFeedback(Math.random() * 0.75D + 0.2D);
-        Output.getDelay().setTime(
-                (Integer) delayTimes.getKid().getContent());
+//        Output.getDelay().setFeedback(Math.random() * 0.75D + 0.2D);
+//        Output.getDelay().setTime(
+//                (Integer) delayTimes.getKid().getContent());
     }
 
     public void tick() {

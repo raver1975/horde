@@ -10,77 +10,77 @@
     <children>
         <GridPane alignment="CENTER" layoutX="12.0" layoutY="13.0" prefHeight="615.0" prefWidth="650.0" AnchorPane.topAnchor="13.0">
             <children>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;">
                <children>
                       <ToggleButton id="midi-bt-1" mnemonicParsing="false" text="   " GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" VBox.vgrow="ALWAYS" />
                       <Button id="midi-shuffle-1" mnemonicParsing="false" text="R" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-1" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="1">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="1">
                <children>
                       <ToggleButton id="midi-bt-2" mnemonicParsing="false" text="   " GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-2" mnemonicParsing="false" text="R" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-2" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="2">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="2">
                <children>
                       <ToggleButton id="midi-bt-3" mnemonicParsing="false" text="   " GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-3" mnemonicParsing="false" text="R" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-3" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="3">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="3">
                <children>
                       <ToggleButton id="midi-bt-4" mnemonicParsing="false" text="   " GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-4" mnemonicParsing="false" text="R" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-4" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="4">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="4">
                <children>
                       <ToggleButton id="midi-bt-5" mnemonicParsing="false" text="   " GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-5" mnemonicParsing="false" text="R" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-5" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="5">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="5">
                <children>
                       <ToggleButton id="midi-bt-6" mnemonicParsing="false" text="   " GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-6" mnemonicParsing="false" text="R" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-6" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="6">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="6">
                <children>
                       <ToggleButton id="midi-bt-7" mnemonicParsing="false" text="   " GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-7" mnemonicParsing="false" text="R" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-7" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="7">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="7">
                <children>
                       <ToggleButton id="midi-bt-8" mnemonicParsing="false" text="   " GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-8" mnemonicParsing="false" text="R" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-8" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="8">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="8">
                <children>
                       <ToggleButton id="midi-bt-9" mnemonicParsing="false" text="   " GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-9" mnemonicParsing="false" text="R" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-9" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="9">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="9">
                <children>
                       <ToggleButton id="midi-bt-11" mnemonicParsing="false" text="   " GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-11" mnemonicParsing="false" text="R" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-11" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="10">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="10">
                <children>
                       <ToggleButton id="midi-bt-12" mnemonicParsing="false" text="   " GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-12" mnemonicParsing="false" text="R" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
@@ -186,35 +186,35 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-            <VBox alignment="CENTER" style="-fx-padding: 4; -fx-border-color: #aaffaa; -fx-border-insets: 1;" GridPane.columnIndex="11">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-padding: 4; -fx-border-color: #aaffaa; -fx-border-insets: 1;" GridPane.columnIndex="11">
                <children>
                       <ToggleButton id="midi-bt-13" mnemonicParsing="false" text="   " GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-13" mnemonicParsing="false" text="R" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-13" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #aaffaa; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="12">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaffaa; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="12">
                <children>
                       <ToggleButton id="midi-bt-14" mnemonicParsing="false" text="   " GridPane.columnIndex="16" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-14" mnemonicParsing="false" text="R" GridPane.columnIndex="16" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-14" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="16" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-padding: 4; -fx-border-color: #ffaaaa; -fx-border-insets: 1;" GridPane.columnIndex="14">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-padding: 4; -fx-border-color: #ffaaaa; -fx-border-insets: 1;" GridPane.columnIndex="14">
                <children>
                       <ToggleButton id="midi-bt-16" mnemonicParsing="false" text="   " GridPane.columnIndex="18" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-16" mnemonicParsing="false" text="R" GridPane.columnIndex="18" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-16" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="18" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-border-color: #ffaaaa; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="15">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #ffaaaa; -fx-padding: 4; -fx-border-insets: 1;" GridPane.columnIndex="15">
                <children>
                       <ToggleButton id="midi-bt-10" mnemonicParsing="false" text="   " GridPane.columnIndex="19" GridPane.halignment="CENTER" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-10" mnemonicParsing="false" text="R" GridPane.columnIndex="19" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                       <Slider id="midi-sl-10" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="19" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" style="-fx-padding: 4; -fx-border-color: #ffaaaa; -fx-border-insets: 1;" GridPane.columnIndex="13">
+            <VBox alignment="CENTER" spacing="5.0" style="-fx-padding: 4; -fx-border-color: #ffaaaa; -fx-border-insets: 1;" GridPane.columnIndex="13">
                <children>
                       <ToggleButton id="midi-bt-15" mnemonicParsing="false" text="   " GridPane.columnIndex="17" GridPane.rowIndex="0" />
                       <Button id="midi-shuffle-15" mnemonicParsing="false" text="R" GridPane.columnIndex="17" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
@@ -230,26 +230,28 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="11" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="11" GridPane.rowIndex="1">
                <children>
                   <Separator orientation="VERTICAL" prefHeight="30.0" visible="false" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" prefWidth="30.0" visible="false" />
-                  <Regulator id="synth1-knob-1" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Regulator id="synth1-knob-2" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Regulator id="synth1-knob-3" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Regulator id="synth1-knob-4" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Regulator id="synth1-knob-5" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
+                  <Regulator id="synth1-knob-1" maxHeight="30.0" maxValue="127.0" maxWidth="69.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="69.0" />
+                  <Regulator id="synth1-knob-2" maxHeight="30.0" maxValue="127.0" maxWidth="58.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="58.0" />
+                  <Regulator id="synth1-knob-3" maxHeight="30.0" maxValue="127.0" maxWidth="78.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="78.0" />
+                  <Regulator id="synth1-knob-4" maxHeight="30.0" maxValue="127.0" maxWidth="93.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="93.0" />
+                  <Regulator id="synth1-knob-5" maxHeight="30.0" maxValue="127.0" maxWidth="104.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="104.0" />
+                  <Regulator id="synth1-knob-6" maxHeight="30.0" maxValue="127.0" maxWidth="106.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="106.0" />
                </children>
             </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="12" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="12" GridPane.rowIndex="1">
                <children>
                   <Separator orientation="VERTICAL" prefHeight="30.0" visible="false" />
                   <Separator orientation="VERTICAL" prefHeight="20.0" prefWidth="30.0" visible="false" />
-                  <Regulator id="synth2-knob-1" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Regulator id="synth2-knob-2" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Regulator id="synth2-knob-3" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Regulator id="synth2-knob-4" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
-                  <Regulator id="synth2-knob-5" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0" />
+                  <Regulator id="synth2-knob-1" maxHeight="30.0" maxValue="127.0" maxWidth="143.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="143.0" />
+                  <Regulator id="synth2-knob-2" maxHeight="30.0" maxValue="127.0" maxWidth="73.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="73.0" />
+                  <Regulator id="synth2-knob-3" maxHeight="30.0" maxValue="127.0" maxWidth="65.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="65.0" />
+                  <Regulator id="synth2-knob-4" maxHeight="30.0" maxValue="127.0" maxWidth="46.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="46.0" />
+                  <Regulator id="synth2-knob-5" maxHeight="30.0" maxValue="127.0" maxWidth="42.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="42.0" />
+                  <Regulator id="synth2-knob-6" maxHeight="30.0" maxValue="127.0" maxWidth="50.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="50.0" />
                </children>
             </VBox>
 
@@ -275,6 +277,7 @@
             <rowConstraints>
                 <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="239.0" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="393.0" minHeight="0.0" prefHeight="149.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="149.0" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
     </children>

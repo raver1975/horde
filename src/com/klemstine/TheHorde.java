@@ -1,5 +1,6 @@
 package com.klemstine;
 
+import com.klemstine.synth.BasslineSynthesizer;
 import com.myronmarston.music.Instrument;
 import com.klemstine.synth.InstrumentSequencer;
 import com.klemstine.synth.Output;
@@ -32,6 +33,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+
+import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_ACCENT;
+import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_CUTOFF;
+import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_DECAY;
+import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_ENVMOD;
+import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_RESONANCE;
+import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_TUNE;
 
 public class TheHorde extends Application {
     @Override
@@ -66,23 +74,69 @@ public class TheHorde extends Application {
 //        output.setVolume(1d);
         output.start();
         System.out.println("acid audio system started");
-        for (int i = 0; i < 5; i++) {
-            final Regulator regulator1= (Regulator) scene.lookup("#synth1-knob-" + (i + 1));
-            final Regulator regulator2= (Regulator) scene.lookup("#synth2-knob-" + (i + 1));
+
+        //synth1 knobs
+        for (int i = 0; i < 6; i++) {
+            final Regulator regulator1 = (Regulator) scene.lookup("#synth1-knob-" + (i + 1));
+//            regulator1.se
+
+            final Regulator regulator2 = (Regulator) scene.lookup("#synth2-knob-" + (i + 1));
             final int finalI = i;
             regulator1.targetValueProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    System.out.println("synth1:"+finalI+"\t"+newValue);
+                    System.out.println("synth1:" + finalI + "\t" + newValue);
+                    switch (finalI) {
+                        case 0:
+                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_TUNE, newValue.intValue());
+                            break;
+                        case 1:
+                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_CUTOFF, newValue.intValue());
+                            break;
+                        case 2:
+                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_RESONANCE, newValue.intValue());
+                            break;
+                        case 3:
+                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_ENVMOD, newValue.intValue());
+                            break;
+                        case 4:
+                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_DECAY, newValue.intValue());
+                            break;
+                        case 5:
+                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_ACCENT, newValue.intValue());
+                            break;
+                    }
                 }
             });
             regulator2.targetValueProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    System.out.println("synth2:"+finalI+"\t"+newValue);
+                    System.out.println("synth2:" + finalI + "\t" + newValue);
+                    switch (finalI) {
+                        case 0:
+                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_TUNE, newValue.intValue());
+                            break;
+                        case 1:
+                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_CUTOFF, newValue.intValue());
+                            break;
+                        case 2:
+                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_RESONANCE, newValue.intValue());
+                            break;
+                        case 3:
+                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_ENVMOD, newValue.intValue());
+                            break;
+                        case 4:
+                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_DECAY, newValue.intValue());
+                            break;
+                        case 5:
+                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_ACCENT, newValue.intValue());
+                            break;
+                    }
                 }
             });
         }
+
+
         for (int i = 0; i < 16; i++) {
             final Slider slider = (Slider) scene.lookup("#midi-sl-" + (i + 1));
             final ToggleButton onButton = (ToggleButton) scene.lookup("#midi-bt-" + (i + 1));
