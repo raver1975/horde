@@ -81,7 +81,7 @@ public class Regulator extends Region implements RegulatorControl {
     private static final double ANGLE_RANGE = 360;
     private final RegulatorEvent TARGET_SET_EVENT = new RegulatorEvent(RegulatorEvent.TARGET_SET);
     private double size;
-//    private Arc barArc;
+    //    private Arc barArc;
     private Shape ring;
     private Circle mainCircle;
     private Text text;
@@ -104,14 +104,15 @@ public class Regulator extends Region implements RegulatorControl {
     private ObjectProperty<Color> symbolColor;
     private ObjectProperty<Color> iconColor;
     private ObjectProperty<Color> textColor;
-//    private ObjectProperty<Color> barColor;
+    //    private ObjectProperty<Color> barColor;
     private ObjectProperty<Color> color;
     private ObjectProperty<Color> indicatorColor;
     private BooleanProperty selected;
+    private BooleanProperty knobRotateLock;
     private String formatString;
     private double angleStep;
-    private ConicalGradient             barGradient;
-    private GradientLookup              gradientLookup;
+    private ConicalGradient barGradient;
+    private GradientLookup gradientLookup;
 
 
     // ******************** Constructors **************************************
@@ -126,15 +127,15 @@ public class Regulator extends Region implements RegulatorControl {
 //                ex.printStackTrace();
 //            }
 //        }
-        Stop[] stops = { new Stop(0.0, Color.rgb(0,0,0)),
-                new Stop(0.125, Color.rgb(0,0,255)),
-                new Stop(0.25, Color.rgb(0,255,255)),
-                new Stop(0.375, Color.rgb(0,255,0)),
-                new Stop(0.5, Color.rgb(255,255,0)),
-                new Stop(0.625, Color.rgb(255,127,0)),
-                new Stop(0.75, Color.rgb(255,0,0)),
-                new Stop(0.875, Color.rgb(255,0,255)),
-                new Stop(1.0, Color.rgb(255,255,255)) };
+        Stop[] stops = {new Stop(0.0, Color.rgb(0, 0, 0)),
+                new Stop(0.125, Color.rgb(0, 0, 255)),
+                new Stop(0.25, Color.rgb(0, 255, 255)),
+                new Stop(0.375, Color.rgb(0, 255, 0)),
+                new Stop(0.5, Color.rgb(255, 255, 0)),
+                new Stop(0.625, Color.rgb(255, 127, 0)),
+                new Stop(0.75, Color.rgb(255, 0, 0)),
+                new Stop(0.875, Color.rgb(255, 0, 255)),
+                new Stop(1.0, Color.rgb(255, 255, 255))};
 
         List<Stop> reorderedStops = reorderStops(stops);
 
@@ -142,6 +143,19 @@ public class Regulator extends Region implements RegulatorControl {
 
         barGradient = new ConicalGradient(reorderedStops);
         scaleFactor = 1.0;
+
+        knobRotateLock=new BooleanPropertyBase() {
+            @Override
+            public Object getBean() {
+                return Regulator.this;
+            }
+
+            @Override
+            public String getName() {
+                return "knobRotateLock";
+            }
+        };
+
         minValue = new DoublePropertyBase(0) {
             @Override
             public void set(final double VALUE) {
@@ -409,7 +423,7 @@ public class Regulator extends Region implements RegulatorControl {
         symbol.getStyleClass().setAll("symbol");
         symbol.setCacheHint(CacheHint.SPEED);
 
-        pane = new Pane( ring, mainCircle, text, indicatorGroup);
+        pane = new Pane(ring, mainCircle, text, indicatorGroup);
         pane.setPrefSize(PREFERRED_HEIGHT, PREFERRED_HEIGHT);
         pane.setBackground(new Background(new BackgroundFill(color.get().darker(), new CornerRadii(1024), Insets.EMPTY)));
         pane.setEffect(highlight);
@@ -635,6 +649,19 @@ public class Regulator extends Region implements RegulatorControl {
         return selected;
     }
 
+
+    public boolean isKnobRotateLock() {
+        return knobRotateLock.get();
+    }
+
+    public void setKnobRotateLock(final boolean knobRotate) {
+        knobRotateLock.set(knobRotate);
+    }
+
+    public BooleanProperty KnobRotateLockProperty() {
+        return knobRotateLock;
+    }
+
     public void setSymbolPath(final double SCALE_X, final double SCALE_Y, final String PATH) {
         if (PATH.isEmpty()) {
             symbol.setVisible(false);
@@ -674,7 +701,12 @@ public class Regulator extends Region implements RegulatorControl {
         double theta = Math.atan2(ny, nx);
         theta = Double.compare(theta, 0.0) >= 0 ? Math.toDegrees(theta) : Math.toDegrees((theta)) + 360.0;
         double angle = (theta + 270) % 360;
-        setTargetValue(angle / angleStep + minValue.get());
+        double oldval = getTargetValue();
+        double newval = angle / angleStep + minValue.get();
+        double per = Math.abs(newval - oldval) / (getMaxValue() - getMinValue());
+        if (!knobRotateLock.getValue() || per < 0.25d) {
+            setTargetValue(newval);
+        }
     }
 
 
@@ -689,10 +721,10 @@ public class Regulator extends Region implements RegulatorControl {
 
     private void drawBar(final double VALUE) {
 //        barArc.setLength(-(VALUE - minValue.get()) * angleStep);
-        System.out.println(getTargetValue()/127d);
-        mainCircle.setFill(gradientLookup.getColorAt(getTargetValue()/127d).darker().darker().darker());
-        ring.setFill(gradientLookup.getColorAt(getTargetValue()/127d).darker());
-        ring.setStroke(gradientLookup.getColorAt(getTargetValue()/127d).darker());
+        System.out.println(getTargetValue() / 127d);
+        mainCircle.setFill(gradientLookup.getColorAt(getTargetValue() / 127d).darker().darker().darker());
+        ring.setFill(gradientLookup.getColorAt(getTargetValue() / 127d).darker());
+        ring.setStroke(gradientLookup.getColorAt(getTargetValue() / 127d).darker());
 
 //        indicator.setStroke(gradientLookup.getColorAt(getTargetValue()/127d));
     }
@@ -766,20 +798,25 @@ public class Regulator extends Region implements RegulatorControl {
         rotate(targetValue.get());
     }
 
-    private List<Stop> reorderStops(final Stop... STOPS) { return reorderStops(Arrays.asList(STOPS)); }
+    private List<Stop> reorderStops(final Stop... STOPS) {
+        return reorderStops(Arrays.asList(STOPS));
+    }
+
     private List<Stop> reorderStops(final List<Stop> STOPS) {
         /*
         0.0 -> 0.611
         0.5 -> 0.0 & 1.0
         1.0 -> 0.389
          */
-        double range     = 0.778;
+        double range = 0.778;
         double halfRange = range * 0.5;
 
         Map<Double, Color> stopMap = new HashMap<Double, Color>();
-        for (Stop stop : STOPS) { stopMap.put(stop.getOffset(), stop.getColor()); }
+        for (Stop stop : STOPS) {
+            stopMap.put(stop.getOffset(), stop.getColor());
+        }
 
-        List<Stop>        sortedStops     = new ArrayList<Stop>(STOPS.size());
+        List<Stop> sortedStops = new ArrayList<Stop>(STOPS.size());
         SortedSet<Double> sortedFractions = new TreeSet<Double>(stopMap.keySet());
         if (sortedFractions.last() < 1) {
             stopMap.put(1.0, stopMap.get(sortedFractions.last()));

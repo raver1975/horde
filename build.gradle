@@ -8,7 +8,7 @@ plugins {
 group 'com.klemstinegroup'
 version '0.1'
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
