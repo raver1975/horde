@@ -18,25 +18,19 @@ public class InstrumentSequencer extends Sequencer {
     AudioInputStream audioInputStream;
     private ArrayList<Integer> noteOn = new ArrayList<Integer>();
     private AudioSynthesizer audioSynthesizer = null;
-    private BasslinePattern bassline;
-    private int[][] rhythm;
-    private boolean shuffle;
-    private int samplesPerSequencerUpdate;
-    public int tick = 0;
-    public int step = 0;
-    private boolean sixteenth_note = true;
+
     public int channel = 0;
     private static String[] channels = new String[16];
-    private int patternLength = 16;
     private boolean drum;
 
-    InstrumentSequencer(int channel,boolean drum) {
-        this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel,drum);
+    InstrumentSequencer(int channel, boolean drum) {
+        this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel, drum);
     }
 
-    private InstrumentSequencer(String inst, int channel,boolean drum) {
+
+    private InstrumentSequencer(String inst, int channel, boolean drum) {
         this.instrument = inst;
-        drum=drum;
+        this.drum = drum;
         randomizeRhythm();
         randomizeSequence();
         this.channel = channel;
@@ -59,7 +53,7 @@ public class InstrumentSequencer extends Sequencer {
     }
 
     public void randomizeRhythm() {
-        this.rhythm = createRhythm(this.patternLength);
+        this.setRhythm(createRhythm(this.patternLength));
     }
 
     public void randomizeSequence() {
@@ -70,14 +64,14 @@ public class InstrumentSequencer extends Sequencer {
         if ((!preferBassDrum) && (!preferSnareDrum)) {
             preferBassDrum = preferSnareDrum = true;
         }
-        for (int i = 0; i < this.rhythm[0].length; i++) {
+        for (int i = 0; i < this.getRhythm()[0].length; i++) {
             bassCoeffs[i] = basicCoeffs[(i % 4)];
-            if (((this.rhythm[0][i] > 0) && (preferBassDrum))
-                    || ((preferSnareDrum) && ((this.rhythm[1][i] > 0) || (this.rhythm[4][i] > 0))))
+            if (((this.getRhythm()[0][i] > 0) && (preferBassDrum))
+                    || ((preferSnareDrum) && ((this.getRhythm()[1][i] > 0) || (this.getRhythm()[4][i] > 0))))
                 bassCoeffs[i] *= 4.0D;
-            if (this.rhythm[3][i] > 0)
+            if (this.getRhythm()[3][i] > 0)
                 bassCoeffs[i] *= 2.0D;
-            if (this.rhythm[4][i] > 0) {
+            if (this.getRhythm()[4][i] > 0) {
                 bassCoeffs[i] *= 2.0D;
             }
         }
@@ -85,7 +79,7 @@ public class InstrumentSequencer extends Sequencer {
         markov.addKid(new Markov(Harmony.SCALE_MELODIC_MINOR, 2.0D));
         markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
         markov.addKid(new Markov(Harmony.SCALE_HUNGARIAN_MINOR, 0.5D));
-        this.bassline = createBassline(this.patternLength, (int[]) (int[]) markov.getKid().getContent(), bassCoeffs);
+        this.setBassline(createBassline(this.patternLength, (int[]) (int[]) markov.getKid().getContent(), bassCoeffs));
         Markov delayTimes = new Markov(null, 0.0D);
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 2, 0.5D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 3, 2.0D));
@@ -97,16 +91,14 @@ public class InstrumentSequencer extends Sequencer {
     }
 
 
-
     public void tick() {
         if (this.tick == 0) {
             if (this.sixteenth_note) {
                 if (!drum) {
-                    if ((!this.bassline.pause[this.step])
-                            && (this.bassline.note[this.step] != -1)) {
+                    if ((!this.getBassline().pause[this.step])) {
                         try {
-                            int pitch = this.bassline.note[this.step] + 36 + (this.bassline.isTransUp(this.step) ? 12 : 0) - (this.bassline.isTransDown(this.step) ? 12 : 0);
-                            int vel = (int) ((this.bassline.accent[this.step] ? 127 : 80) * vol);
+                            int pitch = this.getBassline().note[this.step] + 36;
+                            int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
                             setChannel(channel);
                             noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
@@ -120,11 +112,11 @@ public class InstrumentSequencer extends Sequencer {
                     }
                 }
                 if (drum) {
-                    for (int ch = 0; ch < this.rhythm.length; ch++) {
-                        if (this.rhythm[ch][this.step] != 0) {
+                    for (int ch = 0; ch < this.getRhythm().length; ch++) {
+                        if (this.getRhythm()[ch][this.step] != 0) {
                             int vol1 = 255;
                             if ((this.step > 1) && (this.step < 15)
-                                    && (this.rhythm[ch][(this.step - 1)] != 0)) {
+                                    && (this.getRhythm()[ch][(this.step - 1)] != 0)) {
                                 vol1 = (int) (vol1 * 0.66D);
                             }
                             if (this.step % 4 != 0)
@@ -132,16 +124,14 @@ public class InstrumentSequencer extends Sequencer {
                             if (this.step % 2 != 0) {
                                 vol1 = (int) (vol1 * 0.66D);
                             }
-                            int pitch = this.bassline.note[this.step] + 36 + (this.bassline.isTransUp(this.step) ? 12 : 0) - (this.bassline.isTransDown(this.step) ? 12 : 0);
-                            int vel = (int) ((this.bassline.accent[this.step] ? 127 : 80) * vol);
+                            int pitch = this.getBassline().note[this.step] + 36;
+                            int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
                             setChannel(channel);
                             noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
                             try {
-                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, ch+32, (int) (vol1*vol)), -1);
-                            } catch (MidiUnavailableException e) {
-                                e.printStackTrace();
-                            } catch (InvalidMidiDataException e) {
+                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, ch + 32, (int) (vol1 * vol)), -1);
+                            } catch (MidiUnavailableException | InvalidMidiDataException e) {
                                 e.printStackTrace();
                             }
 //                            this.drums.noteOn(ch + 32, vol);
@@ -151,14 +141,12 @@ public class InstrumentSequencer extends Sequencer {
                 if (this.shuffle)
                     setBpm(this.bpm);
             } else {
-                if (!this.bassline.slide[this.step]) {
+                if (!this.getBassline().slide[this.step]) {
                     for (int n : noteOn) {
                         try {
                             setChannel(channel);
                             audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
-                        } catch (MidiUnavailableException e) {
-                            e.printStackTrace();
-                        } catch (InvalidMidiDataException e) {
+                        } catch (MidiUnavailableException | InvalidMidiDataException e) {
                             e.printStackTrace();
                         }
                     }
@@ -179,11 +167,11 @@ public class InstrumentSequencer extends Sequencer {
         }
     }
 
-    public void setChannel(){
+    public void setChannel() {
         setChannel(channel);
     }
 
-    public void setChannel(int channel) {
+    private void setChannel(int channel) {
         if (!instrument.equals(channels[channel])) {
             this.channel = channel;
             channels[channel] = instrument;
@@ -256,22 +244,11 @@ public class InstrumentSequencer extends Sequencer {
                     }
                 }
                 double noteTranspProb = 0.12D;
-                if ((Math.random() < noteTranspProb) && (note + transpose < 12)) {
-                    pattern.transUp[i] = true;
-                } else if ((Math.random() < noteTranspProb)
-                        && (note + transpose > -12)) {
-                    pattern.transDown[i] = true;
-                }
+
                 while ((Math.random() * sustainWeight > weights[((i + 1) % weights.length)])
                         && (i < length)) {
                     pattern.slide[i] = true;
 
-                    if ((i != 0) && (pattern.transUp[(i - 1)])) {
-                        pattern.transUp[i] = true;
-                    }
-                    if ((i != 0) && (pattern.transDown[(i - 1)])) {
-                        pattern.transDown[i] = true;
-                    }
                     i++;
                 }
 

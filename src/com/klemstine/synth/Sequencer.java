@@ -1,8 +1,33 @@
 package com.klemstine.synth;
 
 public abstract class Sequencer {
-    protected double bpm = 140.0D;
-    protected double vol = 0f;
+    public double bpm = 140.0D;
+    public double vol = 0f;
+    private BasslinePattern bassline;
+    private int[][] rhythm;
+    public boolean shuffle;
+    public int samplesPerSequencerUpdate;
+    public int tick = 0;
+    public int step = 0;
+    public boolean sixteenth_note = true;
+    public int patternLength = 16;
+
+
+    public BasslinePattern getBassline() {
+        return bassline;
+    }
+
+    public void setBassline(BasslinePattern bassline) {
+        this.bassline = bassline;
+    }
+
+    public int[][] getRhythm() {
+        return rhythm;
+    }
+
+    public void setRhythm(int[][] rhythm) {
+        this.rhythm = rhythm;
+    }
 
     public abstract void tick();
 

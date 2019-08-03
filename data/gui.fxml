@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.*?>
 <?import eu.hansolo.fx.regulators.*?>
 <?import java.lang.*?>
 <?import javafx.collections.*?>
@@ -17,9 +18,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="663.0000999999975" prefWidth="688.999977929685" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="814.0" prefWidth="690.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <GridPane alignment="CENTER" prefHeight="663.0" prefWidth="689.0" AnchorPane.topAnchor="13.0">
+        <GridPane alignment="CENTER" prefHeight="796.0" prefWidth="689.0" AnchorPane.topAnchor="13.0">
             <children>
             <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.rowIndex="3">
                <children>
@@ -277,6 +278,27 @@
             <Regulator id="midi-pan-15" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             <Regulator id="midi-pan-16" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             <Regulator id="midi-pan-10" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <Canvas id="sequencer" height="323.0" width="689.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" />
+
+        <RadioButton id="select-channel-1" mnemonicParsing="false" selected="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+            <toggleGroup>
+                <ToggleGroup fx:id="selectsequencer" />
+            </toggleGroup></RadioButton>
+                <RadioButton id="select-channel-2" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-3" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-4" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-5" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-6" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-7" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-8" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-9" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-10" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-11" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-12" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-13" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-14" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-15" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-16" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
 
                   </children>
             <columnConstraints>
@@ -298,15 +320,13 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             </columnConstraints>
             <rowConstraints>
-            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="92.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="429.0" minHeight="0.0" prefHeight="229.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="217.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="39.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="429.0" minHeight="0.0" prefHeight="214.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="393.0" minHeight="2.0" prefHeight="22.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="358.0" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
     </children>

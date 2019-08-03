@@ -6,8 +6,8 @@
    public boolean[] pause;
    public boolean[] accent;
    public boolean[] slide;
-   public boolean[] transUp;
-   public boolean[] transDown;
+//   public boolean[] transUp;
+//   public boolean[] transDown;
  
    public BasslinePattern(int length)
    {
@@ -15,8 +15,8 @@
      this.pause = new boolean[length];
      this.accent = new boolean[length];
      this.slide = new boolean[length];
-     this.transUp = new boolean[length];
-     this.transDown = new boolean[length];
+//     this.transUp = new boolean[length];
+//     this.transDown = new boolean[length];
      clear();
  
      this.note = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -32,8 +32,8 @@
        this.pause[i] = false;
        this.accent[i] = false;
        this.slide[i] = false;
-       this.transUp[i] = false;
-       this.transDown[i] = false;
+//       this.transUp[i] = false;
+//       this.transDown[i] = false;
      }
    }
  
@@ -69,20 +69,20 @@
      this.accent[index] = value;
    }
  
-   public boolean isTransDown(int index) {
-     return this.transDown[index];
-   }
- 
-   public void setTransDown(int index, boolean value) {
-     this.transDown[index] = value;
-   }
- 
-   public boolean isTransUp(int index) {
-     return this.transUp[index];
-   }
- 
-   public void setTransUp(int index, boolean value) {
-     this.transUp[index] = value;
-   }
+//   public boolean isTransDown(int index) {
+//     return this.transDown[index];
+//   }
+//
+//   public void setTransDown(int index, boolean value) {
+//     this.transDown[index] = value;
+//   }
+//
+//   public boolean isTransUp(int index) {
+//     return this.transUp[index];
+//   }
+//
+//   public void setTransUp(int index, boolean value) {
+//     this.transUp[index] = value;
+//   }
  }
 

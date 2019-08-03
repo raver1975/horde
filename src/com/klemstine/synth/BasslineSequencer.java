@@ -4,16 +4,6 @@ import java.util.ArrayList;
 
 public class BasslineSequencer extends Sequencer {
     private BasslineSynthesizer synth;
-    private BasslinePattern pattern;
-    private int[][] rhythm;
-    private double bpm;
-    private boolean shuffle;
-    private int samplesPerSequencerUpdate;
-    public int tick = 0;
-    public int step = 0;
-    private boolean sixteenth_note = true;
-
-    private int patternLength = 16;
 
     BasslineSequencer(BasslineSynthesizer synth) {
         this.synth = synth;
@@ -22,7 +12,7 @@ public class BasslineSequencer extends Sequencer {
     }
 
     public void randomizeRhythm() {
-        this.rhythm = createRhythm(this.patternLength);
+        this.setRhythm(createRhythm(this.patternLength));
     }
 
     public void randomizeSequence() {
@@ -35,14 +25,14 @@ public class BasslineSequencer extends Sequencer {
         if ((!preferBassDrum) && (!preferSnareDrum)) {
             preferBassDrum = preferSnareDrum = true;
         }
-        for (int i = 0; i < this.rhythm[0].length; i++) {
+        for (int i = 0; i < this.getRhythm()[0].length; i++) {
             bassCoeffs[i] = basicCoeffs[(i % 4)];
-            if (((this.rhythm[0][i] > 0) && (preferBassDrum))
-                    || ((preferSnareDrum) && ((this.rhythm[1][i] > 0) || (this.rhythm[4][i] > 0))))
+            if (((this.getRhythm()[0][i] > 0) && (preferBassDrum))
+                    || ((preferSnareDrum) && ((this.getRhythm()[1][i] > 0) || (this.getRhythm()[4][i] > 0))))
                 bassCoeffs[i] *= 4.0D;
-            if (this.rhythm[3][i] > 0)
+            if (this.getRhythm()[3][i] > 0)
                 bassCoeffs[i] *= 2.0D;
-            if (this.rhythm[4][i] > 0) {
+            if (this.getRhythm()[4][i] > 0) {
                 bassCoeffs[i] *= 2.0D;
             }
         }
@@ -51,7 +41,7 @@ public class BasslineSequencer extends Sequencer {
         markov.addKid(new Markov(Harmony.SCALE_MELODIC_MINOR, 2.0D));
         markov.addKid(new Markov(Harmony.SCALE_MAJOR, 1.0D));
         markov.addKid(new Markov(Harmony.SCALE_HUNGARIAN_MINOR, 0.5D));
-        this.pattern = createBassline(this.patternLength, (int[]) (int[]) markov.getKid().getContent(), bassCoeffs);
+        this.setBassline(createBassline(this.patternLength, (int[]) (int[]) markov.getKid().getContent(), bassCoeffs));
         Markov delayTimes = new Markov(null, 0.0D);
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 2, 0.5D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 3, 2.0D));
@@ -65,22 +55,14 @@ public class BasslineSequencer extends Sequencer {
     public void tick() {
         if (this.tick == 0) {
             if (this.sixteenth_note) {
-                if ((!this.pattern.pause[this.step])
-                        && (this.pattern.note[this.step] != -1)) {
+                if ((!this.getBassline().pause[this.step])) {
                     this.synth
-                            .noteOn(this.pattern.note[this.step]
-                                            + 36
-                                            + (this.pattern.isTransUp(this.step) ? 12
-                                            : 0)
-                                            - (this.pattern.isTransDown(this.step) ? 12
-                                            : 0),
-                                    this.pattern.accent[this.step] ? 127
-                                            : 80);
+                            .noteOn(this.getBassline().note[this.step] + 36, this.getBassline().accent[this.step] ? 127 : 80);
                 }
                 if (this.shuffle)
                     setBpm(this.bpm);
             } else {
-                if (!this.pattern.slide[this.step]) {
+                if (!this.getBassline().slide[this.step]) {
                     this.synth.noteOff();
                 }
                 this.step += 1;
@@ -149,21 +131,21 @@ public class BasslineSequencer extends Sequencer {
                     }
                 }
                 double noteTranspProb = 0.12D;
-                if ((Math.random() < noteTranspProb) && (note + transpose < 12)) {
-                    pattern.transUp[i] = true;
-                } else if ((Math.random() < noteTranspProb)
-                        && (note + transpose > -12)) {
-                    pattern.transDown[i] = true;
-                }
+//                if ((Math.random() < noteTranspProb) && (note + transpose < 12)) {
+//                    pattern.transUp[i] = true;
+//                } else if ((Math.random() < noteTranspProb)
+//                        && (note + transpose > -12)) {
+//                    pattern.transDown[i] = true;
+//                }
                 while ((Math.random() * sustainWeight > weights[((i + 1) % weights.length)])
                         && (i < length)) {
                     pattern.slide[i] = true;
-                    if ((i != 0) && (pattern.transUp[(i - 1)])) {
-                        pattern.transUp[i] = true;
-                    }
-                    if ((i != 0) && (pattern.transDown[(i - 1)])) {
-                        pattern.transDown[i] = true;
-                    }
+//                    if ((i != 0) && (pattern.transUp[(i - 1)])) {
+//                        pattern.transUp[i] = true;
+//                    }
+//                    if ((i != 0) && (pattern.transDown[(i - 1)])) {
+//                        pattern.transDown[i] = true;
+//                    }
                     i++;
                 }
             } else {

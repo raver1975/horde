@@ -1,5 +1,6 @@
 package com.klemstine.synth;
 
+import com.klemstine.TheHorde;
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.util.MixingAudioInputStream;
 
@@ -20,6 +21,7 @@ public class Output implements Runnable {
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
     public static final int BUFFER_SIZE = 16384;
+    private final TheHorde horde;
 
     private Synthesizer[] synthesizers;
     private MixingAudioInputStream mixingAudioInputStream;
@@ -48,6 +50,7 @@ public class Output implements Runnable {
     double left3 = 0.0D;
     double right4 = 0.0D;
     double left4 = 0.0D;
+    private int lastStep=-1;
 
 
     public Delay getDelay() {
@@ -62,7 +65,8 @@ public class Output implements Runnable {
         return reverb;
     }
 
-    public Output() {
+    public Output(TheHorde horde) {
+        this.horde=horde;
 //        soundSystem();
         sourceLine = AudioFileCreator.getSourceDataLine();
         try {
@@ -227,11 +231,15 @@ public class Output implements Runnable {
                 }
                 continue;
             }
+            if (sequencer[0].step!=lastStep){
+                horde.drawSequencer();
+            }
+            lastStep=sequencer[0].step;
+
             for (int i = 0; i < buffer1.length; i += 4) {
                 for (Sequencer sequencer : sequencer) {
                     sequencer.tick();
                 }
-
                 left1 = right1 = 0;
                 left2 = right2 = 0;
                 left3 = right3 = 0;
@@ -322,7 +330,7 @@ public class Output implements Runnable {
         }
     }
 
-    public Sequencer[] getSequencer() {
+    public Sequencer[] getSequencers() {
         return this.sequencer;
     }
 
