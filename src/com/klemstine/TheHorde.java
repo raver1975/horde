@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_ACCENT;
@@ -42,7 +41,8 @@ import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_RESONANCE;
 import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_TUNE;
 
 public class TheHorde extends Application {
-    private Canvas canvas;
+    private Canvas sequencerCanvas;
+    private Canvas visualizerCanvas;
     private int selectedSequencer = 0;
     Output output;
     private int canvasYHeight;
@@ -221,7 +221,6 @@ public class TheHorde extends Application {
                 cb.setVisible(false);
                 continue;
             }
-            System.out.println(cb);
             cb.setItems(observableList);
             cb.getSelectionModel().select(((InstrumentSequencer) output.getSequencers()[i]).getInstrument());
             cb.setMinWidth(150d);
@@ -238,15 +237,17 @@ public class TheHorde extends Application {
             });
         }
 
-        canvas = (Canvas) scene.lookup("#sequencer");
-        canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+        sequencerCanvas = (Canvas) scene.lookup("#sequencer");
+        visualizerCanvas = (Canvas) scene.lookup("#vis");
+
+        sequencerCanvas.setOnMousePressed(new EventHandler<MouseEvent>() {
             private int state;
 
             @Override
             public void handle(MouseEvent e) {
-                if (!canvas.contains(e.getX(),e.getY())){return;}
-                int x = (int) (e.getX() / (canvas.getWidth() / 16));
-                int y = (int) ((canvas.getHeight() - e.getY()) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
+                if (!sequencerCanvas.contains(e.getX(),e.getY())){return;}
+                int x = (int) (e.getX() / (sequencerCanvas.getWidth() / 16));
+                int y = (int) ((sequencerCanvas.getHeight() - e.getY()) / (sequencerCanvas.getHeight() / canvasYHeight) - canvasYoffset);
                 System.out.println("xy" + x + "\t" + y);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
                 if (bassline != null) {
@@ -296,12 +297,12 @@ public class TheHorde extends Application {
                 }
             }
         });
-        canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+        sequencerCanvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                if (!canvas.contains(e.getX(),e.getY())|| e.getButton() != MouseButton.PRIMARY){return;}
-                int x = (int) (e.getX() / (canvas.getWidth() / 16d));
-                int y = (int) ((canvas.getHeight() - e.getY()) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
+                if (!sequencerCanvas.contains(e.getX(),e.getY())|| e.getButton() != MouseButton.PRIMARY){return;}
+                int x = (int) (e.getX() / (sequencerCanvas.getWidth() / 16d));
+                int y = (int) ((sequencerCanvas.getHeight() - e.getY()) / (sequencerCanvas.getHeight() / canvasYHeight) - canvasYoffset);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
                 if (bassline != null) {
                     bassline.note[x] = (byte) y;
@@ -321,10 +322,10 @@ public class TheHorde extends Application {
 
     public void drawSequencer() {
         BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
-        if (canvas == null) return;
+        if (sequencerCanvas == null) return;
         int step = output.getSequencers()[selectedSequencer].step;
-        double width = canvas.getWidth();
-        double height = canvas.getHeight();
+        double width = sequencerCanvas.getWidth();
+        double height = sequencerCanvas.getHeight();
         double widthDist = width / 16d;
         if (bassline == null) {
             canvasYoffset = 0;
@@ -335,10 +336,10 @@ public class TheHorde extends Application {
         }
 
         double heightDist = height / canvasYHeight;
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        GraphicsContext gc = sequencerCanvas.getGraphicsContext2D();
 
         gc.setFill(new Color(0, 0, .9d, 1));
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.fillRect(0, 0, sequencerCanvas.getWidth(), sequencerCanvas.getHeight());
 
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
@@ -453,4 +454,22 @@ public class TheHorde extends Application {
     public static void main(String args[]) {
         launch(args);
     }
-} 
+
+    public void drawVisualizer(byte[] buffer1) {
+        if (visualizerCanvas!=null) {
+            double width = visualizerCanvas.getWidth();
+            double height = visualizerCanvas.getHeight();
+            GraphicsContext gc = visualizerCanvas.getGraphicsContext2D();
+            gc.setFill(Color.BLACK);
+            gc.fillRect(0,0,width,height);
+            gc.setStroke(new Color(1d,1d,1d,1d));
+            int last=0;
+            for (int i = 0; i < width; i++) {
+                double perc = (double) i / width;
+                int l = (int) (perc * buffer1.length);
+                gc.strokeLine(i, height / 2, i,  (127 - buffer1[i])*(height/2)/127d);
+
+            }
+        }
+    }
+}

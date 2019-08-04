@@ -77,7 +77,7 @@
                       <Slider id="midi-sl-12" max="127.0" orientation="VERTICAL" prefHeight="161.0" value="0.0" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-                <ChoiceBox id="midi-instrument-1" rotate="-90.0" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-1" rotate="-90.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -86,7 +86,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-2" rotate="-90.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-2" rotate="-90.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -95,7 +95,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-3" rotate="-90.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-3" rotate="-90.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -104,7 +104,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-4" rotate="-90.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-4" rotate="-90.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -113,7 +113,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-5" rotate="-90.0" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-5" rotate="-90.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -122,7 +122,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-6" rotate="-90.0" GridPane.columnIndex="5" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-6" rotate="-90.0" GridPane.columnIndex="5" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -131,7 +131,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-7" rotate="-90.0" GridPane.columnIndex="6" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-7" rotate="-90.0" GridPane.columnIndex="6" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -140,7 +140,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-8" rotate="-90.0" GridPane.columnIndex="7" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-8" rotate="-90.0" GridPane.columnIndex="7" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -149,7 +149,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-9" rotate="-90.0" GridPane.columnIndex="8" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-9" rotate="-90.0" GridPane.columnIndex="8" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -158,7 +158,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-11" rotate="-90.0" GridPane.columnIndex="9" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-11" rotate="-90.0" GridPane.columnIndex="9" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -167,7 +167,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-12" prefWidth="240.0" rotate="-90.0" GridPane.columnIndex="10" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-12" prefWidth="240.0" rotate="-90.0" GridPane.columnIndex="10" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -201,7 +201,7 @@
                       <Slider id="midi-sl-15" max="127.0" orientation="VERTICAL" prefHeight="160.0" value="0.0" GridPane.columnIndex="17" GridPane.halignment="CENTER" GridPane.rowIndex="2" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-                <ChoiceBox id="midi-instrument-10" prefWidth="35.0" rotate="-90.0" GridPane.columnIndex="15" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-10" prefWidth="35.0" rotate="-90.0" GridPane.columnIndex="15" GridPane.rowIndex="2">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -210,7 +210,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-            <VBox alignment="CENTER" spacing="5.0" GridPane.columnIndex="11" GridPane.rowIndex="4">
+            <VBox alignment="CENTER" spacing="5.0" GridPane.columnIndex="11" GridPane.rowIndex="2">
                <children>
                   <Regulator id="synth1-knob-1" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="69.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="69.0" />
                   <Regulator id="synth1-knob-2" maxHeight="30.0" maxValue="127.0" maxWidth="58.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="58.0" />
@@ -220,7 +220,7 @@
                   <Regulator id="synth1-knob-6" maxHeight="30.0" maxValue="127.0" maxWidth="106.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="106.0" />
                </children>
             </VBox>
-            <VBox alignment="CENTER" spacing="5.0" GridPane.columnIndex="12" GridPane.rowIndex="4">
+            <VBox alignment="CENTER" spacing="5.0" GridPane.columnIndex="12" GridPane.rowIndex="2">
                <children>
                   <Regulator id="synth2-knob-1" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="143.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="143.0" />
                   <Regulator id="synth2-knob-2" maxHeight="30.0" maxValue="127.0" maxWidth="73.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="73.0" />
@@ -230,75 +230,76 @@
                   <Regulator id="synth2-knob-6" maxHeight="30.0" maxValue="127.0" maxWidth="50.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="50.0" />
                </children>
             </VBox>
-                <ToggleButton id="midi-bt-1" mnemonicParsing="false" text="   " GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-1" mnemonicParsing="false" text="R" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-2" mnemonicParsing="false" text="   " GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-2" mnemonicParsing="false" text="R" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-3" mnemonicParsing="false" text="   " GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-3" mnemonicParsing="false" text="R" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-4" mnemonicParsing="false" text="   " GridPane.columnIndex="3" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-4" mnemonicParsing="false" text="R" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-5" mnemonicParsing="false" text="   " GridPane.columnIndex="4" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-5" mnemonicParsing="false" text="R" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-6" mnemonicParsing="false" text="   " GridPane.columnIndex="5" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-6" mnemonicParsing="false" text="R" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-7" mnemonicParsing="false" text="   " GridPane.columnIndex="6" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-7" mnemonicParsing="false" text="R" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-8" mnemonicParsing="false" text="   " GridPane.columnIndex="7" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-8" mnemonicParsing="false" text="R" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-9" mnemonicParsing="false" text="   " GridPane.columnIndex="8" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-9" mnemonicParsing="false" text="R" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-11" mnemonicParsing="false" text="   " GridPane.columnIndex="9" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-11" mnemonicParsing="false" text="R" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-12" mnemonicParsing="false" text="   " GridPane.columnIndex="10" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-12" mnemonicParsing="false" text="R" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-13" mnemonicParsing="false" text="   " GridPane.columnIndex="11" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-13" mnemonicParsing="false" text="R" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-14" mnemonicParsing="false" text="   " GridPane.columnIndex="12" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-14" mnemonicParsing="false" text="R" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-10" mnemonicParsing="false" text="   " GridPane.columnIndex="15" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-10" mnemonicParsing="false" text="R" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-16" mnemonicParsing="false" text="   " GridPane.columnIndex="14" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-16" mnemonicParsing="false" text="R" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <ToggleButton id="midi-bt-15" mnemonicParsing="false" text="   " GridPane.columnIndex="13" GridPane.halignment="CENTER" />
-                <Button id="midi-shuffle-15" mnemonicParsing="false" text="R" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Regulator id="midi-pan-1" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-2" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-            <Regulator id="midi-pan-3" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-4" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-5" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-6" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-7" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-8" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-9" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-11" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-12" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-13" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-14" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-15" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-16" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Regulator id="midi-pan-10" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Canvas id="sequencer" height="323.0" width="689.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-1" mnemonicParsing="false" text="   " GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-1" mnemonicParsing="false" text="R" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-2" mnemonicParsing="false" text="   " GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-2" mnemonicParsing="false" text="R" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-3" mnemonicParsing="false" text="   " GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-3" mnemonicParsing="false" text="R" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-4" mnemonicParsing="false" text="   " GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-4" mnemonicParsing="false" text="R" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-5" mnemonicParsing="false" text="   " GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-5" mnemonicParsing="false" text="R" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-6" mnemonicParsing="false" text="   " GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-6" mnemonicParsing="false" text="R" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-7" mnemonicParsing="false" text="   " GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-7" mnemonicParsing="false" text="R" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-8" mnemonicParsing="false" text="   " GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-8" mnemonicParsing="false" text="R" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-9" mnemonicParsing="false" text="   " GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-9" mnemonicParsing="false" text="R" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-11" mnemonicParsing="false" text="   " GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-11" mnemonicParsing="false" text="R" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-12" mnemonicParsing="false" text="   " GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-12" mnemonicParsing="false" text="R" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-13" mnemonicParsing="false" text="   " GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-13" mnemonicParsing="false" text="R" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-14" mnemonicParsing="false" text="   " GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-14" mnemonicParsing="false" text="R" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-10" mnemonicParsing="false" text="   " GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-10" mnemonicParsing="false" text="R" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-16" mnemonicParsing="false" text="   " GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-16" mnemonicParsing="false" text="R" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                <ToggleButton id="midi-bt-15" mnemonicParsing="false" text="   " GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+                <Button id="midi-shuffle-15" mnemonicParsing="false" text="R" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Regulator id="midi-pan-1" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-2" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Regulator id="midi-pan-3" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-4" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-5" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-6" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-7" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-8" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-9" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-11" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-12" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-13" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-14" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-15" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-16" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Regulator id="midi-pan-10" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Canvas id="sequencer" height="271.0" width="689.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" />
 
-        <RadioButton id="select-channel-1" mnemonicParsing="false" selected="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+        <RadioButton id="select-channel-1" mnemonicParsing="false" selected="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER">
             <toggleGroup>
                 <ToggleGroup fx:id="selectsequencer" />
             </toggleGroup></RadioButton>
-                <RadioButton id="select-channel-2" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-3" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-4" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-5" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-6" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-7" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-8" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-9" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-10" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-11" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-12" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-13" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-14" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-15" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <RadioButton id="select-channel-16" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                <RadioButton id="select-channel-2" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-3" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-4" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-5" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-6" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-7" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-8" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-9" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-10" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-11" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-12" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-13" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-14" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-15" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <RadioButton id="select-channel-16" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+            <Canvas id="vis" height="72.0" width="691.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" />
 
                   </children>
             <columnConstraints>
@@ -320,13 +321,14 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             </columnConstraints>
             <rowConstraints>
-            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="429.0" minHeight="0.0" prefHeight="214.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="393.0" minHeight="2.0" prefHeight="22.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="358.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="73.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="43.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="429.0" minHeight="0.0" prefHeight="215.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="356.0" minHeight="10.0" prefHeight="88.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="356.0" minHeight="5.0" prefHeight="34.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="356.0" minHeight="0.0" prefHeight="39.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="393.0" minHeight="0.0" prefHeight="31.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="273.0" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
     </children>

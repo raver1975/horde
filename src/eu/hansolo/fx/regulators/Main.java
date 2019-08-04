@@ -143,7 +143,6 @@ public class Main extends Application {
 
     @Override public void start(Stage stage) {
         int cnt=0;
-        System.out.println("here:"+cnt++);
         HBox pane = new HBox(regulator, feedbackRegulator, colorRegulator);
         System.out.println("here:"+cnt++);
         pane.setSpacing(20);

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class Output implements Runnable {
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
-    public static final int BUFFER_SIZE = 16384;
+    public static final int BUFFER_SIZE = 16384/4;
     private final TheHorde horde;
 
     private Synthesizer[] synthesizers;
@@ -31,6 +31,7 @@ public class Output implements Runnable {
     private byte[] buffer2 = new byte[BUFFER_SIZE];
     private byte[] buffer3 = new byte[BUFFER_SIZE];
     private byte[] buffer4 = new byte[BUFFER_SIZE];
+    private byte[] buffer5 = new byte[BUFFER_SIZE];
     private InputStream pin1 = new ByteArrayInputStream(buffer1);
     private InputStream pin2 = new ByteArrayInputStream(buffer2);
     private InputStream pin3 = new ByteArrayInputStream(buffer3);
@@ -221,7 +222,7 @@ public class Output implements Runnable {
         int sample_left_int4 = 0;
         int sample_right_int4 = 0;
 
-        byte[] buffer5 = new byte[BUFFER_SIZE];
+
         while (running) {
             if (paused) {
                 try {
@@ -235,7 +236,7 @@ public class Output implements Runnable {
                 horde.drawSequencer();
             }
             lastStep=sequencer[0].step;
-
+//            horde.drawVisualizer(buffer1);
             for (int i = 0; i < buffer1.length; i += 4) {
                 for (Sequencer sequencer : sequencer) {
                     sequencer.tick();
@@ -312,6 +313,7 @@ public class Output implements Runnable {
                 pin4.reset();
                 mixingAudioInputStream.read(buffer5);
                 audioWriter.write(buffer5);
+                horde.drawVisualizer(buffer5);
                 sourceLine.write(buffer5, 0, BUFFER_SIZE);
             } catch (IOException e) {
                 e.printStackTrace();

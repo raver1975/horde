@@ -721,7 +721,6 @@ public class Regulator extends Region implements RegulatorControl {
 
     private void drawBar(final double VALUE) {
 //        barArc.setLength(-(VALUE - minValue.get()) * angleStep);
-        System.out.println(getTargetValue() / 127d);
         mainCircle.setFill(gradientLookup.getColorAt(getTargetValue() / 127d).darker().darker().darker());
         ring.setFill(gradientLookup.getColorAt(getTargetValue() / 127d).darker());
         ring.setStroke(gradientLookup.getColorAt(getTargetValue() / 127d).darker());
