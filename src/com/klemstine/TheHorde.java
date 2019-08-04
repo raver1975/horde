@@ -253,7 +253,7 @@ public class TheHorde extends Application {
                     if (e.getButton() == MouseButton.PRIMARY) {
                         bassline.note[x] = (byte) y;
                         bassline.pause[x] = false;
-                    } else if (e.getButton() == MouseButton.SECONDARY) {
+                    } else if (e.getButton() == MouseButton.SECONDARY &&bassline.note[x]==(byte)y) {
                         bassline.note[x] = (byte) y;
                         state++;
                         switch (state % 6) {
@@ -299,7 +299,7 @@ public class TheHorde extends Application {
         canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                if (!canvas.contains(e.getX(),e.getY())){return;}
+                if (!canvas.contains(e.getX(),e.getY())|| e.getButton() != MouseButton.PRIMARY){return;}
                 int x = (int) (e.getX() / (canvas.getWidth() / 16d));
                 int y = (int) ((canvas.getHeight() - e.getY()) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
@@ -343,6 +343,11 @@ public class TheHorde extends Application {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
         for (int i = 0; i < canvasYHeight + 1; i++) {
+            if (i % 12 == 0) {
+                gc.setStroke(new Color(.2d, .2d, 1d, 1));
+            } else {
+                gc.setStroke(Color.BLUE);
+            }
             gc.strokeLine(0, i * heightDist, width, i * heightDist);
 
         }
