@@ -18,7 +18,7 @@ cache:
 build:
   stage: build
   script:
-    - ./gradlew shadowJar
+    - gradle shadowJar
   artifacts:
     paths:
       - build/libs/*.jar
