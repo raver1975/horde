@@ -56,10 +56,9 @@ public class TheHorde extends Application {
         try {
             root = loader.load();
         } catch (FileNotFoundException e) {
-            ClassLoader cl = Resources.class.getClassLoader();
             URL url = this.getClass().getClassLoader().getResource("gui.fxml");
             loader = new FXMLLoader(url);
-            root = loader.load(url);
+            root = loader.load();
         }
         Map<String, Object> fxmlNamespace = loader.getNamespace();
         Scene scene = new Scene(root);
