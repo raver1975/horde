@@ -18,7 +18,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.simpleframework', name: 'simple-xml', version: '2.7.1'
     compile group: 'com.googlecode.soundlibs', name: 'tritonus-share', version: '0.3.7.4'
-    implementation 'org.openjfx:javafx:12.0.1'
+//    implementation 'org.openjfx:javafx:+'
+    implementation 'org.openjfx:javafx:+'
 }
 
 javafx {
