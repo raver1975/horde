@@ -111,7 +111,6 @@ public class Regulator extends Region implements RegulatorControl {
     private BooleanProperty knobRotateLock;
     private String formatString;
     private double angleStep;
-    private ConicalGradient barGradient;
     private GradientLookup gradientLookup;
 
 
@@ -141,7 +140,6 @@ public class Regulator extends Region implements RegulatorControl {
 
         gradientLookup = new GradientLookup(stops);
 
-        barGradient = new ConicalGradient(reorderedStops);
         scaleFactor = 1.0;
 
         knobRotateLock=new BooleanPropertyBase() {

@@ -2,6 +2,7 @@ package com.klemstine;
 
 import com.klemstine.synth.*;
 import com.myronmarston.music.Instrument;
+import eu.hansolo.fx.regulators.GradientLookup;
 import eu.hansolo.fx.regulators.Regulator;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -23,6 +24,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -31,6 +33,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_ACCENT;
@@ -47,9 +50,21 @@ public class TheHorde extends Application {
     Output output;
     private int canvasYHeight;
     private int canvasYoffset;
+    private GradientLookup gradientLookup;
+//    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Stop[] stops = {
+                new Stop(0, Color.rgb(0, 0, 255)),
+                new Stop(0.2, Color.rgb(0, 127, 255)),
+                new Stop(0.4, Color.rgb(0, 255, 0)),
+                new Stop(0.6, Color.rgb(255, 255, 0)),
+                new Stop(0.8, Color.rgb(255, 127, 0)),
+                new Stop(1, Color.rgb(255, 0, 0)),
+        };
+
+        gradientLookup = new GradientLookup(stops);
         output = new Output(this);
         Parent root = null;
         FXMLLoader loader = new FXMLLoader(new File("data/gui.fxml").toURL());
@@ -245,7 +260,9 @@ public class TheHorde extends Application {
 
             @Override
             public void handle(MouseEvent e) {
-                if (!sequencerCanvas.contains(e.getX(),e.getY())){return;}
+                if (!sequencerCanvas.contains(e.getX(), e.getY())) {
+                    return;
+                }
                 int x = (int) (e.getX() / (sequencerCanvas.getWidth() / 16));
                 int y = (int) ((sequencerCanvas.getHeight() - e.getY()) / (sequencerCanvas.getHeight() / canvasYHeight) - canvasYoffset);
                 System.out.println("xy" + x + "\t" + y);
@@ -254,8 +271,8 @@ public class TheHorde extends Application {
                     if (e.getButton() == MouseButton.PRIMARY) {
                         bassline.note[x] = (byte) y;
                         bassline.pause[x] = false;
-                    } else if (e.getButton() == MouseButton.SECONDARY &&bassline.note[x]==(byte)y) {
-                        bassline.note[x] = (byte) y;
+                    } else if (e.getButton() == MouseButton.SECONDARY) {
+//                        bassline.note[x] = (byte) y;
                         state++;
                         switch (state % 6) {
                             case 0:
@@ -300,7 +317,9 @@ public class TheHorde extends Application {
         sequencerCanvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                if (!sequencerCanvas.contains(e.getX(),e.getY())|| e.getButton() != MouseButton.PRIMARY){return;}
+                if (!sequencerCanvas.contains(e.getX(), e.getY()) || e.getButton() != MouseButton.PRIMARY) {
+                    return;
+                }
                 int x = (int) (e.getX() / (sequencerCanvas.getWidth() / 16d));
                 int y = (int) ((sequencerCanvas.getHeight() - e.getY()) / (sequencerCanvas.getHeight() / canvasYHeight) - canvasYoffset);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
@@ -455,21 +474,78 @@ public class TheHorde extends Application {
         launch(args);
     }
 
-    public void drawVisualizer(byte[] buffer1) {
-        if (visualizerCanvas!=null) {
+    //double max=Double.MIN_VALUE;
+//double min=Double.MAX_VALUE;
+    double[] lastBytes = new double[Output.BUFFER_SIZE / 2];
+long lastTime;
+    synchronized public void drawVisualizer(final byte[] buffer5) {
+        if (System.currentTimeMillis()-lastTime<30){return;}
+        lastTime=System.currentTimeMillis();
+        if (visualizerCanvas != null) {
+
+            double[] fft = calculateFFT(buffer5);
+
             double width = visualizerCanvas.getWidth();
             double height = visualizerCanvas.getHeight();
             GraphicsContext gc = visualizerCanvas.getGraphicsContext2D();
             gc.setFill(Color.BLACK);
-            gc.fillRect(0,0,width,height);
-            gc.setStroke(new Color(1d,1d,1d,1d));
-            int last=0;
+            gc.fillRect(0, 0, width, height);
+            gc.setStroke(new Color(1d, 1d, 1d, 1d));
+            gc.setLineWidth(1);
             for (int i = 0; i < width; i++) {
                 double perc = (double) i / width;
-                int l = (int) (perc * buffer1.length);
-                gc.strokeLine(i, height / 2, i,  (127 - buffer1[i])*(height/2)/127d);
+                int l = (int) (perc * fft.length);
+                double mag = fft[l];
+                Color co = gradientLookup.getColorAt(Math.min(1, mag));
+//                Color co1=new Color(co.getRed(),co.getGreen(),co.getBlue(),1d);
+                Color lastco = gradientLookup.getColorAt(Math.min(1, lastBytes[l]));
+//                gc.setStroke(Color.WHITE);
+                gc.setStroke(lastco);
+                gc.strokeLine(i, height, i, height - lastBytes[l] * height);
+                lastBytes[l] += lastBytes[l]*18+mag;
+                lastBytes[l] /= 20d;
+                gc.setStroke(co);
+                gc.strokeLine(i, height, i, height - mag * height);
 
+
+//                max=Math.max(mag,max);
+//                min=Math.min(mag,min);
             }
+//            for (int i = 0; i < width; i++) {
+////                System.out.println("mag:"+mag);
+//                double perc = (double) i / width;
+//                int l = (int) (perc * fft.length);
+//                double mag=fft[l];
+//                double p=(mag+min)/max;
+//                System.out.println(p);
+//
+//            }
+
+
         }
     }
+
+
+    public double[] calculateFFT(byte[] signal) {
+        final int mNumberOfFFTPoints = signal.length / 2;
+        double temp;
+        Complex[] y;
+        Complex[] complexSignal = new Complex[mNumberOfFFTPoints];
+        double[] absSignal = new double[mNumberOfFFTPoints / 2];
+
+        for (int i = 0; i < mNumberOfFFTPoints; i++) {
+            temp = (double) ((signal[2 * i] & 0xFF) | (signal[2 * i + 1] << 8)) / 32768.0F;
+            complexSignal[i] = new Complex(temp, 0.0);
+        }
+
+        y = FFT.fft(complexSignal);
+
+        for (int i = 0; i < (mNumberOfFFTPoints / 2); i++) {
+            absSignal[i] = Math.sqrt(Math.pow(y[i].re(), 2) + Math.pow(y[i].im(), 2));
+        }
+
+        return absSignal;
+
+    }
+
 }

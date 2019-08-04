@@ -20,7 +20,8 @@ import java.util.ArrayList;
 public class Output implements Runnable {
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
-    public static final int BUFFER_SIZE = 16384/4;
+
+    public static final int BUFFER_SIZE = 16384/8;
     private final TheHorde horde;
 
     private Synthesizer[] synthesizers;
