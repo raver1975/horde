@@ -4,13 +4,6 @@ import java.util.ArrayList;
 
 public class RhythmSequencer extends Sequencer {
     public RhythmSynthesizer synth;
-    private int[][] drums;
-    private double bpm;
-    private boolean shuffle;
-    private int samplesPerSequencerUpdate;
-    public int tick = 0;
-    public int step = 0;
-    private boolean sixteenth_note = true;
 
     RhythmSequencer(RhythmSynthesizer drums) {
         this.synth = drums;
@@ -20,7 +13,7 @@ public class RhythmSequencer extends Sequencer {
 
     public void randomizeRhythm() {
         int patternLength = 16;
-        this.drums = createRhythm(patternLength);
+        this.setRhythm(createRhythm(patternLength));
     }
 
     public void randomizeSequence() {
@@ -37,11 +30,11 @@ public class RhythmSequencer extends Sequencer {
     public void tick() {
         if (this.tick == 0) {
             if (this.sixteenth_note) {
-                for (int ch = 0; ch < this.drums.length; ch++) {
-                    if (this.drums[ch][this.step] != 0) {
+                for (int ch = 0; ch < this.getRhythm().length; ch++) {
+                    if (this.getRhythm()[ch][this.step] != 0) {
                         int vol = 255;
                         if ((this.step > 1) && (this.step < 15)
-                                && (this.drums[ch][(this.step - 1)] != 0)) {
+                                && (this.getRhythm()[ch][(this.step - 1)] != 0)) {
                             vol = (int) (vol * 0.66D);
                         }
                         if (this.step % 4 != 0)

@@ -97,12 +97,14 @@ public class InstrumentSequencer extends Sequencer {
                 if (!drum) {
                     if ((!this.getBassline().pause[this.step])) {
                         try {
-                            int pitch = this.getBassline().note[this.step] + 36;
-                            int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
-                            setChannel(channel);
-                            noteOn.add(pitch);
+                            int pitch = this.getBassline().note[this.step];
+                            if (pitch > 0) {
+                                int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
+                                setChannel(channel);
+                                noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
-                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            }
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
                         } catch (InvalidMidiDataException e) {
@@ -114,7 +116,7 @@ public class InstrumentSequencer extends Sequencer {
                 if (drum) {
                     for (int ch = 0; ch < this.getRhythm().length; ch++) {
                         if (this.getRhythm()[ch][this.step] != 0) {
-                            int vol1 = 255;
+                            int vol1 = 127;
                             if ((this.step > 1) && (this.step < 15)
                                     && (this.getRhythm()[ch][(this.step - 1)] != 0)) {
                                 vol1 = (int) (vol1 * 0.66D);
@@ -124,13 +126,17 @@ public class InstrumentSequencer extends Sequencer {
                             if (this.step % 2 != 0) {
                                 vol1 = (int) (vol1 * 0.66D);
                             }
-                            int pitch = this.getBassline().note[this.step] + 36;
+                            int pitch = this.getBassline().note[this.step];
+                            if (pitch < 0) {
+                                System.out.println("pitch<0!!!!");
+                                continue;
+                            }
                             int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
                             setChannel(channel);
                             noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
                             try {
-                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, ch + 32, (int) (vol1 * vol)), -1);
+                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
                             } catch (MidiUnavailableException | InvalidMidiDataException e) {
                                 e.printStackTrace();
                             }

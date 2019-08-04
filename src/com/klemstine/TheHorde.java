@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_ACCENT;
@@ -44,8 +45,8 @@ public class TheHorde extends Application {
     private Canvas canvas;
     private int selectedSequencer = 0;
     Output output;
-    private int canvasYHeight=96;
-    private int canvasYoffset=36;
+    private int canvasYHeight = 96;
+    private int canvasYoffset = 34;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -245,12 +246,12 @@ public class TheHorde extends Application {
             @Override
             public void handle(MouseEvent e) {
                 int x = (int) (e.getX() / (canvas.getWidth() / 16));
-                int y = (int) ((canvas.getHeight() - e.getY() + (canvas.getHeight() / (canvasYHeight*2))) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
+                int y = (int) ((canvas.getHeight() - e.getY() + (canvas.getHeight() / (canvasYHeight * 2))) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
                 System.out.println("xy" + x + "\t" + y);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
                 if (e.getButton() == MouseButton.PRIMARY) {
                     bassline.note[x] = (byte) y;
-                    bassline.pause[x]=false;
+                    bassline.pause[x] = false;
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     bassline.note[x] = (byte) y;
                     state++;
@@ -295,10 +296,10 @@ public class TheHorde extends Application {
             @Override
             public void handle(MouseEvent e) {
                 int x = (int) (e.getX() / (canvas.getWidth() / 16d));
-                int y = (int) ((canvas.getHeight() - e.getY() + (canvas.getHeight() /(canvasYHeight*2))) / (canvas.getHeight() / canvasYHeight)- canvasYoffset);
+                int y = (int) ((canvas.getHeight() - e.getY() + (canvas.getHeight() / (canvasYHeight * 2))) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
                 bassline.note[x] = (byte) y;
-                System.out.println("note:"+y);
+                System.out.println("note:" + y);
                 bassline.pause[x] = false;
             }
         });
@@ -328,7 +329,7 @@ public class TheHorde extends Application {
             gc.strokeLine(i * widthDist, 0, i * widthDist, height);
 
         }
-        for (int i = 0; i < canvasYHeight+1; i++) {
+        for (int i = 0; i < canvasYHeight + 1; i++) {
             gc.strokeLine(0, i * heightDist, width, i * heightDist);
 
         }
@@ -367,6 +368,25 @@ public class TheHorde extends Application {
                     gc.setLineWidth(5);
                     gc.setStroke(new Color(1d, 1d, .0d, 1d));
                     gc.strokeLine(((i + 1) % 16) * widthDist, height - (pitch * heightDist) + heightDist / 2, ((i + 1) % 16) * widthDist, height - (nextpitch * heightDist) + heightDist / 2);
+                }
+            }
+        }
+        else{
+        int[][] rhythm = output.getSequencers()[selectedSequencer].getRhythm();
+        System.out.println(Arrays.deepToString(rhythm));
+        for (int j = 0; j < rhythm.length; j++) {
+            for (int i = 0; i < rhythm[j].length; i++) {
+                if (rhythm[j][i]>0) {
+//                if (!bassline.accent[i]) {
+//                    gc.setStroke(new Color(.0d, 1d, .0d, 1d));
+//                    gc.setFill(new Color(.0d, 1d, .0d, 1d));
+//                } else {
+                    gc.setStroke(new Color(1d, .7d, 0d, 1d));
+                    gc.setFill(new Color(1d, .7d, .0d, 1d));
+//                }
+                        gc.fillRoundRect(i * widthDist, height - (j+10) * heightDist, widthDist, heightDist, 10, 10);
+                        gc.strokeRoundRect(i * widthDist, height -(j+10) * heightDist, widthDist, heightDist, 10, 10);
+                    }
                 }
             }
         }
