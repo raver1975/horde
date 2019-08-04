@@ -97,14 +97,14 @@ public class InstrumentSequencer extends Sequencer {
                 if (!drum) {
                     if ((!this.getBassline().pause[this.step])) {
                         try {
-                            int pitch = this.getBassline().note[this.step];
-                            if (pitch > 0) {
+                            int pitch = this.getBassline().note[this.step]+23;
+//                            if (pitch > 0) {
                                 int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
                                 setChannel(channel);
                                 noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
                                 audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
-                            }
+//                            }
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
                         } catch (InvalidMidiDataException e) {
@@ -126,11 +126,11 @@ public class InstrumentSequencer extends Sequencer {
                             if (this.step % 2 != 0) {
                                 vol1 = (int) (vol1 * 0.66D);
                             }
-                            int pitch = this.getBassline().note[this.step];
-                            if (pitch < 0) {
+                            int pitch = this.getBassline().note[this.step]+23;
+                            /*if (pitch < 0) {
                                 System.out.println("pitch<0!!!!");
                                 continue;
-                            }
+                            }*/
                             int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
                             setChannel(channel);
                             noteOn.add(pitch);
@@ -147,10 +147,9 @@ public class InstrumentSequencer extends Sequencer {
                 if (this.shuffle)
                     setBpm(this.bpm);
             } else {
-                if (!this.getBassline().slide[this.step]) {
+                if (drum||!this.getBassline().slide[this.step]) {
                     for (int n : noteOn) {
                         try {
-                            setChannel(channel);
                             audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
                         } catch (MidiUnavailableException | InvalidMidiDataException e) {
                             e.printStackTrace();

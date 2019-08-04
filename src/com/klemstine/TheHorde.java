@@ -45,8 +45,8 @@ public class TheHorde extends Application {
     private Canvas canvas;
     private int selectedSequencer = 0;
     Output output;
-    private int canvasYHeight = 96;
-    private int canvasYoffset = 34;
+    private int canvasYHeight;
+    private int canvasYoffset;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -245,66 +245,75 @@ public class TheHorde extends Application {
 
             @Override
             public void handle(MouseEvent e) {
+                if (!canvas.contains(e.getX(),e.getY())){return;}
                 int x = (int) (e.getX() / (canvas.getWidth() / 16));
-                int y = (int) ((canvas.getHeight() - e.getY() + (canvas.getHeight() / (canvasYHeight * 2))) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
+                int y = (int) ((canvas.getHeight() - e.getY()) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
                 System.out.println("xy" + x + "\t" + y);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    bassline.note[x] = (byte) y;
-                    bassline.pause[x] = false;
-                } else if (e.getButton() == MouseButton.SECONDARY) {
-                    bassline.note[x] = (byte) y;
-                    state++;
-                    switch (state % 6) {
-                        case 0:
-                            bassline.pause[x] = false;
-                            bassline.accent[x] = false;
-                            bassline.slide[x] = false;
-                            break;
-                        case 1:
-                            bassline.pause[x] = false;
-                            bassline.accent[x] = true;
-                            bassline.slide[x] = false;
-                            break;
-                        case 2:
-                            bassline.pause[x] = true;
-                            bassline.accent[x] = false;
-                            bassline.slide[x] = false;
+                if (bassline != null) {
+                    if (e.getButton() == MouseButton.PRIMARY) {
+                        bassline.note[x] = (byte) y;
+                        bassline.pause[x] = false;
+                    } else if (e.getButton() == MouseButton.SECONDARY) {
+                        bassline.note[x] = (byte) y;
+                        state++;
+                        switch (state % 6) {
+                            case 0:
+                                bassline.pause[x] = false;
+                                bassline.accent[x] = false;
+                                bassline.slide[x] = false;
+                                break;
+                            case 1:
+                                bassline.pause[x] = false;
+                                bassline.accent[x] = true;
+                                bassline.slide[x] = false;
+                                break;
+                            case 2:
+                                bassline.pause[x] = true;
+                                bassline.accent[x] = false;
+                                bassline.slide[x] = false;
 
-                            break;
-                        case 3:
-                            bassline.pause[x] = false;
-                            bassline.accent[x] = false;
-                            bassline.slide[x] = true;
-                            break;
-                        case 4:
-                            bassline.pause[x] = false;
-                            bassline.accent[x] = true;
-                            bassline.slide[x] = true;
-                            break;
-                        case 5:
-                            bassline.pause[x] = true;
-                            bassline.accent[x] = false;
-                            bassline.slide[x] = false;
+                                break;
+                            case 3:
+                                bassline.pause[x] = false;
+                                bassline.accent[x] = false;
+                                bassline.slide[x] = true;
+                                break;
+                            case 4:
+                                bassline.pause[x] = false;
+                                bassline.accent[x] = true;
+                                bassline.slide[x] = true;
+                                break;
+                            case 5:
+                                bassline.pause[x] = true;
+                                bassline.accent[x] = false;
+                                bassline.slide[x] = false;
+                        }
+
                     }
-
+                } else {
+                    int[][] rhythm = output.getSequencers()[selectedSequencer].getRhythm();
+                    rhythm[y][x] = (rhythm[y][x] + 1) % 3;
                 }
-
             }
         });
         canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
+                if (!canvas.contains(e.getX(),e.getY())){return;}
                 int x = (int) (e.getX() / (canvas.getWidth() / 16d));
-                int y = (int) ((canvas.getHeight() - e.getY() + (canvas.getHeight() / (canvasYHeight * 2))) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
+                int y = (int) ((canvas.getHeight() - e.getY()) / (canvas.getHeight() / canvasYHeight) - canvasYoffset);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
-                bassline.note[x] = (byte) y;
-                System.out.println("note:" + y);
-                bassline.pause[x] = false;
+                if (bassline != null) {
+                    bassline.note[x] = (byte) y;
+                    System.out.println("note:" + y);
+                    bassline.pause[x] = false;
+                } else {
+                }
             }
         });
 
-//        System.out.println(canvas);
+        //        System.out.println(canvas);
         drawSequencer();
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -312,31 +321,49 @@ public class TheHorde extends Application {
     }
 
     public void drawSequencer() {
+        BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
         if (canvas == null) return;
         int step = output.getSequencers()[selectedSequencer].step;
         double width = canvas.getWidth();
         double height = canvas.getHeight();
         double widthDist = width / 16d;
+        if (bassline == null) {
+            canvasYoffset = 0;
+            canvasYHeight = 7;
+        } else {
+            canvasYHeight = 96;
+            canvasYoffset = 23;
+        }
+
         double heightDist = height / canvasYHeight;
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.setFill(new Color(0, 0, .9, 1));
+        gc.setFill(new Color(0, 0, .9d, 1));
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         gc.setStroke(Color.BLUE);
-        gc.setLineWidth(2);
-        for (int i = 0; i < 17; i++) {
-            gc.strokeLine(i * widthDist, 0, i * widthDist, height);
-
-        }
+        gc.setLineWidth(1);
         for (int i = 0; i < canvasYHeight + 1; i++) {
             gc.strokeLine(0, i * heightDist, width, i * heightDist);
 
         }
+
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(2);
+        for (int i = 0; i < 17; i++) {
+            if (i % 4 == 0) {
+                gc.setStroke(new Color(.2d, .2d, 1d, 1));
+            } else {
+                gc.setStroke(Color.BLUE);
+            }
+            gc.strokeLine(i * widthDist, 0, i * widthDist, height);
+
+        }
+
+
         gc.setStroke(Color.WHITE);
         gc.strokeLine(step * widthDist, 0, step * widthDist, height);
 
-        BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
         if (bassline != null) {
             for (int i = 0; i < 16; i++) {
                 int note = bassline.getNote(i);
@@ -370,22 +397,28 @@ public class TheHorde extends Application {
                     gc.strokeLine(((i + 1) % 16) * widthDist, height - (pitch * heightDist) + heightDist / 2, ((i + 1) % 16) * widthDist, height - (nextpitch * heightDist) + heightDist / 2);
                 }
             }
-        }
-        else{
-        int[][] rhythm = output.getSequencers()[selectedSequencer].getRhythm();
-        System.out.println(Arrays.deepToString(rhythm));
-        for (int j = 0; j < rhythm.length; j++) {
-            for (int i = 0; i < rhythm[j].length; i++) {
-                if (rhythm[j][i]>0) {
+        } else {
+            int[][] rhythm = output.getSequencers()[selectedSequencer].getRhythm();
+//            System.out.println(Arrays.deepToString(rhythm));
+            for (int j = 0; j < rhythm.length; j++) {
+                for (int i = 0; i < rhythm[j].length; i++) {
+                    if (rhythm[j][i] > 0) {
 //                if (!bassline.accent[i]) {
 //                    gc.setStroke(new Color(.0d, 1d, .0d, 1d));
 //                    gc.setFill(new Color(.0d, 1d, .0d, 1d));
 //                } else {
-                    gc.setStroke(new Color(1d, .7d, 0d, 1d));
-                    gc.setFill(new Color(1d, .7d, .0d, 1d));
+                        if (rhythm[j][i] == 1) {
+                            gc.setStroke(new Color(1d, 1d, 0d, 1d));
+                            gc.setFill(new Color(1d, 1d, .0d, 1d));
+                        }
+                        if (rhythm[j][i] == 2) {
+                            gc.setStroke(new Color(1d, .7d, 0d, 1d));
+                            gc.setFill(new Color(1d, .7d, .0d, 1d));
+                        }
 //                }
-                        gc.fillRoundRect(i * widthDist, height - (j+10) * heightDist, widthDist, heightDist, 10, 10);
-                        gc.strokeRoundRect(i * widthDist, height -(j+10) * heightDist, widthDist, heightDist, 10, 10);
+
+                        gc.fillRoundRect(i * widthDist, height - (j + 1) * heightDist, widthDist, heightDist, 10, 10);
+                        gc.strokeRoundRect(i * widthDist, height - (j + 1) * heightDist, widthDist, heightDist, 10, 10);
                     }
                 }
             }
