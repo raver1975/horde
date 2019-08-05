@@ -25,7 +25,7 @@ package com.klemstine;
  *
  ******************************************************************************/
 
-public class FFT {
+public class FFT6 {
 
     // compute the FFT of x[], assuming its length is a power of 2
     public static Complex[] fft(Complex[] x) {

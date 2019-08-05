@@ -1,5 +1,9 @@
 package com.klemstine;
 
+import com.klemstine.fft.FFT;
+import com.klemstine.fft.GaussWindow;
+import com.klemstine.fft.HannWindow;
+import com.klemstine.fft.RectangularWindow;
 import com.klemstine.synth.*;
 import com.myronmarston.music.Instrument;
 import eu.hansolo.fx.regulators.GradientLookup;
@@ -33,7 +37,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_ACCENT;
@@ -476,41 +479,55 @@ public class TheHorde extends Application {
 
     //double max=Double.MIN_VALUE;
 //double min=Double.MAX_VALUE;
-    double[] lastBytes = new double[Output.BUFFER_SIZE / 2];
-long lastTime;
+    double[] lastBytes = new double[256];
+    double[] accel = new double[256];
+    long lastTime;
+
     synchronized public void drawVisualizer(final byte[] buffer5) {
-        if (System.currentTimeMillis()-lastTime<30){return;}
-        lastTime=System.currentTimeMillis();
+        if (System.currentTimeMillis() - lastTime < 30) {
+            return;
+        }
+        lastTime = System.currentTimeMillis();
         if (visualizerCanvas != null) {
 
-            double[] fft = calculateFFT(buffer5);
 
             double width = visualizerCanvas.getWidth();
             double height = visualizerCanvas.getHeight();
+            float[] fft = calculateFFT(buffer5, (int) 256);
             GraphicsContext gc = visualizerCanvas.getGraphicsContext2D();
             gc.setFill(Color.BLACK);
             gc.fillRect(0, 0, width, height);
             gc.setStroke(new Color(1d, 1d, 1d, 1d));
-            gc.setLineWidth(1);
-            for (int i = 0; i < width; i++) {
+            double dw = width / 256d;
+
+            for (int i = 0; i < 256; i++) {
                 double perc = (double) i / width;
                 int l = (int) (perc * fft.length);
                 double mag = fft[l];
-                Color co = gradientLookup.getColorAt(Math.min(1, mag));
+                Color co = gradientLookup.getColorAt(Math.min(1, mag / 2));
 //                Color co1=new Color(co.getRed(),co.getGreen(),co.getBlue(),1d);
-                Color lastco = gradientLookup.getColorAt(Math.min(1, lastBytes[l]));
+                Color lastco = gradientLookup.getColorAt(Math.min(1, lastBytes[l] / 2));
 //                gc.setStroke(Color.WHITE);
-                gc.setStroke(lastco);
-                gc.strokeLine(i, height, i, height - lastBytes[l] * height);
-                lastBytes[l] += lastBytes[l]*18+mag;
-                lastBytes[l] /= 20d;
-                gc.setStroke(co);
-                gc.strokeLine(i, height, i, height - mag * height);
+
+                gc.setStroke(lastco.darker());
+                gc.setLineWidth(2);
+                gc.strokeLine(i * dw, height - lastBytes[l] / 3 * height, i * dw + dw, height - lastBytes[l] / 3 * height);
+                if (mag > lastBytes[l]) {
+                    lastBytes[l] = mag;
+                    accel[l] = 0;
+                } else {
+                    lastBytes[l] -= accel[l];
+                    accel[l] +=.001d;
+                }
+//                lastBytes[l] /= 100d;
+                    gc.setStroke(co);
+                    gc.setLineWidth(dw);
+                    gc.strokeLine(i * dw, height, i * dw, height - mag / 3 * height);
 
 
 //                max=Math.max(mag,max);
 //                min=Math.min(mag,min);
-            }
+                }
 //            for (int i = 0; i < width; i++) {
 ////                System.out.println("mag:"+mag);
 //                double perc = (double) i / width;
@@ -522,30 +539,40 @@ long lastTime;
 //            }
 
 
+            }
         }
+
+        FFT fft = new FFT(Output.BUFFER_SIZE / 2, (float) Output.SAMPLE_RATE);
+
+        public float[] calculateFFT ( byte[] signal, int width){
+            fft.window(new GaussWindow());
+            fft.linAverages(width);
+//            fft.logAverages(44100/640,256/8);
+            final int mNumberOfFFTPoints = signal.length / 2;
+//        double temp;
+            float[] buf = new float[mNumberOfFFTPoints];
+//        Complex[] y;
+//        Complex[] complexSignal = new Complex[mNumberOfFFTPoints];
+//        double[] absSignal = new double[mNumberOfFFTPoints / 2];
+//
+            for (int i = 0; i < mNumberOfFFTPoints; i++) {
+                buf[i] = (float) ((signal[2 * i] & 0xFF) | (signal[2 * i + 1] << 8)) / 32768.0F;
+            }
+//
+            fft.forward(buf);
+            float[] ret = new float[width];
+            for (int i = 0; i < width; i++) {
+                ret[i] = fft.getAvg(i);
+            }
+            return ret;
+//        y = FFT6.fft(complexSignal);
+//
+//        for (int i = 0; i < (mNumberOfFFTPoints / 2); i++) {
+//            absSignal[i] = Math.sqrt(Math.pow(y[i].re(), 2) + Math.pow(y[i].im(), 2));
+//        }
+//
+//        return absSignal;
+
+        }
+
     }
-
-
-    public double[] calculateFFT(byte[] signal) {
-        final int mNumberOfFFTPoints = signal.length / 2;
-        double temp;
-        Complex[] y;
-        Complex[] complexSignal = new Complex[mNumberOfFFTPoints];
-        double[] absSignal = new double[mNumberOfFFTPoints / 2];
-
-        for (int i = 0; i < mNumberOfFFTPoints; i++) {
-            temp = (double) ((signal[2 * i] & 0xFF) | (signal[2 * i + 1] << 8)) / 32768.0F;
-            complexSignal[i] = new Complex(temp, 0.0);
-        }
-
-        y = FFT.fft(complexSignal);
-
-        for (int i = 0; i < (mNumberOfFFTPoints / 2); i++) {
-            absSignal[i] = Math.sqrt(Math.pow(y[i].re(), 2) + Math.pow(y[i].im(), 2));
-        }
-
-        return absSignal;
-
-    }
-
-}
