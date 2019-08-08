@@ -21,12 +21,15 @@ public class Output implements Runnable {
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
 
-    public static final int BUFFER_SIZE = 16384/8;
+    public static final int BUFFER_SIZE = 16384/2;
     private final TheHorde horde;
 
-    private Synthesizer[] synthesizers;
+    public Synthesizer[] synthesizers;
     private MixingAudioInputStream mixingAudioInputStream;
     private Sequencer[] sequencer;
+    public Reverb[] reverb;
+    private Delay[] delay;
+    public float[] pan;
 
     private byte[] buffer1 = new byte[BUFFER_SIZE];
     private byte[] buffer2 = new byte[BUFFER_SIZE];
@@ -38,8 +41,7 @@ public class Output implements Runnable {
     private InputStream pin3 = new ByteArrayInputStream(buffer3);
     private InputStream pin4 = new ByteArrayInputStream(buffer4);
     private boolean running = false;
-    private Reverb reverb;
-    private Delay delay;
+
     private boolean paused = false;
     private SourceDataLine sourceLine = null;
     private OutputStream audioWriter = null;
@@ -52,23 +54,12 @@ public class Output implements Runnable {
     double left3 = 0.0D;
     double right4 = 0.0D;
     double left4 = 0.0D;
-    private int lastStep=-1;
-
-
-    public Delay getDelay() {
-        return delay;
-    }
-
-    public Synthesizer[] getSynthesizers() {
-        return synthesizers;
-    }
-
-    public Reverb getReverb() {
-        return reverb;
-    }
+    double panl = 0;
+    double panr = 0;
+    private int lastStep = -1;
 
     public Output(TheHorde horde) {
-        this.horde=horde;
+        this.horde = horde;
 //        soundSystem();
         sourceLine = AudioFileCreator.getSourceDataLine();
         try {
@@ -77,8 +68,13 @@ public class Output implements Runnable {
             e.printStackTrace();
         }
         synthesizers = new Synthesizer[4];
-        delay = new Delay();
-        reverb = new Reverb();
+        delay = new Delay[16];
+        reverb = new Reverb[16];
+        pan = new float[16];
+        for (int i = 0; i < 16; i++) {
+            delay[i] = new Delay();
+            reverb[i] = new Reverb();
+        }
         ArrayList<InputStream> streams = new ArrayList<InputStream>();
         this.sequencer = new Sequencer[16];
         for (int it = 0; it < this.sequencer.length - 4; it++) {
@@ -233,10 +229,10 @@ public class Output implements Runnable {
                 }
                 continue;
             }
-            if (sequencer[0].step!=lastStep){
+            if (sequencer[0].step != lastStep) {
                 horde.drawSequencer();
             }
-            lastStep=sequencer[0].step;
+            lastStep = sequencer[0].step;
 //            horde.drawVisualizer(buffer1);
             for (int i = 0; i < buffer1.length; i += 4) {
                 for (Sequencer sequencer : sequencer) {
@@ -248,35 +244,74 @@ public class Output implements Runnable {
                 left4 = right4 = 0;
 
                 tmp = synthesizers[0].stereoOutput();
+                int col=15;
+                delay[col].input(tmp[2]);
+                reverb[col].input(tmp[3]);
                 left1 += tmp[0];
                 right1 += tmp[1];
+                del = delay[col].output();
+                left1 += del[0];
+                right1 += del[1];
+                rev = reverb[col].process();
+                left1 += rev[0];
+                right1 += rev[1];
+                panl = 2f * Math.min(.5f, (127f - (pan[col] + 63.5f)) / 127f);
+                panr = 2f * Math.min(.5f, (pan[col] + 63.5f) / 127f);
+                left1 *= panl;
+                right1 *= panr;
 
                 tmp = synthesizers[1].stereoOutput();
-//                delay.input(tmp[2]);
-//                reverb.input(tmp[3]);
+                col=14;
+                delay[col].input(tmp[2]);
+                reverb[col].input(tmp[3]);
                 left2 += tmp[0];
                 right2 += tmp[1];
+                del = delay[col].output();
+                left2 += del[0];
+                right2 += del[1];
+                rev = reverb[col].process();
+                left2 += rev[0];
+                right2 += rev[1];
+                panl = 2f * Math.min(.5f, (127f - (pan[col] + 63.5f)) / 127f);
+                panr = 2f * Math.min(.5f, (pan[col] + 63.5f) / 127f);
+                left2 *= panl;
+                right2 *= panr;
+
 
                 tmp = synthesizers[2].stereoOutput();
-//                delay.input(tmp[2]);
-//                reverb.input(tmp[3]);
+                col=13;
+                delay[col].input(tmp[2]);
+                reverb[col].input(tmp[3]);
                 left3 += tmp[0];
                 right3 += tmp[1];
+                del = delay[col].output();
+                left3 += del[0];
+                right3 += del[1];
+                rev = reverb[col].process();
+                left3 += rev[0];
+                right3 += rev[1];
+                panl = 2f * Math.min(.5f, (127f - (pan[col] + 63.5f)) / 127f);
+                panr = 2f * Math.min(.5f, (pan[col] + 63.5f) / 127f);
+                left3 *= panl;
+                right3 *= panr;
 
                 tmp = synthesizers[3].stereoOutput();
-//                delay.input(tmp[2]);
-//                reverb.input(tmp[3]);
+                col=12;
+                delay[col].input(tmp[2]);
+                reverb[col].input(tmp[3]);
                 left4 += tmp[0];
                 right4 += tmp[1];
+                del = delay[col].output();
+                left4 += del[0];
+                right4 += del[1];
+                rev = reverb[col].process();
+                left4 += rev[0];
+                right4 += rev[1];
+                panl = 2f * Math.min(.5f, (127f - (pan[col] + 63.5f)) / 127f);
+                panr = 2f * Math.min(.5f, (pan[col] + 63.5f) / 127f);
+                left4 *= panl;
+                right4 *= panr;
 
-
-//                del = delay.output();
-//                left2 += del[0];
-//                right2 += del[1];
-//
-//                rev = reverb.process();
-//                left2 += rev[0];
-//                right2 += rev[1];
 
                 sample_left_int1 = (int) (left1 * 32767.0D * sequencer[sequencer.length - 1].getVolume());
                 sample_right_int1 = (int) (right1 * 32767.0D * sequencer[sequencer.length - 1].getVolume());

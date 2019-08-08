@@ -59,12 +59,13 @@ public class TheHorde extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Stop[] stops = {
-                new Stop(0, Color.rgb(0, 0, 255)),
-                new Stop(0.2, Color.rgb(0, 127, 255)),
-                new Stop(0.4, Color.rgb(0, 255, 0)),
-                new Stop(0.6, Color.rgb(255, 255, 0)),
-                new Stop(0.8, Color.rgb(255, 127, 0)),
-                new Stop(1, Color.rgb(255, 0, 0)),
+                new Stop(0, Color.rgb(0, 0, 255,1)),
+                new Stop(0.2, Color.rgb(0, 127, 255,1)),
+                new Stop(0.4, Color.rgb(0, 255, 0,1)),
+                new Stop(0.6, Color.rgb(255, 255, 0,1)),
+                new Stop(0.8, Color.rgb(255, 127, 0,1)),
+                new Stop(.99, Color.rgb(255, 0, 0,1)),
+                new Stop(1.2, Color.rgb(255, 0, 255,1))
         };
 
         gradientLookup = new GradientLookup(stops);
@@ -112,6 +113,38 @@ public class TheHorde extends Application {
         output.start();
         System.out.println("acid audio system started");
 
+        //pan knobs
+        for (int i = 0; i < 16; i++) {
+            final Regulator pan = (Regulator) scene.lookup("#midi-pan-" + (i + 1));
+            final Regulator delay = (Regulator) scene.lookup("#midi-delay-" + (i + 1));
+            final Regulator reverb = (Regulator) scene.lookup("#midi-reverb-" + (i + 1));
+            final int finalI = i;
+
+            pan.targetValueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    System.out.println("pan:" + finalI + "\t" + newValue);
+                    output.pan[finalI]=newValue.floatValue();
+                }
+            });
+
+            delay.targetValueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    System.out.println("delay:" + finalI + "\t" + newValue);
+//                    output.reverb[finalI].
+                }
+            });
+
+            reverb.targetValueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    System.out.println("reverb:" + finalI + "\t" + newValue);
+//                    output.pan[finalI]=newValue.floatValue();
+                }
+            });
+        }
+
         //synth1 knobs
         for (int i = 0; i < 6; i++) {
             final Regulator regulator1 = (Regulator) scene.lookup("#synth1-knob-" + (i + 1));
@@ -125,22 +158,22 @@ public class TheHorde extends Application {
                     System.out.println("synth1:" + finalI + "\t" + newValue);
                     switch (finalI) {
                         case 0:
-                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_TUNE, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[3]).controlChange(MSG_CC_TUNE, newValue.intValue());
                             break;
                         case 1:
-                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_CUTOFF, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[3]).controlChange(MSG_CC_CUTOFF, newValue.intValue());
                             break;
                         case 2:
-                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_RESONANCE, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[3]).controlChange(MSG_CC_RESONANCE, newValue.intValue());
                             break;
                         case 3:
-                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_ENVMOD, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[3]).controlChange(MSG_CC_ENVMOD, newValue.intValue());
                             break;
                         case 4:
-                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_DECAY, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[3]).controlChange(MSG_CC_DECAY, newValue.intValue());
                             break;
                         case 5:
-                            ((BasslineSynthesizer) output.getSynthesizers()[3]).controlChange(MSG_CC_ACCENT, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[3]).controlChange(MSG_CC_ACCENT, newValue.intValue());
                             break;
                     }
                 }
@@ -151,22 +184,22 @@ public class TheHorde extends Application {
                     System.out.println("synth2:" + finalI + "\t" + newValue);
                     switch (finalI) {
                         case 0:
-                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_TUNE, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[2]).controlChange(MSG_CC_TUNE, newValue.intValue());
                             break;
                         case 1:
-                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_CUTOFF, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[2]).controlChange(MSG_CC_CUTOFF, newValue.intValue());
                             break;
                         case 2:
-                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_RESONANCE, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[2]).controlChange(MSG_CC_RESONANCE, newValue.intValue());
                             break;
                         case 3:
-                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_ENVMOD, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[2]).controlChange(MSG_CC_ENVMOD, newValue.intValue());
                             break;
                         case 4:
-                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_DECAY, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[2]).controlChange(MSG_CC_DECAY, newValue.intValue());
                             break;
                         case 5:
-                            ((BasslineSynthesizer) output.getSynthesizers()[2]).controlChange(MSG_CC_ACCENT, newValue.intValue());
+                            ((BasslineSynthesizer) output.synthesizers[2]).controlChange(MSG_CC_ACCENT, newValue.intValue());
                             break;
                     }
                 }
@@ -483,8 +516,8 @@ public class TheHorde extends Application {
     double[] accel = new double[256];
     long lastTime;
 
-    synchronized public void drawVisualizer(final byte[] buffer5) {
-        if (System.currentTimeMillis() - lastTime < 30) {
+    public void drawVisualizer(final byte[] buffer5) {
+        if (System.currentTimeMillis() - lastTime < 10) {
             return;
         }
         lastTime = System.currentTimeMillis();
@@ -499,7 +532,7 @@ public class TheHorde extends Application {
             gc.fillRect(0, 0, width, height);
             gc.setStroke(new Color(1d, 1d, 1d, 1d));
             double dw = width / 256d;
-
+            gc.setLineWidth(dw+.03f);
             for (int i = 0; i < 256; i++) {
                 double perc = (double) i / width;
                 int l = (int) (perc * fft.length);
@@ -509,9 +542,10 @@ public class TheHorde extends Application {
                 Color lastco = gradientLookup.getColorAt(Math.min(1, lastBytes[l] / 2));
 //                gc.setStroke(Color.WHITE);
 
-                gc.setStroke(lastco.darker());
-                gc.setLineWidth(2);
-                gc.strokeLine(i * dw, height - lastBytes[l] / 3 * height, i * dw + dw, height - lastBytes[l] / 3 * height);
+                gc.setStroke(lastco);
+
+//                gc.strokeLine(i * dw-dw/2, height - lastBytes[l] / 3 * height, i * dw + dw/2, height - lastBytes[l] / 3 * height);
+                gc.strokeLine(i * dw, 1+height - lastBytes[l] / 3 * height, i * dw, height - lastBytes[l] / 3 * height);
                 if (mag > lastBytes[l]) {
                     lastBytes[l] = mag;
                     accel[l] = 0;
@@ -521,13 +555,14 @@ public class TheHorde extends Application {
                 }
 //                lastBytes[l] /= 100d;
                     gc.setStroke(co);
-                    gc.setLineWidth(dw);
+
                     gc.strokeLine(i * dw, height, i * dw, height - mag / 3 * height);
 
 
 //                max=Math.max(mag,max);
 //                min=Math.min(mag,min);
                 }
+
 //            for (int i = 0; i < width; i++) {
 ////                System.out.println("mag:"+mag);
 //                double perc = (double) i / width;
@@ -545,7 +580,7 @@ public class TheHorde extends Application {
         FFT fft = new FFT(Output.BUFFER_SIZE / 2, (float) Output.SAMPLE_RATE);
 
         public float[] calculateFFT ( byte[] signal, int width){
-            fft.window(new GaussWindow());
+            //fft.window(new GaussWindow());
             fft.linAverages(width);
 //            fft.logAverages(44100/640,256/8);
             final int mNumberOfFFTPoints = signal.length / 2;
