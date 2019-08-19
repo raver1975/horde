@@ -21,7 +21,7 @@ public class Output implements Runnable {
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
 
-    public static final int BUFFER_SIZE = 16384/2;
+    public static final int BUFFER_SIZE = 16384 / 2;
     private final TheHorde horde;
 
     public Synthesizer[] synthesizers;
@@ -244,7 +244,7 @@ public class Output implements Runnable {
                 left4 = right4 = 0;
 
                 tmp = synthesizers[0].stereoOutput();
-                int col=15;
+                int col = 15;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left1 += tmp[0];
@@ -261,7 +261,7 @@ public class Output implements Runnable {
                 right1 *= panr;
 
                 tmp = synthesizers[1].stereoOutput();
-                col=14;
+                col = 14;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left2 += tmp[0];
@@ -279,7 +279,7 @@ public class Output implements Runnable {
 
 
                 tmp = synthesizers[2].stereoOutput();
-                col=13;
+                col = 13;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left3 += tmp[0];
@@ -296,7 +296,7 @@ public class Output implements Runnable {
                 right3 *= panr;
 
                 tmp = synthesizers[3].stereoOutput();
-                col=12;
+                col = 12;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left4 += tmp[0];

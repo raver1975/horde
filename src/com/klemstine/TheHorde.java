@@ -1,9 +1,6 @@
 package com.klemstine;
 
 import com.klemstine.fft.FFT;
-import com.klemstine.fft.GaussWindow;
-import com.klemstine.fft.HannWindow;
-import com.klemstine.fft.RectangularWindow;
 import com.klemstine.synth.*;
 import com.myronmarston.music.Instrument;
 import eu.hansolo.fx.regulators.GradientLookup;
@@ -59,13 +56,13 @@ public class TheHorde extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Stop[] stops = {
-                new Stop(0, Color.rgb(0, 0, 255,1)),
-                new Stop(0.2, Color.rgb(0, 127, 255,1)),
-                new Stop(0.4, Color.rgb(0, 255, 0,1)),
-                new Stop(0.6, Color.rgb(255, 255, 0,1)),
-                new Stop(0.8, Color.rgb(255, 127, 0,1)),
-                new Stop(.99, Color.rgb(255, 0, 0,1)),
-                new Stop(1.2, Color.rgb(255, 0, 255,1))
+                new Stop(0, Color.rgb(0, 0, 255, 1)),
+                new Stop(0.2, Color.rgb(0, 127, 255, 1)),
+                new Stop(0.4, Color.rgb(0, 255, 0, 1)),
+                new Stop(0.6, Color.rgb(255, 255, 0, 1)),
+                new Stop(0.8, Color.rgb(255, 127, 0, 1)),
+                new Stop(.99, Color.rgb(255, 0, 0, 1)),
+                new Stop(1.2, Color.rgb(255, 0, 255, 1))
         };
 
         gradientLookup = new GradientLookup(stops);
@@ -124,7 +121,7 @@ public class TheHorde extends Application {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     System.out.println("pan:" + finalI + "\t" + newValue);
-                    output.pan[finalI]=newValue.floatValue();
+                    output.pan[finalI] = newValue.floatValue();
                 }
             });
 
@@ -433,7 +430,7 @@ public class TheHorde extends Application {
                     gc.setFill(new Color(.0d, 1d, .0d, 1d));
                     gc.setStroke(new Color(.0d, 1d, .0d, 1d));
                     gc.setLineWidth(3);
-                    int vel = (int) ((bassline.accent[i] ? 127 : 80));
+                    int vel = (bassline.accent[i] ? 127 : 80);
 
                     if (!bassline.accent[i]) {
                         gc.setStroke(new Color(.0d, 1d, .0d, 1d));
@@ -512,27 +509,28 @@ public class TheHorde extends Application {
 
     //double max=Double.MIN_VALUE;
 //double min=Double.MAX_VALUE;
-    double[] lastBytes = new double[256];
-    double[] accel = new double[256];
-    long lastTime;
+    private double[] lastBytes = new double[256];
+    private double[] accel = new double[256];
+
+    public long time;
+    public boolean inuse;
 
     public void drawVisualizer(final byte[] buffer5) {
-        if (System.currentTimeMillis() - lastTime < 10) {
+        if (inuse || System.currentTimeMillis() - time < 20) {
             return;
         }
-        lastTime = System.currentTimeMillis();
+        inuse = true;
+        time = System.currentTimeMillis();
         if (visualizerCanvas != null) {
-
-
             double width = visualizerCanvas.getWidth();
             double height = visualizerCanvas.getHeight();
-            float[] fft = calculateFFT(buffer5, (int) 256);
+            float[] fft = calculateFFT(buffer5, 256);
             GraphicsContext gc = visualizerCanvas.getGraphicsContext2D();
             gc.setFill(Color.BLACK);
             gc.fillRect(0, 0, width, height);
             gc.setStroke(new Color(1d, 1d, 1d, 1d));
             double dw = width / 256d;
-            gc.setLineWidth(dw+.03f);
+            gc.setLineWidth(dw + .03f);
             for (int i = 0; i < 256; i++) {
                 double perc = (double) i / width;
                 int l = (int) (perc * fft.length);
@@ -545,23 +543,42 @@ public class TheHorde extends Application {
                 gc.setStroke(lastco);
 
 //                gc.strokeLine(i * dw-dw/2, height - lastBytes[l] / 3 * height, i * dw + dw/2, height - lastBytes[l] / 3 * height);
-                gc.strokeLine(i * dw, 1+height - lastBytes[l] / 3 * height, i * dw, height - lastBytes[l] / 3 * height);
+                gc.strokeLine(i * dw, 1 + height - lastBytes[l] / 3 * height, i * dw, height - lastBytes[l] / 3 * height);
                 if (mag > lastBytes[l]) {
                     lastBytes[l] = mag;
                     accel[l] = 0;
                 } else {
                     lastBytes[l] -= accel[l];
-                    accel[l] +=.001d;
+                    accel[l] += .001d;
                 }
 //                lastBytes[l] /= 100d;
-                    gc.setStroke(co);
+                gc.setStroke(co);
 
-                    gc.strokeLine(i * dw, height, i * dw, height - mag / 3 * height);
+                gc.strokeLine(i * dw, height, i * dw, height - mag / 3 * height);
 
 
 //                max=Math.max(mag,max);
 //                min=Math.min(mag,min);
-                }
+            }
+//            gc.setStroke(Color.WHITE);
+//            gc.setLineWidth(1);
+//            double lastpos = 0;
+//
+//            for (int i = 0; i < width; i++) {
+//                int pos = (int) (((double) i / (double) width) * buffer5.length)/4;
+//                pos*=4;
+//                int val = buffer5[pos+1] & 0xff;
+//                val = val << 8;
+//                val += buffer5[pos] & 0xff;
+////                val -= 32768;/**/
+////                val /= 32768;
+////                val *= 20;
+////                val += height / 2;
+//                double newval=(((val-32768.0d)/32768.0d)*20d)+height/2;
+////                gc.strokeOval(i,buffer5[pos]+height/2,1,1);
+//                gc.strokeLine(i, lastpos, i + 1, newval);
+//                lastpos = newval;
+//            }
 
 //            for (int i = 0; i < width; i++) {
 ////                System.out.println("mag:"+mag);
@@ -572,34 +589,34 @@ public class TheHorde extends Application {
 //                System.out.println(p);
 //
 //            }
+            inuse = false;
 
-
-            }
         }
+    }
 
-        FFT fft = new FFT(Output.BUFFER_SIZE / 2, (float) Output.SAMPLE_RATE);
+    FFT fft = new FFT(Output.BUFFER_SIZE / 2, (float) Output.SAMPLE_RATE);
 
-        public float[] calculateFFT ( byte[] signal, int width){
-            //fft.window(new GaussWindow());
-            fft.linAverages(width);
+    public float[] calculateFFT(byte[] signal, int width) {
+        //fft.window(new GaussWindow());
+        fft.linAverages(width);
 //            fft.logAverages(44100/640,256/8);
-            final int mNumberOfFFTPoints = signal.length / 2;
+        final int mNumberOfFFTPoints = signal.length / 2;
 //        double temp;
-            float[] buf = new float[mNumberOfFFTPoints];
+        float[] buf = new float[mNumberOfFFTPoints];
 //        Complex[] y;
 //        Complex[] complexSignal = new Complex[mNumberOfFFTPoints];
 //        double[] absSignal = new double[mNumberOfFFTPoints / 2];
 //
-            for (int i = 0; i < mNumberOfFFTPoints; i++) {
-                buf[i] = (float) ((signal[2 * i] & 0xFF) | (signal[2 * i + 1] << 8)) / 32768.0F;
-            }
+        for (int i = 0; i < mNumberOfFFTPoints; i++) {
+            buf[i] = (float) ((signal[2 * i] & 0xFF) | (signal[2 * i + 1] << 8)) / 32768.0F;
+        }
 //
-            fft.forward(buf);
-            float[] ret = new float[width];
-            for (int i = 0; i < width; i++) {
-                ret[i] = fft.getAvg(i);
-            }
-            return ret;
+        fft.forward(buf);
+        float[] ret = new float[width];
+        for (int i = 0; i < width; i++) {
+            ret[i] = fft.getAvg(i);
+        }
+        return ret;
 //        y = FFT6.fft(complexSignal);
 //
 //        for (int i = 0; i < (mNumberOfFFTPoints / 2); i++) {
@@ -607,7 +624,6 @@ public class TheHorde extends Application {
 //        }
 //
 //        return absSignal;
-
-        }
-
     }
+
+}
