@@ -273,6 +273,40 @@ public class AudioFileCreator {
 
         throw new MidiUnavailableException("The AudioSynthesizer is not available.");
     }
+    /**
+     * Gets the audio synthesizer.
+     *
+     * @return the audio synthesizer
+     * @throws MidiUnavailableException if the audio
+     *                                  synthesizer cannot be found
+     */
+    public static MidiDevice getMidiDevice() throws MidiUnavailableException {
+        System.out.println("----------");
+        for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) {
+            MidiDevice device = MidiSystem.getMidiDevice(info);
+            System.out.println(device.getDeviceInfo());
+            System.out.println("recievers:"+device.getMaxReceivers());
+            System.out.println("transmitters:"+device.getMaxTransmitters());
+//            if (device instanceof MidiDevice) {
+//            }
+        }
+        System.out.println("----------");
+        for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) {
+            MidiDevice device = MidiSystem.getMidiDevice(info);
+            String s=device.getDeviceInfo().toString();
+            System.out.println("*"+s);
+            if (s.startsWith("MC-707") && device.getMaxReceivers()!=0) {
+                System.out.println("returned "+s);
+                System.out.println("recievers:"+device.getMaxReceivers());
+                System.out.println("transmitters:"+device.getMaxTransmitters());
+
+                return device;
+            }
+        }
+
+        return null;
+
+    }
 
     /**
      * Sends the outputManager's midi sequence events to the given receiver.
