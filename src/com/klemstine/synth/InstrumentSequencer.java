@@ -43,7 +43,9 @@ public class InstrumentSequencer extends Sequencer {
             int sampleRate = 44100;
             AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, resolution, channels, frameSize, sampleRate, false);
             audioInputStream = audioSynthesizer.openStream(audioFormat, new HashMap<String, Object>());
-            midiSynthesizer.open();
+            if (midiSynthesizer != null) {
+                midiSynthesizer.open();
+            }
             System.out.println("midi open");
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
@@ -105,8 +107,10 @@ public class InstrumentSequencer extends Sequencer {
                             setChannel(channel);
                             noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
-                            //audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
-                            midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            if (midiSynthesizer != null) {
+                                midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            }
 //                            }
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
@@ -139,8 +143,10 @@ public class InstrumentSequencer extends Sequencer {
                             noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
                             try {
-                              //  audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
-                                midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
+                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
+                                if (midiSynthesizer != null) {
+                                    midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
+                                }
                             } catch (MidiUnavailableException | InvalidMidiDataException e) {
                                 e.printStackTrace();
                             }
@@ -154,8 +160,10 @@ public class InstrumentSequencer extends Sequencer {
                 if (drum || !this.getBassline().slide[this.step]) {
                     for (int n : noteOn) {
                         try {
-                           // audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
-                            midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
+                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
+                            if (midiSynthesizer != null) {
+                                midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
+                            }
                         } catch (MidiUnavailableException | InvalidMidiDataException e) {
                             e.printStackTrace();
                         }
@@ -189,7 +197,9 @@ public class InstrumentSequencer extends Sequencer {
             MidiEvent programChangeMidiEvent = instrument.getProgramChangeMidiEvent(channel);
             try {
                 audioSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
-                midiSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
+                if (midiSynthesizer!=null){
+                    midiSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
+                }
             } catch (MidiUnavailableException e) {
                 e.printStackTrace();
             }

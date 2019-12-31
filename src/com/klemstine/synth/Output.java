@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class Output implements Runnable {
+    public static Output instance;
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
 
@@ -28,7 +29,7 @@ public class Output implements Runnable {
     private MixingAudioInputStream mixingAudioInputStream;
     private Sequencer[] sequencer;
     public Reverb[] reverb;
-    private Delay[] delay;
+    public Delay[] delay;
     public float[] pan;
 
     private byte[] buffer1 = new byte[BUFFER_SIZE];
@@ -59,6 +60,7 @@ public class Output implements Runnable {
     private int lastStep = -1;
 
     public Output(TheHorde horde) {
+        instance=this;
         this.horde = horde;
 //        soundSystem();
         sourceLine = AudioFileCreator.getSourceDataLine();
