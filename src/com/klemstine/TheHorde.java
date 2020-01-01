@@ -604,7 +604,7 @@ public class TheHorde extends Application {
     public boolean inuse;
 
     public void drawVisualizer(final byte[] buffer5) {
-        if (inuse || System.currentTimeMillis() - time < 20) {
+        if (inuse && System.currentTimeMillis() - time < 20) {
             return;
         }
         inuse = true;
@@ -677,9 +677,9 @@ public class TheHorde extends Application {
 //                System.out.println(p);
 //
 //            }
-            inuse = false;
 
         }
+        inuse = false;
     }
 
     FFT fft = new FFT(Output.BUFFER_SIZE / 2, (float) Output.SAMPLE_RATE);
