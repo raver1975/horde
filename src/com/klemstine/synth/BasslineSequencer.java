@@ -1,5 +1,7 @@
 package com.klemstine.synth;
 
+import com.klemstine.TheHorde;
+
 import java.util.ArrayList;
 
 public class BasslineSequencer extends Sequencer {
@@ -151,6 +153,9 @@ public class BasslineSequencer extends Sequencer {
             } else {
                 pattern.pause[i] = true;
             }
+        }
+        for (int i=0;i<pattern.note.length;i++){
+            pattern.note[i]+= TheHorde.pitch_offset;
         }
         return pattern;
     }

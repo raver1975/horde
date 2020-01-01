@@ -1,5 +1,6 @@
 package com.klemstine.synth;
 
+import com.klemstine.TheHorde;
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.music.Instrument;
 import com.sun.media.sound.AudioSynthesizer;
@@ -288,7 +289,9 @@ public class InstrumentSequencer extends Sequencer {
                 pattern.pause[i] = true;
             }
         }
-
+        for (int i=0;i<pattern.note.length;i++){
+            pattern.note[i]+= TheHorde.pitch_offset;
+        }
         return pattern;
     }
 

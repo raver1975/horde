@@ -51,6 +51,7 @@ public class TheHorde extends Application {
     private int canvasYHeight;
     private int canvasYoffset;
     private GradientLookup gradientLookup;
+    public static int pitch_offset;
 //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
     @Override
@@ -133,6 +134,7 @@ public class TheHorde extends Application {
                 for (int i = 0; i < bassline.note.length; i++) {
                     bassline.note[i]++;
                 }
+                pitch_offset++;
             }
         });
         final Button transposeDown = (Button) scene.lookup("#transpose-down");
@@ -144,7 +146,7 @@ public class TheHorde extends Application {
                 for (int i = 0; i < bassline.note.length; i++) {
                     bassline.note[i]--;
                 }
-
+                pitch_offset--;
             }
         });
 
@@ -481,8 +483,10 @@ public class TheHorde extends Application {
         gc.setFill(new Color(0, 0, .9d, 1));
         gc.fillRect(0, 0, sequencerCanvas.getWidth(), sequencerCanvas.getHeight());
 
-        gc.setStroke(Color.BLUE);
+        gc.setStroke(Color.BLACK);
         gc.setLineWidth(1);
+        gc.strokeLine(0, sequencerCanvas.getHeight()-pitch_offset * heightDist, width, sequencerCanvas.getHeight()-pitch_offset * heightDist);
+        gc.setStroke(Color.BLUE);
         for (int i = 0; i < canvasYHeight + 1; i++) {
             if (i % 12 == 0) {
                 gc.setStroke(new Color(.2d, .2d, 1d, 1));
