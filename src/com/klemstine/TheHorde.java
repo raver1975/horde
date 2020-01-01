@@ -112,6 +112,7 @@ public class TheHorde extends Application {
 
         //vol knob
         final Regulator vol = (Regulator) scene.lookup("#midi-vol");
+        vol.setTargetValue(50);
         vol.targetValueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
