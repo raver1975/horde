@@ -94,7 +94,7 @@ run {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.klemstine.TheHorde'
+        attributes 'Main-Class': 'com.klemstine.Main'
     }
 
     from {
@@ -130,7 +130,7 @@ apply plugin: 'com.sandec.jpro'
  * App Main Class
  */
 //mainClassName = 'com.jpro.hellojpro.HelloJPro'
-mainClassName = 'com.klemstine.TheHorde'
+mainClassName = 'com.klemstine.Main'
 
 /**
  * jpro settings
