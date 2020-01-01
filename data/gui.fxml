@@ -18,7 +18,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
         <GridPane alignment="CENTER" layoutX="200.0" layoutY="13.0" prefHeight="796.0" prefWidth="689.0" AnchorPane.topAnchor="13.0">
@@ -368,7 +367,7 @@
             <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="231.0" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
-      <GridPane>
+      <GridPane prefHeight="809.0" prefWidth="200.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -381,6 +380,24 @@
          <children>
             <Regulator id="midi-vol" knobRotateLock="true" maxHeight="30.0" maxValue="100.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.halignment="CENTER" />
             <Regulator id="midi-bpm" knobRotateLock="true" maxHeight="30.0" maxValue="300.0" maxWidth="30.0" minValue="1.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button id="transpose-up" mnemonicParsing="false" text="^" GridPane.columnIndex="1" />
+                  <Button id="transpose-down" mnemonicParsing="false" text="v" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Button id="transpose-left" mnemonicParsing="false" text="&lt;" GridPane.rowIndex="1" />
+                  <Button id="transpose-right" mnemonicParsing="false" text="&gt;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
          </children>
       </GridPane>
    </children>

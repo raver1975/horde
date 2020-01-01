@@ -116,19 +116,80 @@ public class TheHorde extends Application {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 System.out.println("bpm:\t" + newValue);
-                for (Sequencer seq:output.getSequencers()){
-                    seq.setVolume(newValue.doubleValue()/127d);
+                for (Sequencer seq : output.getSequencers()) {
+                    seq.setVolume(newValue.doubleValue() / 127d);
                 }
             }
         });
 
+        //transpose
+        final Button transposeUp = (Button) scene.lookup("#transpose-up");
+        transposeUp.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("transpose up clicked");
+                BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
+                for (int i = 0; i < bassline.note.length; i++) {
+                    bassline.note[i]++;
+                }
+            }
+        });
+        final Button transposeDown = (Button) scene.lookup("#transpose-down");
+        transposeDown.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("transpose down clicked");
+                BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
+                for (int i = 0; i < bassline.note.length; i++) {
+                    bassline.note[i]--;
+                }
+
+            }
+        });
+
+        final Button transposeLeft = (Button) scene.lookup("#transpose-left");
+        transposeLeft.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("transpose left clicked");
+                BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
+                for (int i = 0; i < bassline.note.length; i++) {
+                    if (i > 0 && i < bassline.note.length) {
+                        bassline.note[i % bassline.note.length] = bassline.note[(i + 1) % bassline.note.length];
+                        bassline.pause[i % bassline.note.length] = bassline.pause[(i + 1) % bassline.note.length];
+                        bassline.accent[i % bassline.note.length] = bassline.accent[(i + 1) % bassline.note.length];
+                        bassline.slide[i % bassline.note.length] = bassline.slide[(i + 1) % bassline.note.length];
+                    }
+                }
+            }
+        });
+
+        final Button transposeRight = (Button) scene.lookup("#transpose-right");
+        transposeRight.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("transpose right clicked");
+                BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
+                for (int i = bassline.note.length - 1; i >= 0; i--) {
+                    if (i > 0 && i < bassline.note.length) {
+                        bassline.note[i % bassline.note.length] = bassline.note[(i - 1) % bassline.note.length];
+                        bassline.pause[i % bassline.note.length] = bassline.pause[(i - 1) % bassline.note.length];
+                        bassline.accent[i % bassline.note.length] = bassline.accent[(i - 1) % bassline.note.length];
+                        bassline.slide[i % bassline.note.length] = bassline.slide[(i - 1) % bassline.note.length];
+                    }
+                }
+            }
+        });
+
+
         //bpm knob
         final Regulator bpm = (Regulator) scene.lookup("#midi-bpm");
+        bpm.setTargetValue(120);
         bpm.targetValueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 System.out.println("bpm:\t" + newValue);
-                for (Sequencer seq:output.getSequencers()){
+                for (Sequencer seq : output.getSequencers()) {
                     seq.setBpm(newValue.doubleValue());
                 }
             }
