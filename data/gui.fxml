@@ -18,9 +18,10 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="814.0" prefWidth="690.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-        <GridPane alignment="CENTER" prefHeight="796.0" prefWidth="689.0" AnchorPane.topAnchor="13.0">
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+        <GridPane alignment="CENTER" layoutX="200.0" layoutY="13.0" prefHeight="796.0" prefWidth="689.0" AnchorPane.topAnchor="13.0">
             <children>
             <VBox alignment="CENTER" spacing="5.0" style="-fx-border-color: #aaaaff; -fx-padding: 4; -fx-border-insets: 1;" GridPane.rowIndex="5">
                <children>
@@ -167,7 +168,7 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-                <ChoiceBox id="midi-instrument-12" prefWidth="240.0" rotate="-90.0" GridPane.columnIndex="10" GridPane.rowIndex="4">
+                <ChoiceBox id="midi-instrument-12" rotate="-90.0" GridPane.columnIndex="10" GridPane.rowIndex="4">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="Item 1" />
@@ -280,10 +281,11 @@
             <Regulator id="midi-pan-10" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Canvas id="sequencer" height="283.0" width="689.0" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" />
 
-        <RadioButton id="select-channel-1" mnemonicParsing="false" selected="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER">
+                    <RadioButton id="select-channel-1" mnemonicParsing="false" selected="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER">
             <toggleGroup>
                 <ToggleGroup fx:id="selectsequencer" />
-            </toggleGroup></RadioButton>
+            </toggleGroup>
+            </RadioButton>
                 <RadioButton id="select-channel-2" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
             <RadioButton id="select-channel-3" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
             <RadioButton id="select-channel-4" mnemonicParsing="false" toggleGroup="$selectsequencer" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
@@ -317,7 +319,7 @@
             <Regulator id="midi-reverb-15" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <Regulator id="midi-reverb-16" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
 
-            <Regulator id="midi-delay-1" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                        <Regulator id="midi-delay-1" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
             <Regulator id="midi-delay-2" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
             <Regulator id="midi-delay-3" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
             <Regulator id="midi-delay-4" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
@@ -334,7 +336,7 @@
             <Regulator id="midi-delay-15" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
             <Regulator id="midi-delay-16" knobRotateLock="true" maxHeight="30.0" maxValue="127.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
 
-                  </children>
+                              </children>
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -366,5 +368,20 @@
             <RowConstraints maxHeight="393.0" minHeight="10.0" prefHeight="231.0" vgrow="SOMETIMES" />
             </rowConstraints>
         </GridPane>
-    </children>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Regulator id="midi-vol" knobRotateLock="true" maxHeight="30.0" maxValue="100.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.halignment="CENTER" />
+            <Regulator id="midi-bpm" knobRotateLock="true" maxHeight="30.0" maxValue="300.0" maxWidth="30.0" minValue="1.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+         </children>
+      </GridPane>
+   </children>
 </AnchorPane>

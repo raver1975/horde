@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class Instrument extends AbstractNotationElement {
     private final javax.sound.midi.Instrument midiInstrument;
-    private static final int REGULAR_INSTRUMENT_BANK = 0;    
+//    private static final int REGULAR_INSTRUMENT_BANK = 0;
     private static final Map<String, Instrument> INSTRUMENT_MAP;
     
     /**
@@ -69,11 +69,11 @@ public class Instrument extends AbstractNotationElement {
         for (javax.sound.midi.Instrument i : MidiSoundbank.getCurrent().getSoundbank().getInstruments()) {
             // there are several hundred instruments, but we only care about the
             // "regular" ones like piano, violin, cello, etc.
-            if (i.getPatch().getBank() == REGULAR_INSTRUMENT_BANK) { 
+//            if (i.getPatch().getBank() == REGULAR_INSTRUMENT_BANK) {
                 trimmedName = i.getName().trim(); // many instruments have extra spaces on their name
                 map.put(trimmedName.toLowerCase(Locale.ENGLISH), new Instrument(i));
                 list.add(trimmedName);
-            }
+//            }
         }
 
         INSTRUMENT_MAP = Collections.unmodifiableMap(map);            

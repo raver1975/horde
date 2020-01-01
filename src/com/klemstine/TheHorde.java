@@ -110,6 +110,30 @@ public class TheHorde extends Application {
         output.start();
         System.out.println("acid audio system started");
 
+        //vol knob
+        final Regulator vol = (Regulator) scene.lookup("#midi-vol");
+        vol.targetValueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                System.out.println("bpm:\t" + newValue);
+                for (Sequencer seq:output.getSequencers()){
+                    seq.setVolume(newValue.doubleValue()/127d);
+                }
+            }
+        });
+
+        //bpm knob
+        final Regulator bpm = (Regulator) scene.lookup("#midi-bpm");
+        bpm.targetValueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                System.out.println("bpm:\t" + newValue);
+                for (Sequencer seq:output.getSequencers()){
+                    seq.setBpm(newValue.doubleValue());
+                }
+            }
+        });
+
         //pan knobs
         for (int i = 0; i < 16; i++) {
             final Regulator pan = (Regulator) scene.lookup("#midi-pan-" + (i + 1));
@@ -261,7 +285,9 @@ public class TheHorde extends Application {
         }
         ArrayList<String> arr = new ArrayList<String>();
         ObservableList<String> observableList = FXCollections.observableList(arr);
+        observableList.add("MIDI Out");
         observableList.addAll(Instrument.AVAILABLE_INSTRUMENTS);
+
         for (int i = 0; i < 12; i++) {
 
             final ChoiceBox cb = (ChoiceBox) scene.lookup("#midi-instrument-" + (i + 1));

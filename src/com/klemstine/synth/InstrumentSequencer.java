@@ -21,6 +21,7 @@ public class InstrumentSequencer extends Sequencer {
     public int channel = 0;
     private static String[] channels = new String[16];
     private boolean drum;
+    private boolean midiOut = false;
 
     InstrumentSequencer(int channel, boolean drum) {
         this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel, drum);
@@ -45,8 +46,8 @@ public class InstrumentSequencer extends Sequencer {
             audioInputStream = audioSynthesizer.openStream(audioFormat, new HashMap<String, Object>());
             if (midiSynthesizer != null) {
                 midiSynthesizer.open();
+                System.out.println("midi open");
             }
-            System.out.println("midi open");
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         }
@@ -107,11 +108,13 @@ public class InstrumentSequencer extends Sequencer {
                             setChannel(channel);
                             noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
-                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
-                            if (midiSynthesizer != null) {
-                                midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            if (!midiOut) {
+                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            } else {
+                                if (midiSynthesizer != null) {
+                                    midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                                }
                             }
-//                            }
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
                         } catch (InvalidMidiDataException e) {
@@ -143,9 +146,12 @@ public class InstrumentSequencer extends Sequencer {
                             noteOn.add(pitch);
 //                        System.out.println(pitch + "\t" + vel);
                             try {
-                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
-                                if (midiSynthesizer != null) {
-                                    midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
+                                if (!midiOut) {
+                                    audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
+                                } else {
+                                    if (midiSynthesizer != null && midiOut) {
+                                        midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
+                                    }
                                 }
                             } catch (MidiUnavailableException | InvalidMidiDataException e) {
                                 e.printStackTrace();
@@ -160,9 +166,12 @@ public class InstrumentSequencer extends Sequencer {
                 if (drum || !this.getBassline().slide[this.step]) {
                     for (int n : noteOn) {
                         try {
-                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
-                            if (midiSynthesizer != null) {
-                                midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
+                            if (!midiOut) {
+                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
+                            } else {
+                                if (midiSynthesizer != null && midiOut) {
+                                    midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
+                                }
                             }
                         } catch (MidiUnavailableException | InvalidMidiDataException e) {
                             e.printStackTrace();
@@ -194,14 +203,16 @@ public class InstrumentSequencer extends Sequencer {
             this.channel = channel;
             channels[channel] = instrument;
             Instrument instrument = Instrument.getInstrument(this.instrument);
-            MidiEvent programChangeMidiEvent = instrument.getProgramChangeMidiEvent(channel);
-            try {
-                audioSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
-                if (midiSynthesizer!=null){
-                    midiSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
+            if (instrument != null) {
+                midiOut = false;
+                MidiEvent programChangeMidiEvent = instrument.getProgramChangeMidiEvent(channel);
+                try {
+                    audioSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
+                } catch (MidiUnavailableException e) {
+                    e.printStackTrace();
                 }
-            } catch (MidiUnavailableException e) {
-                e.printStackTrace();
+            } else {
+                midiOut = true;
             }
         }
     }
