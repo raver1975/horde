@@ -124,6 +124,22 @@ public class TheHorde extends Application {
             }
         });
 
+        //program change
+        final Button progDown = (Button) scene.lookup("#midi-prog-change-down");
+        progDown.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("prog down clicked");
+             }
+        });
+        final Button progUp = (Button) scene.lookup("#midi-prog-change-up");
+        progUp.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("prog up clicked");
+            }
+        });
+
         //transpose
         final Button transposeUp = (Button) scene.lookup("#transpose-up");
         transposeUp.setOnAction(new EventHandler<ActionEvent>() {

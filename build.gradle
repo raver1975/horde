@@ -130,7 +130,7 @@ apply plugin: 'com.sandec.jpro'
  * App Main Class
  */
 //mainClassName = 'com.jpro.hellojpro.HelloJPro'
-mainClassName = 'com.klemstine.Main'
+mainClassName = 'com.klemstine.TheHorde'
 
 /**
  * jpro settings
