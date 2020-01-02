@@ -295,7 +295,7 @@ public class AudioFileCreator {
             MidiDevice device = MidiSystem.getMidiDevice(info);
             String s=device.getDeviceInfo().toString();
             System.out.println("*"+s);
-            if (s.startsWith("MC-707") && device.getMaxReceivers()!=0) {
+            if (s.contains("MC-707") && device.getMaxReceivers()!=0) {
                 System.out.println("returned "+s);
                 System.out.println("recievers:"+device.getMaxReceivers());
                 System.out.println("transmitters:"+device.getMaxTransmitters());

@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InstrumentSequencer extends Sequencer {
-    private MidiDevice midiSynthesizer;
+    public MidiDevice midiSynthesizer;
     public String instrument;
     AudioInputStream audioInputStream;
     private ArrayList<Integer> noteOn = new ArrayList<Integer>();
@@ -150,7 +150,7 @@ public class InstrumentSequencer extends Sequencer {
                                 if (!midiOut) {
                                     audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
                                 } else {
-                                    if (midiSynthesizer != null && midiOut) {
+                                    if (midiSynthesizer != null) {
                                         midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
                                     }
                                 }
@@ -170,7 +170,7 @@ public class InstrumentSequencer extends Sequencer {
                             if (!midiOut) {
                                 audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
                             } else {
-                                if (midiSynthesizer != null && midiOut) {
+                                if (midiSynthesizer != null) {
                                     midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
                                 }
                             }

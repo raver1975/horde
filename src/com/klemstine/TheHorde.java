@@ -30,6 +30,10 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.ShortMessage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -52,6 +56,7 @@ public class TheHorde extends Application {
     private int canvasYoffset;
     private GradientLookup gradientLookup;
     public static int pitch_offset;
+    private static double main_vol;
 //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
     @Override
@@ -117,10 +122,13 @@ public class TheHorde extends Application {
         vol.targetValueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                System.out.println("bpm:\t" + newValue);
-                for (Sequencer seq : output.getSequencers()) {
-                    seq.setVolume(newValue.doubleValue() / 127d);
-                }
+                System.out.println("main vol:\t" + newValue);
+                main_vol = newValue.doubleValue() / 127d;
+//                for (Sequencer seq : output.getSequencers()) {
+//                    main_vol =seq.getVolume()*newValue.doubleValue() / 127d;
+//                    System.out.println("val="+val);
+//                    seq.setVolume(val);
+//                }
             }
         });
 
@@ -130,7 +138,21 @@ public class TheHorde extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("prog down clicked");
-             }
+                Sequencer seq = output.getSequencers()[selectedSequencer];
+                if (seq instanceof InstrumentSequencer) {
+                    MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
+                    if (md != null) {
+                        try {
+                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
+                        } catch (MidiUnavailableException e) {
+                            e.printStackTrace();
+                        } catch (InvalidMidiDataException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
         });
         final Button progUp = (Button) scene.lookup("#midi-prog-change-up");
         progUp.setOnAction(new EventHandler<ActionEvent>() {
@@ -173,12 +195,10 @@ public class TheHorde extends Application {
                 System.out.println("transpose left clicked");
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
                 for (int i = 0; i < bassline.note.length; i++) {
-                    if (i > 0 && i < bassline.note.length) {
-                        bassline.note[i % bassline.note.length] = bassline.note[(i + 1) % bassline.note.length];
-                        bassline.pause[i % bassline.note.length] = bassline.pause[(i + 1) % bassline.note.length];
-                        bassline.accent[i % bassline.note.length] = bassline.accent[(i + 1) % bassline.note.length];
-                        bassline.slide[i % bassline.note.length] = bassline.slide[(i + 1) % bassline.note.length];
-                    }
+                    bassline.note[i % bassline.note.length] = bassline.note[(i + 1) % bassline.note.length];
+                    bassline.pause[i % bassline.note.length] = bassline.pause[(i + 1) % bassline.note.length];
+                    bassline.accent[i % bassline.note.length] = bassline.accent[(i + 1) % bassline.note.length];
+                    bassline.slide[i % bassline.note.length] = bassline.slide[(i + 1) % bassline.note.length];
                 }
             }
         });
@@ -189,13 +209,11 @@ public class TheHorde extends Application {
             public void handle(ActionEvent event) {
                 System.out.println("transpose right clicked");
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
-                for (int i = bassline.note.length - 1; i >= 0; i--) {
-                    if (i > 0 && i < bassline.note.length) {
-                        bassline.note[i % bassline.note.length] = bassline.note[(i - 1) % bassline.note.length];
-                        bassline.pause[i % bassline.note.length] = bassline.pause[(i - 1) % bassline.note.length];
-                        bassline.accent[i % bassline.note.length] = bassline.accent[(i - 1) % bassline.note.length];
-                        bassline.slide[i % bassline.note.length] = bassline.slide[(i - 1) % bassline.note.length];
-                    }
+                for (int i = bassline.note.length-1;i>=0 ; i--) {
+                    bassline.note[i % bassline.note.length] = bassline.note[( bassline.note.length+i - 1) % bassline.note.length];
+                    bassline.pause[i % bassline.note.length] = bassline.pause[( bassline.note.length+i - 1) % bassline.note.length];
+                    bassline.accent[i % bassline.note.length] = bassline.accent[( bassline.note.length+i - 1) % bassline.note.length];
+                    bassline.slide[i % bassline.note.length] = bassline.slide[( bassline.note.length+i - 1) % bassline.note.length];
                 }
             }
         });
@@ -501,7 +519,7 @@ public class TheHorde extends Application {
 
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(1);
-        gc.strokeLine(0, sequencerCanvas.getHeight()-pitch_offset * heightDist, width, sequencerCanvas.getHeight()-pitch_offset * heightDist);
+        gc.strokeLine(0, sequencerCanvas.getHeight() - pitch_offset * heightDist, width, sequencerCanvas.getHeight() - pitch_offset * heightDist);
         gc.setStroke(Color.BLUE);
         for (int i = 0; i < canvasYHeight + 1; i++) {
             if (i % 12 == 0) {
