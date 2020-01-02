@@ -132,6 +132,35 @@ public class TheHorde extends Application {
             }
         });
 
+
+
+
+        //midi start
+        final Button midiStart = (Button) scene.lookup("#midi-start");
+        midiStart.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("midistart clicked");
+                Sequencer seq = output.getSequencers()[selectedSequencer];
+                if (seq instanceof InstrumentSequencer) {
+                    MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
+                    if (md != null) {
+                        try {
+//                            md.getReceiver().send(new ShortMessage(ShortMessage.START, selectedSequencer,120, 0), -1);
+                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
+                        } catch (MidiUnavailableException e) {
+                            e.printStackTrace();
+                        } catch (InvalidMidiDataException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        });
+
+
+
         //program change
         final Button progDown = (Button) scene.lookup("#midi-prog-change-down");
         progDown.setOnAction(new EventHandler<ActionEvent>() {

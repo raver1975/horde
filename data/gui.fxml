@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.collections.FXCollections?>
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import eu.hansolo.fx.regulators.*?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import eu.hansolo.fx.regulators.Regulator?>
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
    <children>
         <GridPane alignment="CENTER" layoutX="200.0" layoutY="13.0" prefHeight="796.0" prefWidth="689.0" AnchorPane.topAnchor="13.0">
             <children>
@@ -407,8 +398,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button mnemonicParsing="false" text="Button" />
-                  <Button mnemonicParsing="false" text="Button" GridPane.columnIndex="1" />
+                  <Button id="midi-start" mnemonicParsing="false" text="Start" />
+                  <Button id="midi-stop" mnemonicParsing="false" text="Stop" GridPane.columnIndex="1" />
                   <Button id="midi-prog-change-down" mnemonicParsing="false" text="Prog -" GridPane.rowIndex="1" />
                   <Button id="midi-prog-change-up" mnemonicParsing="false" text="Prog +" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Button mnemonicParsing="false" text="Button" GridPane.rowIndex="2" />

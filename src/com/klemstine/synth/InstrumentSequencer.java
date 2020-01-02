@@ -96,10 +96,28 @@ public class InstrumentSequencer extends Sequencer {
 //                (Integer) delayTimes.getKid().getContent());
     }
 
-
     public void tick() {
+//        if (midiOut && midiSynthesizer!=null){
+//            try {
+//                midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.TIMING_CLOCK, channel,0), -1);
+//
+//            } catch (MidiUnavailableException | InvalidMidiDataException e) {
+//                e.printStackTrace();
+//            }
+//        }
         if (this.tick == 0) {
+
             if (this.sixteenth_note) {
+                if (midiOut && midiSynthesizer!=null){
+                    try {
+                        for (int i=0;i<6;i++) {
+                            midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.TIMING_CLOCK, channel, 0), -1);
+                        }
+
+                    } catch (MidiUnavailableException | InvalidMidiDataException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (!drum) {
                     if ((!this.getBassline().pause[this.step])) {
                         try {
