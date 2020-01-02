@@ -146,8 +146,33 @@ public class TheHorde extends Application {
                     MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
                     if (md != null) {
                         try {
-//                            md.getReceiver().send(new ShortMessage(ShortMessage.START, selectedSequencer,120, 0), -1);
-                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
+                            md.getReceiver().send(new ShortMessage(ShortMessage.START, selectedSequencer,0), -1);
+//                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
+                        } catch (MidiUnavailableException e) {
+                            e.printStackTrace();
+                        } catch (InvalidMidiDataException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        });
+
+
+        //midi start
+        final Button midiStop = (Button) scene.lookup("#midi-stop");
+        midiStop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("midistop clicked");
+                Sequencer seq = output.getSequencers()[selectedSequencer];
+                if (seq instanceof InstrumentSequencer) {
+                    MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
+                    if (md != null) {
+                        try {
+                            md.getReceiver().send(new ShortMessage(ShortMessage.STOP, selectedSequencer,0), -1);
+//                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
                         } catch (InvalidMidiDataException e) {
