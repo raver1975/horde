@@ -387,7 +387,7 @@
                   <Button id="transpose-right" mnemonicParsing="false" text="&gt;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                </children>
             </GridPane>
-            <GridPane GridPane.rowIndex="1">
+            <GridPane GridPane.rowIndex="2">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -398,8 +398,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button id="midi-start" mnemonicParsing="false" text="Start" />
-                  <Button id="midi-stop" mnemonicParsing="false" text="Stop" GridPane.columnIndex="1" />
+                  <Button id="midi-start" mnemonicParsing="false" text="Start" GridPane.halignment="CENTER" />
+                  <Button id="midi-stop" mnemonicParsing="false" text="Stop" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                   <Button id="midi-prog-change-down" mnemonicParsing="false" text="Prog -" GridPane.rowIndex="1" />
                   <Button id="midi-prog-change-up" mnemonicParsing="false" text="Prog +" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Button mnemonicParsing="false" text="Button" GridPane.rowIndex="2" />
