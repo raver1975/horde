@@ -89,7 +89,7 @@ public class MidiSequencer extends Sequencer {
         if (this.tick == 0) {
 
             if (this.sixteenth_note) {
-                if (channel == 0) {
+                if (channel == 0 && midiSynthesizer!=null) {
                     try {
                         for (int i = 0; i < 6; i++) {
                             midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.TIMING_CLOCK, channel, 0), -1);

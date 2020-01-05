@@ -156,22 +156,23 @@ public class TheHorde extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("midistart clicked");
-                Sequencer seq=output.getSequencers()[0];
+                Sequencer seq = output.getSequencers()[0];
                 if (seq instanceof MidiSequencer) {
-                        MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
-                        if (md != null) {
-                            try {
-                                md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
-                                md.getReceiver().send(new ShortMessage(ShortMessage.START, ((MidiSequencer) seq).channel, 0), -1);
+                    MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
+                    if (md != null) {
+                        try {
+                            md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
+                            md.getReceiver().send(new ShortMessage(ShortMessage.START, ((MidiSequencer) seq).channel, 0), -1);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
-                            } catch (MidiUnavailableException e) {
-                                e.printStackTrace();
-                            } catch (InvalidMidiDataException e) {
-                                e.printStackTrace();
-                            }
+                        } catch (MidiUnavailableException e) {
+                            e.printStackTrace();
+                        } catch (InvalidMidiDataException e) {
+                            e.printStackTrace();
                         }
-                    seq.reset();
+                    }
                 }
+                seq.reset();
+
                 output.resume();
             }
         });
@@ -183,19 +184,19 @@ public class TheHorde extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("midistop clicked");
-                Sequencer seq=output.getSequencers()[0];
-                    if (seq instanceof MidiSequencer) {
-                        MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
-                        if (md != null) {
-                            try {
-                                md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
+                Sequencer seq = output.getSequencers()[0];
+                if (seq instanceof MidiSequencer) {
+                    MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
+                    if (md != null) {
+                        try {
+                            md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
-                            } catch (MidiUnavailableException e) {
-                                e.printStackTrace();
-                            } catch (InvalidMidiDataException e) {
-                                e.printStackTrace();
-                            }
+                        } catch (MidiUnavailableException e) {
+                            e.printStackTrace();
+                        } catch (InvalidMidiDataException e) {
+                            e.printStackTrace();
                         }
+                    }
                 }
                 output.pause();
 
@@ -460,12 +461,12 @@ public class TheHorde extends Application {
         for (int i = 0; i < 12; i++) {
 
             final ChoiceBox cb = (ChoiceBox) scene.lookup("#midi-instrument-" + (i + 1));
-            if (i == 9) {
+            if (i == 9 || ((output.getSequencers()[i] instanceof MidiSequencer && ((MidiSequencer) output.getSequencers()[i]).midiSynthesizer != null))) {
                 cb.setVisible(false);
                 continue;
             }
             cb.setItems(observableList);
-            if ( output.getSequencers()[i]instanceof InstrumentSequencer){
+            if (output.getSequencers()[i] instanceof InstrumentSequencer) {
                 cb.getSelectionModel().select(((InstrumentSequencer) output.getSequencers()[i]).getInstrument());
             }
             cb.setMinWidth(150d);

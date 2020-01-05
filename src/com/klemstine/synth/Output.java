@@ -4,6 +4,7 @@ import com.klemstine.TheHorde;
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.util.MixingAudioInputStream;
 
+import javax.sound.midi.MidiDevice;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
 import java.io.BufferedOutputStream;
@@ -60,7 +61,7 @@ public class Output implements Runnable {
     private int lastStep = -1;
 
     public Output(TheHorde horde) {
-        instance=this;
+        instance = this;
         this.horde = horde;
 //        soundSystem();
         sourceLine = AudioFileCreator.getSourceDataLine();
@@ -81,10 +82,20 @@ public class Output implements Runnable {
         this.sequencer = new Sequencer[16];
         for (int it = 0; it < this.sequencer.length - 4; it++) {
             Sequencer its = null;
-            its= (it<8)?new MidiSequencer(it, it == 9):new InstrumentSequencer(it, it == 9);
+            if (it < 8) {
+                its = new MidiSequencer(it, false);
+            } else {
+                its = new InstrumentSequencer(it, it == 9);
+            }
+            if (its instanceof MidiSequencer){
+                if (((MidiSequencer) its).midiSynthesizer ==null){
+                    its = new InstrumentSequencer(it, it == 9);
+                }
+            }
+//            its= (it<8)?new MidiSequencer(it, it == 9):new InstrumentSequencer(it, it == 9);
             this.sequencer[it] = its;
-            if (its instanceof InstrumentSequencer){
-                streams.add(((InstrumentSequencer)its).audioInputStream);
+            if (its instanceof InstrumentSequencer) {
+                streams.add(((InstrumentSequencer) its).audioInputStream);
             }
         }
         streams.add(pin1);
