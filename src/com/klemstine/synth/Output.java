@@ -80,9 +80,12 @@ public class Output implements Runnable {
         ArrayList<InputStream> streams = new ArrayList<InputStream>();
         this.sequencer = new Sequencer[16];
         for (int it = 0; it < this.sequencer.length - 4; it++) {
-            InstrumentSequencer its = new InstrumentSequencer(it, it == 9);
+            Sequencer its = null;
+            its= (it<8)?new MidiSequencer(it, it == 9):new InstrumentSequencer(it, it == 9);
             this.sequencer[it] = its;
-            streams.add(its.audioInputStream);
+            if (its instanceof InstrumentSequencer){
+                streams.add(((InstrumentSequencer)its).audioInputStream);
+            }
         }
         streams.add(pin1);
         streams.add(pin2);

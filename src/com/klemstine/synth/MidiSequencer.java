@@ -11,22 +11,21 @@ import javax.sound.sampled.AudioInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class InstrumentSequencer extends Sequencer {
+public class MidiSequencer extends Sequencer {
+    public MidiDevice midiSynthesizer;
     public String instrument;
-    AudioInputStream audioInputStream;
     private ArrayList<Integer> noteOn = new ArrayList<Integer>();
-    private AudioSynthesizer audioSynthesizer = null;
 
     public int channel = 0;
     private static String[] channels = new String[16];
     private boolean drum;
 
-    InstrumentSequencer(int channel, boolean drum) {
+    MidiSequencer(int channel, boolean drum) {
         this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel, drum);
     }
 
 
-    private InstrumentSequencer(String inst, int channel, boolean drum) {
+    private MidiSequencer(String inst, int channel, boolean drum) {
         this.instrument = inst;
         this.drum = drum;
         randomizeRhythm();
@@ -34,13 +33,11 @@ public class InstrumentSequencer extends Sequencer {
         this.channel = channel;
         System.out.println("instrument:" + inst + "\tchannel:" + channel);
         try {
-            audioSynthesizer = AudioFileCreator.getAudioSynthesizer();
-            int resolution = 16;
-            int channels = 2;
-            int frameSize = channels * resolution / 8;
-            int sampleRate = 44100;
-            AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, resolution, channels, frameSize, sampleRate, false);
-            audioInputStream = audioSynthesizer.openStream(audioFormat, new HashMap<String, Object>());
+            midiSynthesizer = AudioFileCreator.getMidiDevice();
+            if (midiSynthesizer != null) {
+                midiSynthesizer.open();
+                System.out.println("midi open");
+            }
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         }
@@ -83,12 +80,25 @@ public class InstrumentSequencer extends Sequencer {
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 3, 2.0D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 4, 1.0D));
         delayTimes.addKid(new Markov(this.samplesPerSequencerUpdate * 2 * 8, 1.0D));
+//        Output.getDelay().setFeedback(Math.random() * 0.75D + 0.2D);
+//        Output.getDelay().setTime(
+//                (Integer) delayTimes.getKid().getContent());
     }
 
     public void tick() {
         if (this.tick == 0) {
 
             if (this.sixteenth_note) {
+                if (channel == 0) {
+                    try {
+                        for (int i = 0; i < 6; i++) {
+                            midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.TIMING_CLOCK, channel, 0), -1);
+                        }
+
+                    } catch (MidiUnavailableException | InvalidMidiDataException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (!drum) {
                     if ((!this.getBassline().pause[this.step])) {
                         try {
@@ -96,7 +106,9 @@ public class InstrumentSequencer extends Sequencer {
                             int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
                             setChannel(channel);
                             noteOn.add(pitch);
-                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            if (midiSynthesizer != null) {
+                                midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            }
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
                         } catch (InvalidMidiDataException e) {
@@ -122,9 +134,10 @@ public class InstrumentSequencer extends Sequencer {
                             int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
                             setChannel(channel);
                             noteOn.add(pitch);
-//                        System.out.println(pitch + "\t" + vel);
                             try {
-                                audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
+                                if (midiSynthesizer != null) {
+                                    midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, (int) (vol1 * vol)), -1);
+                                }
                             } catch (MidiUnavailableException | InvalidMidiDataException e) {
                                 e.printStackTrace();
                             }
@@ -138,7 +151,9 @@ public class InstrumentSequencer extends Sequencer {
                 if (drum || !this.getBassline().slide[this.step]) {
                     for (int n : noteOn) {
                         try {
-                            audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
+                            if (midiSynthesizer != null) {
+                                midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_OFF, channel, n, 0), -1);
+                            }
                         } catch (MidiUnavailableException | InvalidMidiDataException e) {
                             e.printStackTrace();
                         }
@@ -177,11 +192,6 @@ public class InstrumentSequencer extends Sequencer {
             Instrument instrument = Instrument.getInstrument(this.instrument);
             if (instrument != null) {
                 MidiEvent programChangeMidiEvent = instrument.getProgramChangeMidiEvent(channel);
-                try {
-                    audioSynthesizer.getReceiver().send(programChangeMidiEvent.getMessage(), -1);
-                } catch (MidiUnavailableException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
@@ -409,16 +419,16 @@ public class InstrumentSequencer extends Sequencer {
         }
 
         int[] evolve(int[] beat, double[] weights) {
-            InstrumentSequencer.Markov strategies = new InstrumentSequencer.Markov(null,
+            MidiSequencer.Markov strategies = new MidiSequencer.Markov(null,
                     0.0D);
-            strategies.addKid(new InstrumentSequencer.Markov(new AdditionStrategy(),
+            strategies.addKid(new MidiSequencer.Markov(new AdditionStrategy(),
                     1.0D));
-            strategies.addKid(new InstrumentSequencer.Markov(new AccentStrategy(),
+            strategies.addKid(new MidiSequencer.Markov(new AccentStrategy(),
                     1.0D));
             strategies
-                    .addKid(new InstrumentSequencer.Markov(new MoveStrategy(), 1.0D));
+                    .addKid(new MidiSequencer.Markov(new MoveStrategy(), 1.0D));
 
-            InstrumentSequencer.SyncopationStrategy ss = (InstrumentSequencer.SyncopationStrategy) strategies
+            MidiSequencer.SyncopationStrategy ss = (MidiSequencer.SyncopationStrategy) strategies
                     .getKid().getContent();
             ss.execute(beat, weights);
 
@@ -426,20 +436,20 @@ public class InstrumentSequencer extends Sequencer {
         }
 
         private class AccentStrategy implements
-                InstrumentSequencer.SyncopationStrategy {
+                MidiSequencer.SyncopationStrategy {
             private AccentStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                InstrumentSequencer.Markov m = new InstrumentSequencer.Markov(null, 0.0D);
+                MidiSequencer.Markov m = new MidiSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 1) {
-                        m.addKid(new InstrumentSequencer.Markov(i,
+                        m.addKid(new MidiSequencer.Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    InstrumentSequencer.Markov m2 = m.getKid();
+                    MidiSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 2;
                 }
                 return source;
@@ -447,54 +457,54 @@ public class InstrumentSequencer extends Sequencer {
         }
 
         private class RemovalStrategy implements
-                InstrumentSequencer.SyncopationStrategy {
+                MidiSequencer.SyncopationStrategy {
             private RemovalStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                InstrumentSequencer.Markov m = new InstrumentSequencer.Markov(null, 0.0D);
+                MidiSequencer.Markov m = new MidiSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] > 0) {
-                        m.addKid(new InstrumentSequencer.Markov(i,
+                        m.addKid(new MidiSequencer.Markov(i,
                                 1.0D / weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    InstrumentSequencer.Markov m2 = m.getKid();
+                    MidiSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 0;
                 }
                 return source;
             }
         }
 
-        private class MoveStrategy implements InstrumentSequencer.SyncopationStrategy {
+        private class MoveStrategy implements MidiSequencer.SyncopationStrategy {
             private MoveStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                InstrumentSequencer.RhythmEvolver.RemovalStrategy remove = new InstrumentSequencer.RhythmEvolver.RemovalStrategy();
+                MidiSequencer.RhythmEvolver.RemovalStrategy remove = new MidiSequencer.RhythmEvolver.RemovalStrategy();
                 source = remove.execute(source, weights);
-                InstrumentSequencer.RhythmEvolver.AdditionStrategy add = new InstrumentSequencer.RhythmEvolver.AdditionStrategy();
+                MidiSequencer.RhythmEvolver.AdditionStrategy add = new MidiSequencer.RhythmEvolver.AdditionStrategy();
                 source = add.execute(source, weights);
                 return source;
             }
         }
 
         private class AdditionStrategy implements
-                InstrumentSequencer.SyncopationStrategy {
+                MidiSequencer.SyncopationStrategy {
             private AdditionStrategy() {
             }
 
             public int[] execute(int[] source, double[] weights) {
-                InstrumentSequencer.Markov m = new InstrumentSequencer.Markov(null, 0.0D);
+                MidiSequencer.Markov m = new MidiSequencer.Markov(null, 0.0D);
                 for (int i = 0; i < source.length; i++) {
                     if (source[i] == 0) {
-                        m.addKid(new InstrumentSequencer.Markov(i,
+                        m.addKid(new MidiSequencer.Markov(i,
                                 weights[(i % weights.length)]));
                     }
                 }
                 if (m.hasKids()) {
-                    InstrumentSequencer.Markov m2 = m.getKid();
+                    MidiSequencer.Markov m2 = m.getKid();
                     source[(Integer) m2.getContent()] = 1;
                 }
                 return source;

@@ -156,12 +156,13 @@ public class TheHorde extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("midistart clicked");
-                for (Sequencer seq : output.getSequencers()) {
-                    if (seq instanceof InstrumentSequencer) {
-                        MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
+                Sequencer seq=output.getSequencers()[0];
+                if (seq instanceof MidiSequencer) {
+                        MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
                         if (md != null) {
                             try {
-                                md.getReceiver().send(new ShortMessage(ShortMessage.START, selectedSequencer, 0), -1);
+                                md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
+                                md.getReceiver().send(new ShortMessage(ShortMessage.START, ((MidiSequencer) seq).channel, 0), -1);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
                             } catch (MidiUnavailableException e) {
                                 e.printStackTrace();
@@ -169,7 +170,6 @@ public class TheHorde extends Application {
                                 e.printStackTrace();
                             }
                         }
-                    }
                     seq.reset();
                 }
                 output.resume();
@@ -183,12 +183,12 @@ public class TheHorde extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("midistop clicked");
-                for (Sequencer seq : output.getSequencers()) {
-                    if (seq instanceof InstrumentSequencer) {
-                        MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
+                Sequencer seq=output.getSequencers()[0];
+                    if (seq instanceof MidiSequencer) {
+                        MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
                         if (md != null) {
                             try {
-                                md.getReceiver().send(new ShortMessage(ShortMessage.STOP, selectedSequencer, 0), -1);
+                                md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
                             } catch (MidiUnavailableException e) {
                                 e.printStackTrace();
@@ -196,7 +196,6 @@ public class TheHorde extends Application {
                                 e.printStackTrace();
                             }
                         }
-                    }
                 }
                 output.pause();
 
@@ -211,8 +210,8 @@ public class TheHorde extends Application {
             public void handle(ActionEvent event) {
                 System.out.println("prog down clicked");
                 Sequencer seq = output.getSequencers()[selectedSequencer];
-                if (seq instanceof InstrumentSequencer) {
-                    MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
+                if (seq instanceof MidiDevice) {
+                    MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
                     if (md != null) {
                         try {
                             md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
@@ -455,7 +454,7 @@ public class TheHorde extends Application {
         }
         ArrayList<String> arr = new ArrayList<String>();
         ObservableList<String> observableList = FXCollections.observableList(arr);
-        observableList.add("MIDI Out");
+//        observableList.add("MIDI Out");
         observableList.addAll(Instrument.AVAILABLE_INSTRUMENTS);
 
         for (int i = 0; i < 12; i++) {
@@ -466,7 +465,9 @@ public class TheHorde extends Application {
                 continue;
             }
             cb.setItems(observableList);
-            cb.getSelectionModel().select(((InstrumentSequencer) output.getSequencers()[i]).getInstrument());
+            if ( output.getSequencers()[i]instanceof InstrumentSequencer){
+                cb.getSelectionModel().select(((InstrumentSequencer) output.getSequencers()[i]).getInstrument());
+            }
             cb.setMinWidth(150d);
             GridPane.setHalignment(cb, HPos.CENTER);
             GridPane.setValignment(cb, VPos.CENTER);
@@ -714,15 +715,8 @@ public class TheHorde extends Application {
     private double[] lastBytes = new double[256];
     private double[] accel = new double[256];
 
-    public long time;
-    public boolean inuse;
 
     public void drawVisualizer(final byte[] buffer5) {
-        if (inuse && System.currentTimeMillis() - time < 20) {
-            return;
-        }
-        inuse = true;
-        time = System.currentTimeMillis();
         if (visualizerCanvas != null) {
             double width = visualizerCanvas.getWidth();
             double height = visualizerCanvas.getHeight();
@@ -757,43 +751,8 @@ public class TheHorde extends Application {
                 gc.setStroke(co);
 
                 gc.strokeLine(i * dw, height, i * dw, height - mag / 3 * height);
-
-
-//                max=Math.max(mag,max);
-//                min=Math.min(mag,min);
             }
-//            gc.setStroke(Color.WHITE);
-//            gc.setLineWidth(1);
-//            double lastpos = 0;
-//
-//            for (int i = 0; i < width; i++) {
-//                int pos = (int) (((double) i / (double) width) * buffer5.length)/4;
-//                pos*=4;
-//                int val = buffer5[pos+1] & 0xff;
-//                val = val << 8;
-//                val += buffer5[pos] & 0xff;
-////                val -= 32768;/**/
-////                val /= 32768;
-////                val *= 20;
-////                val += height / 2;
-//                double newval=(((val-32768.0d)/32768.0d)*20d)+height/2;
-////                gc.strokeOval(i,buffer5[pos]+height/2,1,1);
-//                gc.strokeLine(i, lastpos, i + 1, newval);
-//                lastpos = newval;
-//            }
-
-//            for (int i = 0; i < width; i++) {
-////                System.out.println("mag:"+mag);
-//                double perc = (double) i / width;
-//                int l = (int) (perc * fft.length);
-//                double mag=fft[l];
-//                double p=(mag+min)/max;
-//                System.out.println(p);
-//
-//            }
-
         }
-        inuse = false;
     }
 
     FFT fft = new FFT(Output.BUFFER_SIZE / 2, (float) Output.SAMPLE_RATE);
