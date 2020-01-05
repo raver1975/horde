@@ -213,6 +213,12 @@ public class InstrumentSequencer extends Sequencer {
         }
     }
 
+    @Override
+    public void reset() {
+        this.step=0;
+        this.tick=0;
+    }
+
     public void setChannel() {
         setChannel(channel);
     }

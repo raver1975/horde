@@ -31,6 +31,8 @@ public abstract class Sequencer {
 
     public abstract void tick();
 
+    public abstract void reset();
+
     public void setVolume(double vol) {
         this.vol = vol;
     }

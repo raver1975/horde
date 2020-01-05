@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -23,10 +24,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -57,7 +59,8 @@ public class TheHorde extends Application {
     private GradientLookup gradientLookup;
     public static int pitch_offset;
     private static double main_vol;
-//    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
+    private static final double SCALE_FACTOR = 0.80;
+    //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -83,8 +86,22 @@ public class TheHorde extends Application {
             root = loader.load();
         }
         Map<String, Object> fxmlNamespace = loader.getNamespace();
-        Scene scene = new Scene(root);
+        BorderPane bp = new BorderPane(root);
+        bp.setBorder(new Border(new BorderStroke(Color.RED,
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
+//        Scene scene = new Scene(root);
+        Scene scene = new Scene(new Group(bp), 760, 680);
+
+        bp.setPrefWidth(scene.getWidth() * 1 / SCALE_FACTOR);
+        scene.widthProperty().addListener(observable -> {
+            bp.setPrefWidth(scene.getWidth() * 1 / SCALE_FACTOR);
+        });
+
+        bp.setPrefHeight(scene.getHeight() * 1 / SCALE_FACTOR);
+        scene.heightProperty().addListener(observable -> {
+            bp.setPrefHeight(scene.getHeight() * 1 / SCALE_FACTOR);
+        });
         primaryStage.setTitle("The Horde");
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -133,57 +150,58 @@ public class TheHorde extends Application {
         });
 
 
-
-
         //midi start
         final Button midiStart = (Button) scene.lookup("#midi-start");
         midiStart.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("midistart clicked");
-                Sequencer seq = output.getSequencers()[selectedSequencer];
-                if (seq instanceof InstrumentSequencer) {
-                    MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
-                    if (md != null) {
-                        try {
-                            md.getReceiver().send(new ShortMessage(ShortMessage.START, selectedSequencer,0), -1);
+                for (Sequencer seq : output.getSequencers()) {
+                    if (seq instanceof InstrumentSequencer) {
+                        MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
+                        if (md != null) {
+                            try {
+                                md.getReceiver().send(new ShortMessage(ShortMessage.START, selectedSequencer, 0), -1);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
-                        } catch (MidiUnavailableException e) {
-                            e.printStackTrace();
-                        } catch (InvalidMidiDataException e) {
-                            e.printStackTrace();
+                            } catch (MidiUnavailableException e) {
+                                e.printStackTrace();
+                            } catch (InvalidMidiDataException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
+                    seq.reset();
                 }
-
+                output.resume();
             }
         });
 
 
-        //midi start
+        //midi stop
         final Button midiStop = (Button) scene.lookup("#midi-stop");
         midiStop.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("midistop clicked");
-                Sequencer seq = output.getSequencers()[selectedSequencer];
-                if (seq instanceof InstrumentSequencer) {
-                    MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
-                    if (md != null) {
-                        try {
-                            md.getReceiver().send(new ShortMessage(ShortMessage.STOP, selectedSequencer,0), -1);
+                for (Sequencer seq : output.getSequencers()) {
+                    if (seq instanceof InstrumentSequencer) {
+                        MidiDevice md = ((InstrumentSequencer) seq).midiSynthesizer;
+                        if (md != null) {
+                            try {
+                                md.getReceiver().send(new ShortMessage(ShortMessage.STOP, selectedSequencer, 0), -1);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
-                        } catch (MidiUnavailableException e) {
-                            e.printStackTrace();
-                        } catch (InvalidMidiDataException e) {
-                            e.printStackTrace();
+                            } catch (MidiUnavailableException e) {
+                                e.printStackTrace();
+                            } catch (InvalidMidiDataException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
+                output.pause();
 
             }
         });
-
 
 
         //program change
@@ -263,11 +281,11 @@ public class TheHorde extends Application {
             public void handle(ActionEvent event) {
                 System.out.println("transpose right clicked");
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
-                for (int i = bassline.note.length-1;i>=0 ; i--) {
-                    bassline.note[i % bassline.note.length] = bassline.note[( bassline.note.length+i - 1) % bassline.note.length];
-                    bassline.pause[i % bassline.note.length] = bassline.pause[( bassline.note.length+i - 1) % bassline.note.length];
-                    bassline.accent[i % bassline.note.length] = bassline.accent[( bassline.note.length+i - 1) % bassline.note.length];
-                    bassline.slide[i % bassline.note.length] = bassline.slide[( bassline.note.length+i - 1) % bassline.note.length];
+                for (int i = bassline.note.length - 1; i >= 0; i--) {
+                    bassline.note[i % bassline.note.length] = bassline.note[(bassline.note.length + i - 1) % bassline.note.length];
+                    bassline.pause[i % bassline.note.length] = bassline.pause[(bassline.note.length + i - 1) % bassline.note.length];
+                    bassline.accent[i % bassline.note.length] = bassline.accent[(bassline.note.length + i - 1) % bassline.note.length];
+                    bassline.slide[i % bassline.note.length] = bassline.slide[(bassline.note.length + i - 1) % bassline.note.length];
                 }
             }
         });
@@ -547,6 +565,10 @@ public class TheHorde extends Application {
         drawSequencer();
         primaryStage.setScene(scene);
         primaryStage.show();
+        Scale scale = new Scale(SCALE_FACTOR, SCALE_FACTOR);
+        scale.setPivotX(0);
+        scale.setPivotY(0);
+        bp.getTransforms().setAll(scale);
 
     }
 

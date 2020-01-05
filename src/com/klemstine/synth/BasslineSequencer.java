@@ -79,6 +79,12 @@ public class BasslineSequencer extends Sequencer {
         }
     }
 
+    @Override
+    public void reset() {
+        this.step=0;
+        this.tick=0;
+    }
+
     public void setBpm(double value) {
         this.bpm = value;
         this.synth.setBpm(value);
