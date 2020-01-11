@@ -11,6 +11,7 @@ public abstract class Sequencer {
     public int step = 0;
     public boolean sixteenth_note = true;
     public int patternLength = 16;
+    public int pitch_offset;
 
 
     public BasslinePattern getBassline() {

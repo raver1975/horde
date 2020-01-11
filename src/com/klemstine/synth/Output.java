@@ -82,7 +82,7 @@ public class Output implements Runnable {
         this.sequencer = new Sequencer[16];
         for (int it = 0; it < this.sequencer.length - 4; it++) {
             Sequencer its = null;
-            if (it < 8) {
+            if (it < 9) {
                 its = new MidiSequencer(it, false);
             } else {
                 its = new InstrumentSequencer(it, it == 9);

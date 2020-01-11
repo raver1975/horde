@@ -8,43 +8,36 @@ import com.sun.media.sound.AudioSynthesizer;
 import javax.sound.midi.*;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MidiSequencer extends Sequencer {
-    public MidiDevice midiSynthesizer;
-    public String instrument;
+    public static MidiDevice midiSynthesizer;
     private ArrayList<Integer> noteOn = new ArrayList<Integer>();
 
     public int channel = 0;
     private static String[] channels = new String[16];
     private boolean drum;
 
-    MidiSequencer(int channel, boolean drum) {
-        this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel, drum);
-    }
-
-
-    private MidiSequencer(String inst, int channel, boolean drum) {
-        this.instrument = inst;
+    public MidiSequencer(int channel, boolean drum) {
+        this.pitch_offset = 36;
         this.drum = drum;
         randomizeRhythm();
         randomizeSequence();
         this.channel = channel;
-        System.out.println("instrument:" + inst + "\tchannel:" + channel);
-        try {
-            midiSynthesizer = AudioFileCreator.getMidiDevice();
-            if (midiSynthesizer != null) {
-                midiSynthesizer.open();
-                System.out.println("midi open");
+        System.out.println("midi" + "\tchannel:" + channel);
+        if (midiSynthesizer == null) {
+            try {
+                midiSynthesizer = AudioFileCreator.getMidiDevice();
+                if (midiSynthesizer != null) {
+                    midiSynthesizer.open();
+                    System.out.println("midi open");
+                }
+            } catch (MidiUnavailableException e) {
+                e.printStackTrace();
             }
-        } catch (MidiUnavailableException e) {
-            e.printStackTrace();
         }
-    }
-
-    public String getInstrument() {
-        return instrument;
     }
 
     public void randomizeRhythm() {
@@ -89,9 +82,9 @@ public class MidiSequencer extends Sequencer {
         if (this.tick == 0) {
 
             if (this.sixteenth_note) {
-                if (channel == 0 && midiSynthesizer!=null) {
+                if (channel == 0 && midiSynthesizer != null) {
                     try {
-                        for (int i = 0; i < 6; i++) {
+                        for (int i = 0; i < 3; i++) {
                             midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.TIMING_CLOCK, channel, 0), -1);
                         }
 
@@ -104,7 +97,6 @@ public class MidiSequencer extends Sequencer {
                         try {
                             int pitch = this.getBassline().note[this.step] + 23;
                             int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
-                            setChannel(channel);
                             noteOn.add(pitch);
                             if (midiSynthesizer != null) {
                                 midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
@@ -132,7 +124,6 @@ public class MidiSequencer extends Sequencer {
                             }
                             int pitch = this.getBassline().note[this.step] + 23;
                             int vel = (int) ((this.getBassline().accent[this.step] ? 127 : 80) * vol);
-                            setChannel(channel);
                             noteOn.add(pitch);
                             try {
                                 if (midiSynthesizer != null) {
@@ -145,8 +136,19 @@ public class MidiSequencer extends Sequencer {
                         }
                     }
                 }
-                if (this.shuffle)
+                if (this.shuffle) {
                     setBpm(this.bpm);
+                }
+                if (channel == 0 && midiSynthesizer != null) {
+                    try {
+                        for (int i = 0; i < 3; i++) {
+                            midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.TIMING_CLOCK, channel, 0), -1);
+                        }
+
+                    } catch (MidiUnavailableException | InvalidMidiDataException e) {
+                        e.printStackTrace();
+                    }
+                }
             } else {
                 if (drum || !this.getBassline().slide[this.step]) {
                     for (int n : noteOn) {
@@ -179,21 +181,6 @@ public class MidiSequencer extends Sequencer {
     public void reset() {
         this.step = 0;
         this.tick = 0;
-    }
-
-    public void setChannel() {
-        setChannel(channel);
-    }
-
-    private void setChannel(int channel) {
-        if (!instrument.equals(channels[channel])) {
-            this.channel = channel;
-            channels[channel] = instrument;
-            Instrument instrument = Instrument.getInstrument(this.instrument);
-            if (instrument != null) {
-                MidiEvent programChangeMidiEvent = instrument.getProgramChangeMidiEvent(channel);
-            }
-        }
     }
 
     public void setBpm(double value) {
@@ -268,7 +255,7 @@ public class MidiSequencer extends Sequencer {
             }
         }
         for (int i = 0; i < pattern.note.length; i++) {
-            pattern.note[i] += TheHorde.pitch_offset;
+            pattern.note[i] += pitch_offset;
         }
         return pattern;
     }

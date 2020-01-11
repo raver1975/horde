@@ -29,6 +29,7 @@ public class InstrumentSequencer extends Sequencer {
     private InstrumentSequencer(String inst, int channel, boolean drum) {
         this.instrument = inst;
         this.drum = drum;
+        this.pitch_offset = 36;
         randomizeRhythm();
         randomizeSequence();
         this.channel = channel;
@@ -258,7 +259,7 @@ public class InstrumentSequencer extends Sequencer {
             }
         }
         for (int i = 0; i < pattern.note.length; i++) {
-            pattern.note[i] += TheHorde.pitch_offset;
+            pattern.note[i] += pitch_offset;
         }
         return pattern;
     }

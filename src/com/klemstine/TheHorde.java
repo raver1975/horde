@@ -57,7 +57,6 @@ public class TheHorde extends Application {
     private int canvasYHeight;
     private int canvasYoffset;
     private GradientLookup gradientLookup;
-    public static int pitch_offset;
     private static double main_vol;
     private static final double SCALE_FACTOR = 0.80;
     //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
@@ -171,7 +170,9 @@ public class TheHorde extends Application {
                         }
                     }
                 }
-                seq.reset();
+                for (Sequencer seq1:output.getSequencers()) {
+                    seq1.reset();
+                }
 
                 output.resume();
             }
@@ -198,7 +199,7 @@ public class TheHorde extends Application {
                         }
                     }
                 }
-                output.pause();
+//                output.pause();
 
             }
         });
@@ -244,7 +245,7 @@ public class TheHorde extends Application {
                 for (int i = 0; i < bassline.note.length; i++) {
                     bassline.note[i]++;
                 }
-                pitch_offset++;
+                output.getSequencers()[selectedSequencer].pitch_offset++;
             }
         });
         final Button transposeDown = (Button) scene.lookup("#transpose-down");
@@ -256,7 +257,7 @@ public class TheHorde extends Application {
                 for (int i = 0; i < bassline.note.length; i++) {
                     bassline.note[i]--;
                 }
-                pitch_offset--;
+                output.getSequencers()[selectedSequencer].pitch_offset--;
             }
         });
 
@@ -575,117 +576,122 @@ public class TheHorde extends Application {
     }
 
     public void drawSequencer() {
-        BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
-        if (sequencerCanvas == null) return;
-        int step = output.getSequencers()[selectedSequencer].step;
-        double width = sequencerCanvas.getWidth();
-        double height = sequencerCanvas.getHeight();
-        double widthDist = width / 16d;
-        if (bassline == null) {
-            canvasYoffset = 0;
-            canvasYHeight = 7;
-        } else {
-            canvasYHeight = 96;
-            canvasYoffset = 23;
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
 
-        double heightDist = height / canvasYHeight;
-        GraphicsContext gc = sequencerCanvas.getGraphicsContext2D();
+                BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
+                if (sequencerCanvas == null) return;
+                int step = output.getSequencers()[selectedSequencer].step;
+                double width = sequencerCanvas.getWidth();
+                double height = sequencerCanvas.getHeight();
+                double widthDist = width / 16d;
+                if (bassline == null) {
+                    canvasYoffset = 0;
+                    canvasYHeight = 7;
+                } else {
+                    canvasYHeight = 96;
+                    canvasYoffset = 23;
+                }
 
-        gc.setFill(new Color(0, 0, .9d, 1));
-        gc.fillRect(0, 0, sequencerCanvas.getWidth(), sequencerCanvas.getHeight());
+                double heightDist = height / canvasYHeight;
+                GraphicsContext gc = sequencerCanvas.getGraphicsContext2D();
 
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1);
-        gc.strokeLine(0, sequencerCanvas.getHeight() - pitch_offset * heightDist, width, sequencerCanvas.getHeight() - pitch_offset * heightDist);
-        gc.setStroke(Color.BLUE);
-        for (int i = 0; i < canvasYHeight + 1; i++) {
-            if (i % 12 == 0) {
-                gc.setStroke(new Color(.2d, .2d, 1d, 1));
-            } else {
+                gc.setFill(new Color(0, 0, .9d, 1));
+                gc.fillRect(0, 0, sequencerCanvas.getWidth(), sequencerCanvas.getHeight());
+
+                gc.setStroke(Color.BLACK);
+                gc.setLineWidth(1);
+                gc.strokeLine(0, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist, width, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist);
                 gc.setStroke(Color.BLUE);
-            }
-            gc.strokeLine(0, i * heightDist, width, i * heightDist);
-
-        }
-
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(2);
-        for (int i = 0; i < 17; i++) {
-            if (i % 4 == 0) {
-                gc.setStroke(new Color(.2d, .2d, 1d, 1));
-            } else {
-                gc.setStroke(Color.BLUE);
-            }
-            gc.strokeLine(i * widthDist, 0, i * widthDist, height);
-
-        }
-
-
-        gc.setStroke(Color.WHITE);
-        gc.strokeLine(step * widthDist, 0, step * widthDist, height);
-
-        if (bassline != null) {
-            for (int i = 0; i < 16; i++) {
-                int note = bassline.getNote(i);
-                int pitch = bassline.note[i] + canvasYoffset;
-
-                if (!bassline.pause[i]) {
-                    gc.setFill(new Color(.0d, 1d, .0d, 1d));
-                    gc.setStroke(new Color(.0d, 1d, .0d, 1d));
-                    gc.setLineWidth(3);
-                    int vel = (bassline.accent[i] ? 127 : 80);
-
-                    if (!bassline.accent[i]) {
-                        gc.setStroke(new Color(.0d, 1d, .0d, 1d));
-                        gc.setFill(new Color(.0d, 1d, .0d, 1d));
+                for (int i = 0; i < canvasYHeight + 1; i++) {
+                    if (i % 12 == 0) {
+                        gc.setStroke(new Color(.2d, .2d, 1d, 1));
                     } else {
-                        gc.setStroke(new Color(1d, .7d, 0d, 1d));
-                        gc.setFill(new Color(1d, .7d, .0d, 1d));
+                        gc.setStroke(Color.BLUE);
                     }
-                    gc.fillRoundRect(i * widthDist, height - pitch * heightDist, widthDist, heightDist, 10, 10);
-                    gc.strokeRoundRect(i * widthDist, height - pitch * heightDist, widthDist, heightDist, 10, 10);
+                    gc.strokeLine(0, i * heightDist, width, i * heightDist);
+
+                }
+
+                gc.setStroke(Color.BLUE);
+                gc.setLineWidth(2);
+                for (int i = 0; i < 17; i++) {
+                    if (i % 4 == 0) {
+                        gc.setStroke(new Color(.2d, .2d, 1d, 1));
+                    } else {
+                        gc.setStroke(Color.BLUE);
+                    }
+                    gc.strokeLine(i * widthDist, 0, i * widthDist, height);
+
+                }
+
+
+                gc.setStroke(Color.WHITE);
+                gc.strokeLine(step * widthDist, 0, step * widthDist, height);
+
+                if (bassline != null) {
+                    for (int i = 0; i < 16; i++) {
+                        int note = bassline.getNote(i);
+                        int pitch = bassline.note[i] + canvasYoffset;
+
+                        if (!bassline.pause[i]) {
+                            gc.setFill(new Color(.0d, 1d, .0d, 1d));
+                            gc.setStroke(new Color(.0d, 1d, .0d, 1d));
+                            gc.setLineWidth(3);
+                            int vel = (bassline.accent[i] ? 127 : 80);
+
+                            if (!bassline.accent[i]) {
+                                gc.setStroke(new Color(.0d, 1d, .0d, 1d));
+                                gc.setFill(new Color(.0d, 1d, .0d, 1d));
+                            } else {
+                                gc.setStroke(new Color(1d, .7d, 0d, 1d));
+                                gc.setFill(new Color(1d, .7d, .0d, 1d));
+                            }
+                            gc.fillRoundRect(i * widthDist, height - pitch * heightDist, widthDist, heightDist, 10, 10);
+                            gc.strokeRoundRect(i * widthDist, height - pitch * heightDist, widthDist, heightDist, 10, 10);
 
 //                    gc.strokeRoundRect(i * widthDist, height - pitch * heightDist, widthDist, heightDist, 10, 10);
-                }
-            }
-            for (int i = 0; i < 16; i++) {
-                if (bassline.slide[i]) {
-                    int pitch = bassline.note[i] + canvasYoffset;
-                    int nextpitch = bassline.note[(i + 1) % 16] + canvasYoffset;
-                    gc.setLineWidth(5);
-                    gc.setStroke(new Color(1d, 1d, .0d, 1d));
-                    gc.strokeLine(((i + 1) % 16) * widthDist, height - (pitch * heightDist) + heightDist / 2, ((i + 1) % 16) * widthDist, height - (nextpitch * heightDist) + heightDist / 2);
-                }
-            }
-        } else {
-            int[][] rhythm = output.getSequencers()[selectedSequencer].getRhythm();
+                        }
+                    }
+                    for (int i = 0; i < 16; i++) {
+                        if (bassline.slide[i]) {
+                            int pitch = bassline.note[i] + canvasYoffset;
+                            int nextpitch = bassline.note[(i + 1) % 16] + canvasYoffset;
+                            gc.setLineWidth(5);
+                            gc.setStroke(new Color(1d, 1d, .0d, 1d));
+                            gc.strokeLine(((i + 1) % 16) * widthDist, height - (pitch * heightDist) + heightDist / 2, ((i + 1) % 16) * widthDist, height - (nextpitch * heightDist) + heightDist / 2);
+                        }
+                    }
+                } else {
+                    int[][] rhythm = output.getSequencers()[selectedSequencer].getRhythm();
 //            System.out.println(Arrays.deepToString(rhythm));
-            for (int j = 0; j < rhythm.length; j++) {
-                for (int i = 0; i < rhythm[j].length; i++) {
-                    if (rhythm[j][i] > 0) {
+                    for (int j = 0; j < rhythm.length; j++) {
+                        for (int i = 0; i < rhythm[j].length; i++) {
+                            if (rhythm[j][i] > 0) {
 //                if (!bassline.accent[i]) {
 //                    gc.setStroke(new Color(.0d, 1d, .0d, 1d));
 //                    gc.setFill(new Color(.0d, 1d, .0d, 1d));
 //                } else {
-                        if (rhythm[j][i] == 1) {
-                            gc.setStroke(new Color(1d, 1d, 0d, 1d));
-                            gc.setFill(new Color(1d, 1d, .0d, 1d));
-                        }
-                        if (rhythm[j][i] == 2) {
-                            gc.setStroke(new Color(1d, .7d, 0d, 1d));
-                            gc.setFill(new Color(1d, .7d, .0d, 1d));
-                        }
+                                if (rhythm[j][i] == 1) {
+                                    gc.setStroke(new Color(1d, 1d, 0d, 1d));
+                                    gc.setFill(new Color(1d, 1d, .0d, 1d));
+                                }
+                                if (rhythm[j][i] == 2) {
+                                    gc.setStroke(new Color(1d, .7d, 0d, 1d));
+                                    gc.setFill(new Color(1d, .7d, .0d, 1d));
+                                }
 //                }
 
-                        gc.fillRoundRect(i * widthDist, height - (j + 1) * heightDist, widthDist, heightDist, 10, 10);
-                        gc.strokeRoundRect(i * widthDist, height - (j + 1) * heightDist, widthDist, heightDist, 10, 10);
+                                gc.fillRoundRect(i * widthDist, height - (j + 1) * heightDist, widthDist, heightDist, 10, 10);
+                                gc.strokeRoundRect(i * widthDist, height - (j + 1) * heightDist, widthDist, heightDist, 10, 10);
+                            }
+                        }
                     }
                 }
+
             }
-        }
-
-
+        });
 //        gc.setLineWidth(5);
 //        gc.strokeLine(40, 10, 10, 40);
 //        gc.fillOval(10, 60, 30, 30);
@@ -716,44 +722,50 @@ public class TheHorde extends Application {
     private double[] lastBytes = new double[256];
     private double[] accel = new double[256];
 
-
     public void drawVisualizer(final byte[] buffer5) {
-        if (visualizerCanvas != null) {
-            double width = visualizerCanvas.getWidth();
-            double height = visualizerCanvas.getHeight();
-            float[] fft = calculateFFT(buffer5, 256);
-            GraphicsContext gc = visualizerCanvas.getGraphicsContext2D();
-            gc.setFill(Color.BLACK);
-            gc.fillRect(0, 0, width, height);
-            gc.setStroke(new Color(1d, 1d, 1d, 1d));
-            double dw = width / 256d;
-            gc.setLineWidth(dw + .03f);
-            for (int i = 0; i < 256; i++) {
-                double perc = (double) i / width;
-                int l = (int) (perc * fft.length);
-                double mag = fft[l];
-                Color co = gradientLookup.getColorAt(Math.min(1, mag / 2));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                if (visualizerCanvas != null) {
+                    double width = visualizerCanvas.getWidth();
+                    double height = visualizerCanvas.getHeight();
+                    float[] fft = calculateFFT(buffer5, 256);
+                    GraphicsContext gc = visualizerCanvas.getGraphicsContext2D();
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect(0, 0, width, height);
+                    gc.setStroke(new Color(1d, 1d, 1d, 1d));
+                    double dw = width / 256d;
+                    gc.setLineWidth(dw + .03f);
+                    for (int i = 0; i < 256; i++) {
+                        double perc = (double) i / width;
+                        int l = (int) (perc * fft.length);
+                        double mag = fft[l];
+                        Color co = gradientLookup.getColorAt(Math.min(1, mag / 2));
 //                Color co1=new Color(co.getRed(),co.getGreen(),co.getBlue(),1d);
-                Color lastco = gradientLookup.getColorAt(Math.min(1, lastBytes[l] / 2));
+                        Color lastco = gradientLookup.getColorAt(Math.min(1, lastBytes[l] / 2));
 //                gc.setStroke(Color.WHITE);
 
-                gc.setStroke(lastco);
+                        gc.setStroke(lastco);
 
 //                gc.strokeLine(i * dw-dw/2, height - lastBytes[l] / 3 * height, i * dw + dw/2, height - lastBytes[l] / 3 * height);
-                gc.strokeLine(i * dw, 1 + height - lastBytes[l] / 3 * height, i * dw, height - lastBytes[l] / 3 * height);
-                if (mag > lastBytes[l]) {
-                    lastBytes[l] = mag;
-                    accel[l] = 0;
-                } else {
-                    lastBytes[l] -= accel[l];
-                    accel[l] += .001d;
-                }
+                        gc.strokeLine(i * dw, 1 + height - lastBytes[l] / 3 * height, i * dw, height - lastBytes[l] / 3 * height);
+                        if (mag > lastBytes[l]) {
+                            lastBytes[l] = mag;
+                            accel[l] = 0;
+                        } else {
+                            lastBytes[l] -= accel[l];
+                            accel[l] += .001d;
+                        }
 //                lastBytes[l] /= 100d;
-                gc.setStroke(co);
+                        gc.setStroke(co);
 
-                gc.strokeLine(i * dw, height, i * dw, height - mag / 3 * height);
+                        gc.strokeLine(i * dw, height, i * dw, height - mag / 3 * height);
+                    }
+                }
+
             }
-        }
+        });
     }
 
     FFT fft = new FFT(Output.BUFFER_SIZE / 2, (float) Output.SAMPLE_RATE);

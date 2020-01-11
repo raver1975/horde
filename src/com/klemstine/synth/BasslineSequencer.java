@@ -161,7 +161,7 @@ public class BasslineSequencer extends Sequencer {
             }
         }
         for (int i=0;i<pattern.note.length;i++){
-            pattern.note[i]+= TheHorde.pitch_offset;
+            pattern.note[i]+= pitch_offset;
         }
         return pattern;
     }
