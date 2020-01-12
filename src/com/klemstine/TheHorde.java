@@ -497,7 +497,6 @@ public class TheHorde extends Application {
                 }
                 int x = (int) (e.getX() / (sequencerCanvas.getWidth() / 16));
                 int y = (int) ((sequencerCanvas.getHeight() - e.getY()) / (sequencerCanvas.getHeight() / canvasYHeight) - canvasYoffset);
-                System.out.println("xy" + x + "\t" + y);
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
                 if (bassline != null) {
                     if (e.getButton() == MouseButton.PRIMARY) {
@@ -563,8 +562,6 @@ public class TheHorde extends Application {
                 }
             }
         });
-
-        //        System.out.println(canvas);
         drawSequencer();
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -665,7 +662,6 @@ public class TheHorde extends Application {
                     }
                 } else {
                     int[][] rhythm = output.getSequencers()[selectedSequencer].getRhythm();
-//            System.out.println(Arrays.deepToString(rhythm));
                     for (int j = 0; j < rhythm.length; j++) {
                         for (int i = 0; i < rhythm[j].length; i++) {
                             if (rhythm[j][i] > 0) {

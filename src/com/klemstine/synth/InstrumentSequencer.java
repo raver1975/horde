@@ -33,7 +33,6 @@ public class InstrumentSequencer extends Sequencer {
         randomizeRhythm();
         randomizeSequence();
         this.channel = channel;
-        System.out.println("instrument:" + inst + "\tchannel:" + channel);
         try {
             audioSynthesizer = AudioFileCreator.getAudioSynthesizer();
             int resolution = 16;

@@ -18,7 +18,6 @@ public class BasslineSequencer extends Sequencer {
     }
 
     public void randomizeSequence() {
-        System.out.println("here!");
         synth.randomize();
         double[] basicCoeffs = {0.5D, 0.5D, 0.5D, 0.5D};
         double[] bassCoeffs = new double[16];
