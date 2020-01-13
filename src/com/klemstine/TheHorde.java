@@ -162,6 +162,7 @@ public class TheHorde extends Application {
                         try {
                             md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
                             md.getReceiver().send(new ShortMessage(ShortMessage.START, ((MidiSequencer) seq).channel, 0), -1);
+
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
@@ -170,7 +171,7 @@ public class TheHorde extends Application {
                         }
                     }
                 }
-                for (Sequencer seq1:output.getSequencers()) {
+                for (Sequencer seq1 : output.getSequencers()) {
                     seq1.reset();
                 }
 
@@ -210,13 +211,18 @@ public class TheHorde extends Application {
         progDown.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("prog down clicked");
                 Sequencer seq = output.getSequencers()[selectedSequencer];
-                if (seq instanceof MidiDevice) {
+                if (seq instanceof MidiSequencer) {
                     MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
                     if (md != null) {
                         try {
-                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
+                            int pp=0;
+                            int d= (int) (Math.random()*127f);
+                            System.out.println("selected="+selectedSequencer);
+//                            md.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE, selectedSequencer, 0, pp>>7), -1);
+//                            md.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE, selectedSequencer, 32, pp & 0x7f), -1);
+                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE,selectedSequencer,d, 0), -1);
+                            System.out.println("prog down clicked");
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
                         } catch (InvalidMidiDataException e) {
@@ -231,7 +237,26 @@ public class TheHorde extends Application {
         progUp.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("prog up clicked");
+                Sequencer seq = output.getSequencers()[selectedSequencer];
+                if (seq instanceof MidiSequencer) {
+                    MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
+                    if (md != null) {
+                        try {
+                            int pp=0;
+                            int d= (int) (Math.random()*127f);
+                            System.out.println("selected="+selectedSequencer);
+//                            md.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE, selectedSequencer, 0, pp>>7), -1);
+//                            md.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE, selectedSequencer, 32, pp & 0x7f), -1);
+                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE,selectedSequencer,d, 0), -1);
+                            System.out.println("prog up clicked");
+                        } catch (MidiUnavailableException e) {
+                            e.printStackTrace();
+                        } catch (InvalidMidiDataException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
             }
         });
 
