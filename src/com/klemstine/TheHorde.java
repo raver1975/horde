@@ -11,17 +11,17 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.Group;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -31,14 +31,19 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -52,6 +57,7 @@ import static com.klemstine.synth.BasslineSynthesizer.MSG_CC_TUNE;
 public class TheHorde extends Application {
     private Canvas sequencerCanvas;
     private Canvas visualizerCanvas;
+    private Canvas trackerCanvas;
     private int selectedSequencer = 0;
     Output output;
     private int canvasYHeight;
@@ -59,6 +65,7 @@ public class TheHorde extends Application {
     private GradientLookup gradientLookup;
     private static double main_vol;
     private static final double SCALE_FACTOR = 0.80;
+    private boolean drawSequencerPosition = true;
     //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
     @Override
@@ -90,7 +97,7 @@ public class TheHorde extends Application {
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
 //        Scene scene = new Scene(root);
-        Scene scene = new Scene(new Group(bp), 760, 680);
+        Scene scene = new Scene(new Group(bp), 1569, 680);
 
         bp.setPrefWidth(scene.getWidth() * 1 / SCALE_FACTOR);
         scene.widthProperty().addListener(observable -> {
@@ -216,12 +223,12 @@ public class TheHorde extends Application {
                     MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
                     if (md != null) {
                         try {
-                            int pp=0;
-                            int d= (int) (Math.random()*127f);
-                            System.out.println("selected="+selectedSequencer);
+                            int pp = 0;
+                            int d = (int) (Math.random() * 127f);
+                            System.out.println("selected=" + selectedSequencer);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE, selectedSequencer, 0, pp>>7), -1);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE, selectedSequencer, 32, pp & 0x7f), -1);
-                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE,selectedSequencer,d, 0), -1);
+                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, d, 0), -1);
                             System.out.println("prog down clicked");
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
@@ -242,12 +249,12 @@ public class TheHorde extends Application {
                     MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
                     if (md != null) {
                         try {
-                            int pp=0;
-                            int d= (int) (Math.random()*127f);
-                            System.out.println("selected="+selectedSequencer);
+                            int pp = 0;
+                            int d = (int) (Math.random() * 127f);
+                            System.out.println("selected=" + selectedSequencer);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE, selectedSequencer, 0, pp>>7), -1);
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.CONTROL_CHANGE, selectedSequencer, 32, pp & 0x7f), -1);
-                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE,selectedSequencer,d, 0), -1);
+                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, d, 0), -1);
                             System.out.println("prog up clicked");
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
@@ -313,6 +320,34 @@ public class TheHorde extends Application {
                     bassline.accent[i % bassline.note.length] = bassline.accent[(bassline.note.length + i - 1) % bassline.note.length];
                     bassline.slide[i % bassline.note.length] = bassline.slide[(bassline.note.length + i - 1) % bassline.note.length];
                 }
+            }
+        });
+
+        final Button trackSave = (Button) scene.lookup("#track-save");
+        trackSave.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                drawSequencerPosition = false;
+                drawSequencer();
+                System.out.println("track save clicked");
+                SnapshotParameters sp = new SnapshotParameters();
+                sequencerCanvas.snapshot(new Callback<SnapshotResult, Void>() {
+                    @Override
+                    public Void call(SnapshotResult param) {
+                        BufferedImage image = SwingFXUtils.fromFXImage(param.getImage(), null);
+                        System.out.println("got image!");
+                        JDialog dialog = new JDialog();
+//                dialog.setUndecorated(true);
+                        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                        JLabel label = new JLabel(new ImageIcon(image));
+                        dialog.add(label);
+                        dialog.pack();
+                        dialog.setVisible(true);
+                        drawSequencerPosition = true;
+                        return null;
+                    }
+                }, sp, null);
+
             }
         });
 
@@ -441,7 +476,7 @@ public class TheHorde extends Application {
             slider.setValue(63);
             GridPane.setFillHeight(slider, true);
 //            GridPane.setHalignment(slider, HPos.CENTER);
-            onButton.setText("  ");
+//            onButton.setText("  ");
             onButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -511,6 +546,7 @@ public class TheHorde extends Application {
 
         sequencerCanvas = (Canvas) scene.lookup("#sequencer");
         visualizerCanvas = (Canvas) scene.lookup("#vis");
+        trackerCanvas = (Canvas) scene.lookup("#tracker");
 
         sequencerCanvas.setOnMousePressed(new EventHandler<MouseEvent>() {
             private int state;
@@ -587,6 +623,28 @@ public class TheHorde extends Application {
                 }
             }
         });
+
+        trackerCanvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+            private int state;
+
+            @Override
+            public void handle(MouseEvent e) {
+                if (!trackerCanvas.contains(e.getX(), e.getY())) {
+                    return;
+                }
+                System.out.println("Clicked on tracker canvas");
+            }
+        });
+        trackerCanvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                if (!trackerCanvas.contains(e.getX(), e.getY()) || e.getButton() != MouseButton.PRIMARY) {
+                    return;
+                }
+                System.out.println("dragged on tracker canvas");
+            }
+        });
+
         drawSequencer();
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -595,6 +653,15 @@ public class TheHorde extends Application {
         scale.setPivotY(0);
         bp.getTransforms().setAll(scale);
 
+    }
+
+    public void drawTracker() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //draw tracker here
+            }
+        });
     }
 
     public void drawSequencer() {
@@ -622,9 +689,6 @@ public class TheHorde extends Application {
                 gc.setFill(new Color(0, 0, .9d, 1));
                 gc.fillRect(0, 0, sequencerCanvas.getWidth(), sequencerCanvas.getHeight());
 
-                gc.setStroke(Color.BLACK);
-                gc.setLineWidth(1);
-                gc.strokeLine(0, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist, width, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist);
                 gc.setStroke(Color.BLUE);
                 for (int i = 0; i < canvasYHeight + 1; i++) {
                     if (i % 12 == 0) {
@@ -648,10 +712,16 @@ public class TheHorde extends Application {
 
                 }
 
+                if (drawSequencerPosition) {
+                    gc.setStroke(Color.WHITE);
+                    gc.strokeLine(step * widthDist, 0, step * widthDist, height);
 
-                gc.setStroke(Color.WHITE);
-                gc.strokeLine(step * widthDist, 0, step * widthDist, height);
+                    gc.setStroke(Color.BLACK);
+                    gc.setLineWidth(1);
+                    gc.strokeLine(0, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist, width, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist);
 
+                }
+                gc.setLineWidth(2);
                 if (bassline != null) {
                     for (int i = 0; i < 16; i++) {
                         int note = bassline.getNote(i);
@@ -820,5 +890,6 @@ public class TheHorde extends Application {
 //
 //        return absSignal;
     }
+
 
 }

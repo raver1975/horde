@@ -219,37 +219,37 @@
                   <Regulator id="synth2-knob-6" maxHeight="30.0" maxValue="127.0" maxWidth="50.0" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="50.0" />
                </children>
             </VBox>
-                <ToggleButton id="midi-bt-1" mnemonicParsing="false" text="   " GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-1" mnemonicParsing="false" text="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-1" mnemonicParsing="false" text="R" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-2" mnemonicParsing="false" text="   " GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-2" mnemonicParsing="false" text="2" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-2" mnemonicParsing="false" text="R" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-3" mnemonicParsing="false" text="   " GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-3" mnemonicParsing="false" text="3" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-3" mnemonicParsing="false" text="R" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-4" mnemonicParsing="false" text="   " GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-4" mnemonicParsing="false" text="4" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-4" mnemonicParsing="false" text="R" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-5" mnemonicParsing="false" text="   " GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-5" mnemonicParsing="false" text="5" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-5" mnemonicParsing="false" text="R" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-6" mnemonicParsing="false" text="   " GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-6" mnemonicParsing="false" text="6" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-6" mnemonicParsing="false" text="R" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-7" mnemonicParsing="false" text="   " GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-7" mnemonicParsing="false" text="7" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-7" mnemonicParsing="false" text="R" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-8" mnemonicParsing="false" text="   " GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-8" mnemonicParsing="false" text="8" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-8" mnemonicParsing="false" text="R" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-9" mnemonicParsing="false" text="   " GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-9" mnemonicParsing="false" text="9" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-9" mnemonicParsing="false" text="R" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-11" mnemonicParsing="false" text="   " GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-11" mnemonicParsing="false" text="11" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-11" mnemonicParsing="false" text="R" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-12" mnemonicParsing="false" text="   " GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-12" mnemonicParsing="false" text="12" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-12" mnemonicParsing="false" text="R" GridPane.columnIndex="10" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-13" mnemonicParsing="false" text="   " GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-13" mnemonicParsing="false" text="303" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-13" mnemonicParsing="false" text="R" GridPane.columnIndex="11" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-14" mnemonicParsing="false" text="   " GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-14" mnemonicParsing="false" text="303" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-14" mnemonicParsing="false" text="R" GridPane.columnIndex="12" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-10" mnemonicParsing="false" text="   " GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-10" mnemonicParsing="false" text="10" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-10" mnemonicParsing="false" text="R" GridPane.columnIndex="15" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-16" mnemonicParsing="false" text="   " GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-16" mnemonicParsing="false" text="909" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-16" mnemonicParsing="false" text="R" GridPane.columnIndex="14" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
-                <ToggleButton id="midi-bt-15" mnemonicParsing="false" text="   " GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                <ToggleButton id="midi-bt-15" mnemonicParsing="false" text="808" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                 <Button id="midi-shuffle-15" mnemonicParsing="false" text="R" GridPane.columnIndex="13" GridPane.halignment="CENTER" GridPane.rowIndex="7" />
             <Regulator id="midi-pan-1" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Regulator id="midi-pan-2" knobRotateLock="true" maxHeight="30.0" maxValue="63.0" maxWidth="30.0" minValue="-63.0" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
@@ -403,10 +403,11 @@
                   <Button id="midi-prog-change-down" mnemonicParsing="false" text="Prog -" GridPane.rowIndex="1" />
                   <Button id="midi-prog-change-up" mnemonicParsing="false" text="Prog +" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Button mnemonicParsing="false" text="Button" GridPane.rowIndex="2" />
-                  <Button mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Button id="track-save" mnemonicParsing="false" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </children>
       </GridPane>
+      <Canvas id="tracker" height="809.0" layoutX="889.0" width="809.0" />
    </children>
 </AnchorPane>
