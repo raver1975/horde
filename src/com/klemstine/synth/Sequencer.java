@@ -1,7 +1,7 @@
 package com.klemstine.synth;
 
 public abstract class Sequencer {
-    public double bpm = 140.0D;
+    public double bpm = 120.0D;
     public double vol = 0f;
     private BasslinePattern bassline;
     private int[][] rhythm;

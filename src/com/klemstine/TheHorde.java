@@ -66,6 +66,8 @@ public class TheHorde extends Application {
     private static double main_vol;
     private static final double SCALE_FACTOR = 0.80;
     private boolean drawSequencerPosition = true;
+
+    public int trackerPos=0;
     //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
     @Override
@@ -325,6 +327,11 @@ public class TheHorde extends Application {
 
         final Button trackSave = (Button) scene.lookup("#track-save");
         trackSave.setOnAction(new EventHandler<ActionEvent>() {
+            int width=72;
+            int height=48;
+            int margin=2;
+            int mod=16;
+
             @Override
             public void handle(ActionEvent event) {
                 drawSequencerPosition = false;
@@ -334,16 +341,21 @@ public class TheHorde extends Application {
                 sequencerCanvas.snapshot(new Callback<SnapshotResult, Void>() {
                     @Override
                     public Void call(SnapshotResult param) {
-                        BufferedImage image = SwingFXUtils.fromFXImage(param.getImage(), null);
-                        System.out.println("got image!");
-                        JDialog dialog = new JDialog();
-//                dialog.setUndecorated(true);
-                        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                        JLabel label = new JLabel(new ImageIcon(image));
-                        dialog.add(label);
-                        dialog.pack();
-                        dialog.setVisible(true);
+//                        BufferedImage image = SwingFXUtils.fromFXImage(param.getImage(), null);
                         drawSequencerPosition = true;
+
+                        GraphicsContext gc=trackerCanvas.getGraphicsContext2D();
+
+                        gc.drawImage(param.getImage(),(width+margin)*(trackerPos%mod)+margin/2,(height+margin)*(trackerPos/mod)+margin/2+20,width,height);
+                        trackerPos++;
+                        System.out.println("got image!");
+//                        JDialog dialog = new JDialog();
+////                dialog.setUndecorated(true);
+//                        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//                        JLabel label = new JLabel(new ImageIcon(image));
+//                        dialog.add(label);
+//                        dialog.pack();
+//                        dialog.setVisible(true);
                         return null;
                     }
                 }, sp, null);
