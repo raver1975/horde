@@ -408,6 +408,6 @@
             </GridPane>
          </children>
       </GridPane>
-      <Canvas id="tracker" height="809.0" layoutX="889.0" width="809.0" />
+      <Canvas id="tracker" height="809.0" layoutX="898.0" width="806.0" />
    </children>
 </AnchorPane>

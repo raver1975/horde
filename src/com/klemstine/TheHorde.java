@@ -42,6 +42,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.Buffer;
 import java.util.ArrayList;
@@ -66,8 +67,8 @@ public class TheHorde extends Application {
     private static double main_vol;
     private static final double SCALE_FACTOR = 0.80;
     private boolean drawSequencerPosition = true;
+    ArrayList<SequencerData>[] sd=new ArrayList[16];
 
-    public int trackerPos=0;
     //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
     @Override
@@ -99,7 +100,7 @@ public class TheHorde extends Application {
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
 //        Scene scene = new Scene(root);
-        Scene scene = new Scene(new Group(bp), 1569, 680);
+        Scene scene = new Scene(new Group(bp), 1400, 680);
 
         bp.setPrefWidth(scene.getWidth() * 1 / SCALE_FACTOR);
         scene.widthProperty().addListener(observable -> {
@@ -330,7 +331,11 @@ public class TheHorde extends Application {
             int width=72;
             int height=48;
             int margin=2;
-            int mod=16;
+//            int mod=16;
+
+
+
+
 
             @Override
             public void handle(ActionEvent event) {
@@ -343,11 +348,12 @@ public class TheHorde extends Application {
                     public Void call(SnapshotResult param) {
 //                        BufferedImage image = SwingFXUtils.fromFXImage(param.getImage(), null);
                         drawSequencerPosition = true;
-
+                        if (sd[selectedSequencer]==null){
+                            sd[selectedSequencer]=new ArrayList<SequencerData>();
+                        }
                         GraphicsContext gc=trackerCanvas.getGraphicsContext2D();
-
-                        gc.drawImage(param.getImage(),(width+margin)*(trackerPos%mod)+margin/2,(height+margin)*(trackerPos/mod)+margin/2+20,width,height);
-                        trackerPos++;
+                        gc.drawImage(param.getImage(),(width+margin)*(sd[selectedSequencer].size())+margin/2,(height+margin)*(selectedSequencer)+margin/2+20,width,height);
+                        sd[selectedSequencer].add(new SequencerData(param.getImage(),output.getSequencers()[selectedSequencer]));
                         System.out.println("got image!");
 //                        JDialog dialog = new JDialog();
 ////                dialog.setUndecorated(true);
@@ -638,13 +644,25 @@ public class TheHorde extends Application {
 
         trackerCanvas.setOnMousePressed(new EventHandler<MouseEvent>() {
             private int state;
+            int width=72;
+            int height=48;
+            int margin=2;
+//(x-margin/2)/(width+margin)=(xloc)
 
+//(y-margin/2+20)/(height+margin)=(yloc)
             @Override
             public void handle(MouseEvent e) {
                 if (!trackerCanvas.contains(e.getX(), e.getY())) {
                     return;
                 }
-                System.out.println("Clicked on tracker canvas");
+                int xLoc= (int) ((e.getX()-(margin/2))/(width+margin));
+                int yLoc= (int) ((e.getY()-(margin/2+20))/(height+margin));
+                System.out.println("Clicked on tracker canvas "+xLoc+"\t"+yLoc);
+                if (sd[yLoc]!=null){
+                    if (xLoc<sd[yLoc].size()&&sd[yLoc].get(xLoc)!=null){
+                        output.getSequencers()[selectedSequencer].setSequence(sd[yLoc].get(xLoc));
+                    }
+                }
             }
         });
         trackerCanvas.setOnMouseDragged(new EventHandler<MouseEvent>() {

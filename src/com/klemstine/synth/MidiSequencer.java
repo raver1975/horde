@@ -82,6 +82,16 @@ public class MidiSequencer extends Sequencer {
         if (this.tick == 0) {
 
             if (this.sixteenth_note) {
+                if (channel == 0 && midiSynthesizer != null) {
+                    try {
+                        for (int i = 0; i < 6; i++) {
+                            midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.TIMING_CLOCK, channel, 0), -1);
+                        }
+
+                    } catch (MidiUnavailableException | InvalidMidiDataException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (!drum) {
                     if ((!this.getBassline().pause[this.step])) {
                         try {
@@ -128,16 +138,7 @@ public class MidiSequencer extends Sequencer {
                 if (this.shuffle) {
                     setBpm(this.bpm);
                 }
-                if (channel == 0 && midiSynthesizer != null) {
-                    try {
-                        for (int i = 0; i < 6; i++) {
-                            midiSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.TIMING_CLOCK, channel, 0), -1);
-                        }
 
-                    } catch (MidiUnavailableException | InvalidMidiDataException e) {
-                        e.printStackTrace();
-                    }
-                }
             } else {
                 if (drum || !this.getBassline().slide[this.step]) {
                     for (int n : noteOn) {

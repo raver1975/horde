@@ -1,5 +1,6 @@
 package com.klemstine.synth;
 
+import com.klemstine.SequencerData;
 import com.klemstine.TheHorde;
 
 import java.util.ArrayList;

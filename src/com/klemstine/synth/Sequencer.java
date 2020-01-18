@@ -1,5 +1,7 @@
 package com.klemstine.synth;
 
+import com.klemstine.SequencerData;
+
 public abstract class Sequencer {
     public double bpm = 120.0D;
     public double vol = 0f;
@@ -52,5 +54,15 @@ public abstract class Sequencer {
 
     public abstract void randomizeSequence();
     public abstract void randomizeRhythm();
+
+    public void setSequence(SequencerData sd) {
+        BasslinePattern bp=new BasslinePattern(sd.note.length);
+        bp.accent=sd.accent.clone();
+        bp.note=sd.note.clone();
+        bp.pause=sd.pause.clone();
+        bp.slide=sd.slide.clone();
+        this.setBassline(bp);
+        this.setRhythm(sd.rhythm.clone());
+    }
 }
 
