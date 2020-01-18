@@ -331,11 +331,6 @@ public class TheHorde extends Application {
             int width=72;
             int height=48;
             int margin=2;
-//            int mod=16;
-
-
-
-
 
             @Override
             public void handle(ActionEvent event) {
@@ -346,7 +341,6 @@ public class TheHorde extends Application {
                 sequencerCanvas.snapshot(new Callback<SnapshotResult, Void>() {
                     @Override
                     public Void call(SnapshotResult param) {
-//                        BufferedImage image = SwingFXUtils.fromFXImage(param.getImage(), null);
                         drawSequencerPosition = true;
                         if (sd[selectedSequencer]==null){
                             sd[selectedSequencer]=new ArrayList<SequencerData>();
@@ -705,7 +699,7 @@ public class TheHorde extends Application {
                 double width = sequencerCanvas.getWidth();
                 double height = sequencerCanvas.getHeight();
                 double widthDist = width / 16d;
-                if (bassline == null) {
+                if (output.getSequencers()[selectedSequencer] instanceof RhythmSequencer) {
                     canvasYoffset = 0;
                     canvasYHeight = 7;
                 } else {
@@ -715,40 +709,43 @@ public class TheHorde extends Application {
 
                 double heightDist = height / canvasYHeight;
                 GraphicsContext gc = sequencerCanvas.getGraphicsContext2D();
-
-                gc.setFill(new Color(0, 0, .9d, 1));
+                Color gl=gradientLookup.getColorAt(selectedSequencer/16d).darker().darker().darker();
+                gc.setFill(gl.darker());
                 gc.fillRect(0, 0, sequencerCanvas.getWidth(), sequencerCanvas.getHeight());
 
-                gc.setStroke(Color.BLUE);
-                for (int i = 0; i < canvasYHeight + 1; i++) {
-                    if (i % 12 == 0) {
-                        gc.setStroke(new Color(.2d, .2d, 1d, 1));
-                    } else {
-                        gc.setStroke(Color.BLUE);
-                    }
-                    gc.strokeLine(0, i * heightDist, width, i * heightDist);
-
-                }
-
-                gc.setStroke(Color.BLUE);
+                gc.setStroke(gl);
                 gc.setLineWidth(2);
                 for (int i = 0; i < 17; i++) {
                     if (i % 4 == 0) {
-                        gc.setStroke(new Color(.2d, .2d, 1d, 1));
+                        gc.setStroke(gl.brighter());
                     } else {
-                        gc.setStroke(Color.BLUE);
+                        gc.setStroke(gl);
                     }
                     gc.strokeLine(i * widthDist, 0, i * widthDist, height);
 
                 }
 
+
+                gc.setStroke(gl);
+                gc.setLineWidth(1);
+                for (int i = 0; i < canvasYHeight + 1; i++) {
+                    if (i % 12 == 0) {
+                        gc.setStroke(gl.brighter());
+                    } else {
+                        gc.setStroke(gl);
+                    }
+                    gc.strokeLine(0, i * heightDist, width, i * heightDist);
+
+                }
+
+
                 if (drawSequencerPosition) {
                     gc.setStroke(Color.WHITE);
                     gc.strokeLine(step * widthDist, 0, step * widthDist, height);
 
-                    gc.setStroke(Color.BLACK);
-                    gc.setLineWidth(1);
-                    gc.strokeLine(0, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist, width, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist);
+//                    gc.setStroke(Color.BLACK);
+//                    gc.setLineWidth(1);
+//                    gc.strokeLine(0, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist, width, sequencerCanvas.getHeight() - output.getSequencers()[selectedSequencer].pitch_offset * heightDist);
 
                 }
                 gc.setLineWidth(2);

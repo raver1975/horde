@@ -27,8 +27,8 @@ public class SequencerData {
             this.accent = sequencer.getBassline().accent.clone();
             this.slide = sequencer.getBassline().slide.clone();
         }
-        if (rhythm != null) {
-            this.rhythm = rhythm.clone();
+        if (sequencer.rhythm != null) {
+            this.rhythm = sequencer.rhythm.clone();
         }
     }
 
