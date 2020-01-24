@@ -8,6 +8,8 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import java.util.Arrays;
+
 public class SequencerData {
     Image image;
     public byte[] note;
@@ -28,7 +30,7 @@ public class SequencerData {
             this.slide = sequencer.getBassline().slide.clone();
         }
         if (sequencer.rhythm != null) {
-            this.rhythm = sequencer.rhythm.clone();
+            this.rhythm  = Arrays.stream(sequencer.rhythm).map(int[]::clone).toArray(int[][]::new);
         }
     }
 

@@ -2,6 +2,8 @@ package com.klemstine.synth;
 
 import com.klemstine.SequencerData;
 
+import java.util.Arrays;
+
 public abstract class Sequencer {
     public double bpm = 120.0D;
     public double vol = 0f;
@@ -59,17 +61,17 @@ public abstract class Sequencer {
     public void setSequence(SequencerData sd) {
         if (this instanceof RhythmSequencer){
             if (sd.rhythm!=null){
-                this.setRhythm(sd.rhythm.clone());
+                this.setRhythm(Arrays.stream(sd.rhythm).map(int[]::clone).toArray(int[][]::new));
             }
         }
         else {
-            if (sd.note!=null) {
-                BasslinePattern bp = new BasslinePattern(sd.note.length);
-                bp.accent = sd.accent.clone();
-                bp.note = sd.note.clone();
-                bp.pause = sd.pause.clone();
-                bp.slide = sd.slide.clone();
-                this.setBassline(bp);
+            if (sd.note!=null){
+            BasslinePattern bp = new BasslinePattern(sd.note.length);
+            bp.accent = sd.accent.clone();
+            bp.note = sd.note.clone();
+            bp.pause = sd.pause.clone();
+            bp.slide = sd.slide.clone();
+            this.setBassline(bp);
             }
         }
 

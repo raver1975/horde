@@ -67,7 +67,7 @@ public class TheHorde extends Application {
     private static double main_vol;
     private static final double SCALE_FACTOR = 0.80;
     private boolean drawSequencerPosition = true;
-    ArrayList<SequencerData>[] sd=new ArrayList[16];
+    ArrayList<SequencerData>[] sd = new ArrayList[16];
 
     //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
@@ -328,9 +328,9 @@ public class TheHorde extends Application {
 
         final Button trackSave = (Button) scene.lookup("#track-save");
         trackSave.setOnAction(new EventHandler<ActionEvent>() {
-            int width=72;
-            int height=48;
-            int margin=2;
+            int width = 72;
+            int height = 48;
+            int margin = 2;
 
             @Override
             public void handle(ActionEvent event) {
@@ -342,12 +342,12 @@ public class TheHorde extends Application {
                     @Override
                     public Void call(SnapshotResult param) {
                         drawSequencerPosition = true;
-                        if (sd[selectedSequencer]==null){
-                            sd[selectedSequencer]=new ArrayList<SequencerData>();
+                        if (sd[selectedSequencer] == null) {
+                            sd[selectedSequencer] = new ArrayList<SequencerData>();
                         }
-                        GraphicsContext gc=trackerCanvas.getGraphicsContext2D();
-                        gc.drawImage(param.getImage(),(width+margin)*(sd[selectedSequencer].size())+margin/2,(height+margin)*(selectedSequencer)+margin/2+20,width,height);
-                        sd[selectedSequencer].add(new SequencerData(param.getImage(),output.getSequencers()[selectedSequencer]));
+                        GraphicsContext gc = trackerCanvas.getGraphicsContext2D();
+                        gc.drawImage(param.getImage(), (width + margin) * (sd[selectedSequencer].size()) + margin / 2, (height + margin) * (selectedSequencer) + margin / 2 + 20, width, height);
+                        sd[selectedSequencer].add(new SequencerData(param.getImage(), output.getSequencers()[selectedSequencer]));
                         System.out.println("got image!");
 //                        JDialog dialog = new JDialog();
 ////                dialog.setUndecorated(true);
@@ -638,22 +638,22 @@ public class TheHorde extends Application {
 
         trackerCanvas.setOnMousePressed(new EventHandler<MouseEvent>() {
             private int state;
-            int width=72;
-            int height=48;
-            int margin=2;
+            int width = 72;
+            int height = 48;
+            int margin = 2;
 //(x-margin/2)/(width+margin)=(xloc)
 
-//(y-margin/2+20)/(height+margin)=(yloc)
+            //(y-margin/2+20)/(height+margin)=(yloc)
             @Override
             public void handle(MouseEvent e) {
                 if (!trackerCanvas.contains(e.getX(), e.getY())) {
                     return;
                 }
-                int xLoc= (int) ((e.getX()-(margin/2))/(width+margin));
-                int yLoc= (int) ((e.getY()-(margin/2+20))/(height+margin));
-                System.out.println("Clicked on tracker canvas "+xLoc+"\t"+yLoc);
-                if (sd[yLoc]!=null){
-                    if (xLoc<sd[yLoc].size()&&sd[yLoc].get(xLoc)!=null){
+                int xLoc = (int) ((e.getX() - (margin / 2)) / (width + margin));
+                int yLoc = (int) ((e.getY() - (margin / 2 + 20)) / (height + margin));
+                System.out.println("Clicked on tracker canvas " + xLoc + "\t" + yLoc);
+                if (sd[yLoc] != null) {
+                    if (xLoc < sd[yLoc].size() && sd[yLoc].get(xLoc) != null) {
                         output.getSequencers()[selectedSequencer].setSequence(sd[yLoc].get(xLoc));
                     }
                 }
@@ -688,11 +688,15 @@ public class TheHorde extends Application {
         });
     }
 
+    boolean seqLock = false;
     public void drawSequencer() {
+        if (seqLock) {
+            return;
+        }
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
+                seqLock = true;
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
                 if (sequencerCanvas == null) return;
                 int step = output.getSequencers()[selectedSequencer].step;
@@ -709,7 +713,7 @@ public class TheHorde extends Application {
 
                 double heightDist = height / canvasYHeight;
                 GraphicsContext gc = sequencerCanvas.getGraphicsContext2D();
-                Color gl=gradientLookup.getColorAt(selectedSequencer/16d).darker().darker().darker();
+                Color gl = gradientLookup.getColorAt(selectedSequencer / 16d).darker().darker().darker();
                 gc.setFill(gl.darker());
                 gc.fillRect(0, 0, sequencerCanvas.getWidth(), sequencerCanvas.getHeight());
 
@@ -807,7 +811,7 @@ public class TheHorde extends Application {
                         }
                     }
                 }
-
+                seqLock = false;
             }
         });
 //        gc.setLineWidth(5);
@@ -840,11 +844,16 @@ public class TheHorde extends Application {
     private double[] lastBytes = new double[256];
     private double[] accel = new double[256];
 
+    boolean visLock = false;
+
     public void drawVisualizer(final byte[] buffer5) {
+        if (visLock) {
+            return;
+        }
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
+                visLock = true;
                 if (visualizerCanvas != null) {
                     double width = visualizerCanvas.getWidth();
                     double height = visualizerCanvas.getHeight();
@@ -880,6 +889,7 @@ public class TheHorde extends Application {
 
                         gc.strokeLine(i * dw, height, i * dw, height - mag / 3 * height);
                     }
+                    visLock = false;
                 }
 
             }
