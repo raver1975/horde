@@ -188,6 +188,7 @@ public class TheHorde extends Application {
                 output.resume();
             }
         });
+        midiStart.fire();
 
 
         //midi stop
