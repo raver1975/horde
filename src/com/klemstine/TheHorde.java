@@ -170,7 +170,7 @@ public class TheHorde extends Application {
                     MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
                     if (md != null) {
                         try {
-                            md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
+//                            md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
                             md.getReceiver().send(new ShortMessage(ShortMessage.START, ((MidiSequencer) seq).channel, 0), -1);
 
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, selectedSequencer, (int) (Math.random() * 127), 0), -1);
