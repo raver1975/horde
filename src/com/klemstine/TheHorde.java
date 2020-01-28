@@ -11,7 +11,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +20,6 @@ import javafx.scene.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -37,14 +35,9 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
-import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.net.URL;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -167,7 +160,7 @@ public class TheHorde extends Application {
                 System.out.println("midistart clicked");
                 Sequencer seq = output.getSequencers()[0];
                 if (seq instanceof MidiSequencer) {
-                    MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
+                    MidiDevice md = ((MidiSequencer) seq).midiDeviceReceiver;
                     if (md != null) {
                         try {
 //                            md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
@@ -199,7 +192,7 @@ public class TheHorde extends Application {
                 System.out.println("midistop clicked");
                 Sequencer seq = output.getSequencers()[0];
                 if (seq instanceof MidiSequencer) {
-                    MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
+                    MidiDevice md = ((MidiSequencer) seq).midiDeviceReceiver;
                     if (md != null) {
                         try {
                             md.getReceiver().send(new ShortMessage(ShortMessage.STOP, ((MidiSequencer) seq).channel, 0), -1);
@@ -211,8 +204,7 @@ public class TheHorde extends Application {
                         }
                     }
                 }
-//                output.pause();
-
+                output.pause();
             }
         });
 
@@ -224,7 +216,7 @@ public class TheHorde extends Application {
             public void handle(ActionEvent event) {
                 Sequencer seq = output.getSequencers()[selectedSequencer];
                 if (seq instanceof MidiSequencer) {
-                    MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
+                    MidiDevice md = ((MidiSequencer) seq).midiDeviceReceiver;
                     if (md != null) {
                         try {
                             int pp = 0;
@@ -250,7 +242,7 @@ public class TheHorde extends Application {
             public void handle(ActionEvent event) {
                 Sequencer seq = output.getSequencers()[selectedSequencer];
                 if (seq instanceof MidiSequencer) {
-                    MidiDevice md = ((MidiSequencer) seq).midiSynthesizer;
+                    MidiDevice md = ((MidiSequencer) seq).midiDeviceReceiver;
                     if (md != null) {
                         try {
                             int pp = 0;
@@ -535,7 +527,7 @@ public class TheHorde extends Application {
         for (int i = 0; i < 12; i++) {
 
             final ChoiceBox cb = (ChoiceBox) scene.lookup("#midi-instrument-" + (i + 1));
-            if (i == 9 || ((output.getSequencers()[i] instanceof MidiSequencer && ((MidiSequencer) output.getSequencers()[i]).midiSynthesizer != null))) {
+            if (i == 9 || ((output.getSequencers()[i] instanceof MidiSequencer && ((MidiSequencer) output.getSequencers()[i]).midiDeviceReceiver != null))) {
                 cb.setVisible(false);
                 continue;
             }
@@ -690,6 +682,7 @@ public class TheHorde extends Application {
     }
 
     boolean seqLock = false;
+
     public void drawSequencer() {
         if (seqLock) {
             return;

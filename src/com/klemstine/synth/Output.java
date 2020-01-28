@@ -4,7 +4,6 @@ import com.klemstine.TheHorde;
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.util.MixingAudioInputStream;
 
-import javax.sound.midi.MidiDevice;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
 import java.io.BufferedOutputStream;
@@ -88,7 +87,7 @@ public class Output implements Runnable {
                 its = new InstrumentSequencer(it, it == 9);
             }
             if (its instanceof MidiSequencer){
-                if (((MidiSequencer) its).midiSynthesizer ==null){
+                if (((MidiSequencer) its).midiDeviceReceiver ==null){
                     its = new InstrumentSequencer(it, it == 9);
                 }
             }

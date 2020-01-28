@@ -79,7 +79,7 @@ public class AudioFileCreator {
 //        DataLine.Info info = new DataLine.Info(TargetDataLine.class, audioFormat);
         try {
             res = AudioSystem.getTargetDataLine(audioFormat);
-            res.open(audioFormat,Output.BUFFER_SIZE);
+            res.open(audioFormat, Output.BUFFER_SIZE);
             res.start();
         } catch (LineUnavailableException e) {
             e.printStackTrace();
@@ -273,6 +273,7 @@ public class AudioFileCreator {
 
         throw new MidiUnavailableException("The AudioSynthesizer is not available.");
     }
+
     /**
      * Gets the audio synthesizer.
      *
@@ -280,32 +281,37 @@ public class AudioFileCreator {
      * @throws MidiUnavailableException if the audio
      *                                  synthesizer cannot be found
      */
-    public static MidiDevice getMidiDevice() throws MidiUnavailableException {
+    public static MidiDevice[] getMidiDevices() throws MidiUnavailableException {
+        MidiDevice[] out = new MidiDevice[2];
         System.out.println("----------");
         for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) {
             MidiDevice device = MidiSystem.getMidiDevice(info);
             System.out.println(device.getDeviceInfo());
-            System.out.println("recievers:"+device.getMaxReceivers());
-            System.out.println("transmitters:"+device.getMaxTransmitters());
+            System.out.println("recievers:" + device.getMaxReceivers());
+            System.out.println("transmitters:" + device.getMaxTransmitters());
 //            if (device instanceof MidiDevice) {
 //            }
         }
         System.out.println("----------");
         for (MidiDevice.Info info : MidiSystem.getMidiDeviceInfo()) {
             MidiDevice device = MidiSystem.getMidiDevice(info);
-            String s=device.getDeviceInfo().toString();
-            System.out.println("*"+s);
-            if (s.contains("MC-707") && device.getMaxReceivers()!=0) {
-                System.out.println("returned "+s);
-                System.out.println("recievers:"+device.getMaxReceivers());
-                System.out.println("transmitters:"+device.getMaxTransmitters());
-
-                return device;
+            String s = device.getDeviceInfo().toString();
+            if (s.equals("Gervill") || s.equals("Real Time Sequencer") || s.equals("Microsoft MIDI Mapper") || s.equals("Microsoft GS Wavetable Synth")) {
+                continue;
             }
+
+            if (out[0] == null && device.getMaxReceivers() != 0) {
+                out[0] = device;
+                System.out.println("Receiver: " + s);
+            } else if (out[1] == null && device.getMaxTransmitters() != 0) {
+                out[1] = device;
+                System.out.println("Transmitter: " + s);
+            } else {
+                System.out.println("Ignored: " + s);
+            }
+
         }
-
-        return null;
-
+        return out;
     }
 
     /**
