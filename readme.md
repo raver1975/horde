@@ -23,7 +23,7 @@ AI powered music groovebox.
 
 ## Getting Started
 prerequisites:
-Java 1.8(only!) and Gradle
+Java 1.8+ and Gradle
 
 ```
 git clone https://github.com/raver1975/horde.git
