@@ -1,0 +1,102 @@
+------------------------------------------------------------------------
+r11407 | mhall | 2014-12-17 12:10:31 +1300 (Wed, 17 Dec 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/version.txt
+
+Branch is now at 3-6-13-SNAPSHOT
+------------------------------------------------------------------------
+r11449 | mhall | 2015-01-01 20:41:40 +1300 (Thu, 01 Jan 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/filters/unsupervised/attribute/PrincipalComponents.java
+
+Was missing unary class in capabilities checking - fixed.
+------------------------------------------------------------------------
+r11467 | mhall | 2015-01-12 19:24:42 +1300 (Mon, 12 Jan 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/classifiers/meta/Bagging.java
+
+Now Bagging (and RandomForest) can process datasets with more than 22 million instances. This one was very mysterious at first.
+------------------------------------------------------------------------
+r11572 | mhall | 2015-02-18 20:37:08 +1300 (Wed, 18 Feb 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/classifiers/meta/Bagging.java
+
+Fixed a bug in the OOB error calculation
+------------------------------------------------------------------------
+r11614 | mhall | 2015-03-02 20:48:36 +1300 (Mon, 02 Mar 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/classifiers/functions/supportVector/RegOptimizer.java
+
+Made number of kernel evals a long
+------------------------------------------------------------------------
+r11754 | fracpete | 2015-03-31 15:00:55 +1300 (Tue, 31 Mar 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/datagenerators/classifiers/classification/BayesNet.java
+
+fixed option handling: -N option was not listed; -N/-S weren't parsed properly in setOptions method
+------------------------------------------------------------------------
+r11789 | mhall | 2015-05-03 17:39:27 +1200 (Sun, 03 May 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/associations/gsp/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/associations/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/arffviewer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/beans/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/beans/xml/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/boundaryvisualizer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/experiment/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/explorer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/graphvisualizer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/hierarchyvisualizer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/sql/event/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/sql/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/streams/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/treevisualizer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/visualize/messages/messages_ar.properties
+
+Updated Arabic message files courtesy of Marwa Varouqa
+------------------------------------------------------------------------
+r11820 | mhall | 2015-05-20 11:51:19 +1200 (Wed, 20 May 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/matrix/SingularValueDecomposition.java
+
+From Eibe: Fixed a couple of bugs: output matrices were not correct when m < n (i.e., more columns than rows). Also, dimensions of output matrices were not correct.
+------------------------------------------------------------------------
+r11821 | mhall | 2015-05-20 11:55:42 +1200 (Wed, 20 May 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/LatentSemanticAnalysis.java
+
+Fixed a array index out of bounds bug that could occur when the singular values matrix is not square
+------------------------------------------------------------------------
+r11851 | mhall | 2015-06-08 22:19:37 +1200 (Mon, 08 Jun 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/ASEvaluation.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/AttributeSelection.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/CfsSubsetEval.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/ConsistencySubsetEval.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/WrapperSubsetEval.java
+
+Fixed a bug affecting ranked output with GreedyStepwise in the last release
+------------------------------------------------------------------------
+r11860 | mhall | 2015-06-11 22:27:58 +1200 (Thu, 11 Jun 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/Copyright.props
+
+Updated copyright year
+------------------------------------------------------------------------
+r11887 | mhall | 2015-06-30 10:28:19 +1200 (Tue, 30 Jun 2015) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props.hsql
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props.msaccess
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props.mssqlserver
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props.mssqlserver2005
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props.mysql
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props.odbc
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props.postgresql
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props.sqlite3
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/InstanceQuery.java
+
+Now handles java.sql.Timestamp correctly. Added a new mapping: timestamp=11
+------------------------------------------------------------------------

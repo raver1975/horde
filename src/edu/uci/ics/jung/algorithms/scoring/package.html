@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+  @(#)package.html
+
+ Copyright (c) 2003-2015 The JUNG Authors. 
+ All Rights Reserved. 
+ 
+ License text: https://github.com/jrtom/jung/blob/master/LICENSE
+-->
+</head>
+<body>
+
+Mechanisms for assigning values (denoting significance, influence, centrality, etc.)
+to graph elements based on topological properties.  These include:
+
+<ul>
+<li><code>BarycenterScorer</code>: assigns a score to each vertex according to 
+the sum of the distances to all other vertices
+<li><code>ClosenessCentrality</code>: assigns a score to each vertex based on 
+the mean distance to each other vertex
+<li><code>DegreeScorer</code>: assigns a score to each vertex based on its degree
+<li><code>EigenvectorCentrality</code>: assigns vertex scores based on 
+long-term probabilities of random walks passing through the vertex at time t
+<li><code>PageRank</code>: like <code>EigenvectorCentrality</code>, but with 
+a constant probability of the
+random walk restarting at a uniform-randomly chosen vertex
+<li><code>PageRankWithPriors</code>: like <code>PageRank</code>, but with a 
+constant probability of the random
+walk restarting at a vertex drawn from an arbitrary distribution
+<li><code>HITS</code>: assigns hubs-and-authorities scores to vertices based on 
+complementary random walk processes
+<li><code>HITSWithPriors</code>: analogous to <code>HITS</code> 
+(see <code>PageRankWithPriors</code>)
+<li><code>VoltageScorer</code>: assigns scores to vertices based on simulated 
+current flow along edges
+</ul>
+
+</body>
+</html>

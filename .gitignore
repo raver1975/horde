@@ -4,3 +4,5 @@ gradlew.bat
 .idea
 build
 gradle
+/src/com/klemstinegroup/wub/system/Credentials.java
+/out

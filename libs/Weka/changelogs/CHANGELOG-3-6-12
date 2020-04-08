@@ -1,0 +1,231 @@
+------------------------------------------------------------------------
+r10664 | mhall | 2014-04-24 15:39:46 +1200 (Thu, 24 Apr 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/version.txt
+
+Version at 3.6.11
+------------------------------------------------------------------------
+r10667 | mhall | 2014-04-24 15:43:19 +1200 (Thu, 24 Apr 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/version.txt
+
+Version now at 3.6.12-snapshot
+------------------------------------------------------------------------
+r10691 | mhall | 2014-04-24 20:42:31 +1200 (Thu, 24 Apr 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/version.txt
+
+Changed version.txt back to 3.6.11 for the maven release
+------------------------------------------------------------------------
+r10793 | mhall | 2014-04-30 09:49:38 +1200 (Wed, 30 Apr 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/GUIChooser.java
+
+Had a stray System.gc() that was consuming CPU when the GUIChooser was idling - fixed.
+------------------------------------------------------------------------
+r10794 | mhall | 2014-04-30 10:41:06 +1200 (Wed, 30 Apr 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/version.txt
+
+Version is now at 3.6.12-snapshot
+------------------------------------------------------------------------
+r10812 | mhall | 2014-05-03 11:51:52 +1200 (Sat, 03 May 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/AttributeLocator.java
+
+Updated AttributeLocator to make it compatible with 3.6.10. Old format vectors of Boolean are transferred automatically to new BitSet representation
+------------------------------------------------------------------------
+r10819 | mhall | 2014-05-06 20:33:55 +1200 (Tue, 06 May 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/beans/Classifier.java
+
+Now appends the fold number, when there is more than one training set in a batch, to the title string in TextEvents.
+------------------------------------------------------------------------
+r10820 | mhall | 2014-05-06 20:34:16 +1200 (Tue, 06 May 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/beans/TextViewer.java
+
+Switched to a split pane to separate the result list from the text output area. Removed the trimming of result list entry names.
+------------------------------------------------------------------------
+r10832 | mhall | 2014-05-12 11:13:08 +1200 (Mon, 12 May 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/filters/unsupervised/attribute/RandomProjection.java
+
+From Eibe: Fixed small bug in option handling and in option docs. Setting percentage to a negative number would result in an incorrect options string in getOptions()
+------------------------------------------------------------------------
+r10834 | mhall | 2014-05-12 11:15:58 +1200 (Mon, 12 May 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/clusterers/UpdateableClusterer.java
+
+Fixed a doc typo.
+------------------------------------------------------------------------
+r10837 | mhall | 2014-05-16 10:04:48 +1200 (Fri, 16 May 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/matrix/FlexibleDecimalFormat.java
+
+From Eibe: Made this change so that HMMWeka runs for numeric data. What was there before did not make sense at all. Now it makes some sort of sense, but I do not really understand what this method is supposed to do. This class was originally in the pace regression package and should really have stayed there. I do not think it is fit for general consumption. This also holds for the FloatingPointFormat class.
+------------------------------------------------------------------------
+r10868 | mhall | 2014-06-14 15:01:22 +1200 (Sat, 14 Jun 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/filters/supervised/attribute/AttributeSelection.java
+
+Fixed a bug where the class attribute was not getting set in the output format when an unsupervised attribute selection method is used.
+------------------------------------------------------------------------
+r10970 | mhall | 2014-07-18 14:46:22 +1200 (Fri, 18 Jul 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/tokenizers/NGramTokenizer.java
+   M /branches/stable-3-6/weka/src/test/java/weka/core/tokenizers/NGramTokenizerTest.java
+
+Georgios Valkanas fix for a bug where the tokenizer would fail to return a token when the string to be tokenized contained fewer than the max ngram size.
+------------------------------------------------------------------------
+r10974 | mhall | 2014-07-18 19:35:04 +1200 (Fri, 18 Jul 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/classifiers/Evaluation.java
+
+Fixed bug in error message.
+------------------------------------------------------------------------
+r10988 | mhall | 2014-07-21 16:14:42 +1200 (Mon, 21 Jul 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/filters/unsupervised/attribute/NumericToNominal.java
+
+Fixed bug occuring when NumericToNominal is used in batch mode.
+------------------------------------------------------------------------
+r10993 | mhall | 2014-07-21 19:18:58 +1200 (Mon, 21 Jul 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/classifiers/trees/RandomForest.java
+   M /branches/stable-3-6/weka/src/main/java/weka/classifiers/trees/RandomTree.java
+   M /branches/stable-3-6/weka/src/test/resources/wekarefs/weka/classifiers/trees/RandomForestTest.ref
+
+RandomForest and RandomTree now use int(log_2(#predictors)+1) rather than int(log_2(#predictors + 1)+1) to be consistent with the original heuristic proposed by Breiman. Also 100 trees are used by default in RandomForest now, rather than 10.
+------------------------------------------------------------------------
+r11023 | mhall | 2014-07-25 12:21:41 +1200 (Fri, 25 Jul 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/remote.policy
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/remote.policy.example
+
+Updated properties
+------------------------------------------------------------------------
+r11137 | mhall | 2014-09-09 08:58:18 +1200 (Tue, 09 Sep 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/converters/ArffLoader.java
+
+Fixed an npe that could occur when no source reader has been specified.
+------------------------------------------------------------------------
+r11149 | mhall | 2014-09-12 11:10:23 +1200 (Fri, 12 Sep 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseUtils.props
+
+Suppressed output of warning message for missing JDBC driver classes.
+------------------------------------------------------------------------
+r11198 | mhall | 2014-10-12 17:21:01 +1300 (Sun, 12 Oct 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/SubsetSizeForwardSelection.java
+   M /branches/stable-3-6/weka/src/main/java/weka/core/converters/C45Saver.java
+   M /branches/stable-3-6/weka/src/main/java/weka/datagenerators/clusterers/SubspaceClusterDefinition.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/AveragingResultProducer.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/ClassifierSplitEvaluator.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/CrossValidationResultProducer.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DatabaseResultProducer.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/DensityBasedClustererSplitEvaluator.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/LearningRateResultProducer.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/RandomSplitResultProducer.java
+   M /branches/stable-3-6/weka/src/main/java/weka/experiment/RegressionSplitEvaluator.java
+
+Fixing up some CheckOptionHandler failures so that maven tests will pass
+------------------------------------------------------------------------
+r11199 | mhall | 2014-10-13 04:27:27 +1300 (Mon, 13 Oct 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/converters/DatabaseLoader.java
+   M /branches/stable-3-6/weka/src/main/java/weka/core/converters/TextDirectoryLoader.java
+
+Fixing up some CheckOptionHandler failures so that maven tests will pass
+------------------------------------------------------------------------
+r11219 | mhall | 2014-10-16 21:22:44 +1300 (Thu, 16 Oct 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/CfsSubsetEval.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/ConsistencySubsetEval.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/GainRatioAttributeEval.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/OneRAttributeEval.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/ReliefFAttributeEval.java
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/WrapperSubsetEval.java
+
+Now releases a reference to the training data after attribute selection has completed
+------------------------------------------------------------------------
+r11229 | mhall | 2014-10-17 09:44:02 +1300 (Fri, 17 Oct 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/attributeSelection/GreedyStepwise.java
+
+Was holding a reference to the training data - fixed.
+------------------------------------------------------------------------
+r11303 | mhall | 2014-11-21 09:20:49 +1300 (Fri, 21 Nov 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/classifiers/bayes/NaiveBayesMultinomial.java
+
+Corrected a call to isMissing() that should have been isMissingSparse().
+------------------------------------------------------------------------
+r11304 | mhall | 2014-11-21 09:21:44 +1300 (Fri, 21 Nov 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/classifiers/bayes/NaiveBayesMultinomialUpdateable.java
+
+Corrected a call to isMissing() that should have been isMissingSparse().
+------------------------------------------------------------------------
+r11330 | mhall | 2014-11-28 09:29:15 +1300 (Fri, 28 Nov 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/clusterers/HierarchicalClusterer.java
+
+Locale for output of numbers in Newick format is now fixed to US English.
+------------------------------------------------------------------------
+r11356 | mhall | 2014-12-09 14:14:21 +1300 (Tue, 09 Dec 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/GenericObjectEditor.java
+
+Some html tags had been externalized into message bundles - fixed.
+------------------------------------------------------------------------
+r11357 | mhall | 2014-12-09 14:30:27 +1300 (Tue, 09 Dec 2014) | 1 line
+Changed paths:
+   A /branches/stable-3-6/weka/src/main/java/weka/associations/gsp/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/associations/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/arffviewer/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/beans/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/beans/xml/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/boundaryvisualizer/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/experiment/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/explorer/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/graphvisualizer/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/hierarchyvisualizer/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/sql/event/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/sql/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/streams/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/treevisualizer/messages/messages_ar.properties
+   A /branches/stable-3-6/weka/src/main/java/weka/gui/visualize/messages/messages_ar.properties
+
+i18n message files for Arabic courtesy of Marwa Varouqa
+------------------------------------------------------------------------
+r11362 | mhall | 2014-12-09 15:59:59 +1300 (Tue, 09 Dec 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/core/converters/LibSVMLoader.java
+
+Faster getStructure() implementation courtesy of Victor-Philipp Negoescu
+------------------------------------------------------------------------
+r11380 | mhall | 2014-12-15 13:27:11 +1300 (Mon, 15 Dec 2014) | 1 line
+Changed paths:
+   M /branches/stable-3-6/weka/src/main/java/weka/associations/gsp/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/associations/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/arffviewer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/beans/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/beans/xml/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/boundaryvisualizer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/experiment/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/explorer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/graphvisualizer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/hierarchyvisualizer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/sql/event/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/sql/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/streams/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/treevisualizer/messages/messages_ar.properties
+   M /branches/stable-3-6/weka/src/main/java/weka/gui/visualize/messages/messages_ar.properties
+
+Updated Arabic message files from Marwa Varouqa
+------------------------------------------------------------------------

@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+  @(#)package.html
+
+ Copyright (c) 2003-2015 The JUNG Authors. 
+ All Rights Reserved. 
+ 
+ License text: https://github.com/jrtom/jung/blob/master/LICENSE
+-->
+</head>
+<body>
+
+Mechanisms for identifying clusters in graphs.  Where these clusters define disjoint sets of vertices, 
+they may be used to define a <code>VertexPartition</code> for more convenient manipulation of the vertex/set
+relationships.
+
+Current clustering algorithms include:
+<ul>
+<li><code>BicomponentClusterer</code>: finds all subsets of vertices for which at least
+2 vertices must be removed in order to disconnect the induced subgraphs.
+<li><code>EdgeBetweennessClusterer</code>: identifies vertex clusters by removing the edges of the highest
+'betweenness' scores (see the importance/scoring package).
+<li><code>VoltageClusterer</code>: Clusters vertices based on their ranks as 
+calculated by <code>VoltageRanker</code>. 
+<li><code>WeakComponentVertexClusterer</code>: Clusters vertices based on their membership in weakly 
+connected components of a graph.
+</ul>
+
+
+</body>
+</html>

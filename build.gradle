@@ -47,6 +47,33 @@ dependencies {
     compile "org.openjfx:javafx-fxml:13:$platform"
     compile "org.openjfx:javafx-media:13:$platform"
     compile "org.openjfx:javafx-web:13:$platform"
+
+
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+    compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.6'
+    compile group: 'com.google.guava', name: 'guava', version: '11.0.2'
+    compile group: 'org.bytedeco', name: 'javacv', version: '1.3.1'
+    compile group: 'net.sf.json-lib', name: 'json-lib', version: '2.4', classifier: 'jdk15'
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+    compile('se.michaelthelin.spotify:spotify-web-api-java:1.5.0')
+
+    compile fileTree(include: ['*.jar'], dir: 'libs/Algs4')
+    compile fileTree(include: ['*.jar'], dir: 'libs/Graphstream')
+    compile fileTree(include: ['*.jar'], dir: 'libs/Hsqldb')
+    compile fileTree(include: ['*.jar'], dir: 'libs/JGraphT')
+    compile fileTree(include: ['*.jar'], dir: 'libs/MusicG')
+    compile fileTree(include: ['*.jar'], dir: 'libs/Sqljet')
+    compile fileTree(include: ['*.jar'], dir: 'libs/Tarsos')
+    compile fileTree(include: ['*.jar'], dir: 'libs/Weka')
+    compile fileTree(include: ['*.jar'], dir: 'libs/Wub')
+
+    compile group: 'org.encog', name: 'encog-core', version: '3.3.0'
+    compile group: 'org.bytedeco', name: 'javacpp', version: '1.3.2'
+    compile 'org.deeplearning4j:deeplearning4j-nlp:0.8.0'
+    compile 'org.nd4j:nd4j-cuda-8.0-platform:0.8.0'
+    compile 'org.nd4j:nd4j-cuda-8.0:0.8.0:windows-x86_64'
+    compile group: 'jfree', name: 'jfreechart', version: '1.0.13'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 }
 
 //
