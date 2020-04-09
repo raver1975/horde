@@ -8,7 +8,7 @@ public class Wub {
 		if (args.length==0) AudioObject.factory();
 		else {
 			for (int i = 1; i < args.length; i++) {
-				AudioObject.factory(args[i]);
+				AudioObject.factory(args[i],null);
 			}
 		}
 	}

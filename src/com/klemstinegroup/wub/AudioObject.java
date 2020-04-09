@@ -5,6 +5,7 @@ import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
 import com.klemstinegroup.wub.system.*;
 import com.sun.media.sound.WaveFileWriter;
+import javafx.scene.control.skin.ButtonBarSkin;
 import org.json.simple.parser.ParseException;
 
 import javax.sound.sampled.*;
@@ -26,6 +27,7 @@ public class AudioObject implements Serializable {
     public byte[] data;
     public File file;
     public TrackAnalysis analysis;
+    public static String spotifyId;
 
     public transient MusicCanvas mc;
     public transient SourceDataLine line;
@@ -50,7 +52,8 @@ public class AudioObject implements Serializable {
         JFileChooser chooser = new JFileChooser(CentralCommand.lastDirectory);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Audio", "mp3", "wav", "wub", "play");
         chooser.setFileFilter(filter);
-        chooser.setSelectedFile(new File("spotify:track:6z0zyXMTA0ans4OoTAO2Bm"));
+//        chooser.setSelectedFile(new File("spotify:ID or WUB file"));
+        chooser.setSelectedFile(new File("spotify:track:2KpILfzJhRkvHV4M64PL5v"));
         int returnVal = chooser.showOpenDialog(new JFrame());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             // System.out.println("You chose to open this file: " +
@@ -59,42 +62,61 @@ public class AudioObject implements Serializable {
                 CentralCommand.loadPlay(chooser.getSelectedFile());
                 return null;
             }
-            TrackAnalysis ta=null;
-            try {
-                ta = SpotifyUtils.getAnalysis("2a13vWkUpRVTO7Rn3dvZgz");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return factory(chooser.getSelectedFile().getAbsolutePath(), ta);
+            TrackAnalysis ta = null;
+//            try {
+//                System.out.println("here!: spotifyId="+spotifyId);
+//                ta = SpotifyUtils.getAnalysis(spotifyId);
+//            } catch (IOException | ParseException e) {
+//                e.printStackTrace();
+//            }
+            return factory(chooser.getSelectedFile().getAbsolutePath(), null);
         }
         return null;
     }
 
     public static AudioObject factory(String file) {
-
-        if (file.startsWith("spotify:track:")) {
-            try {
-                return new MP3Grab().grab(file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//
+//        if (file.startsWith("spotify:track:")) {
+//            try {
+//                return new MP3Grab().grab(file);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         return factory(file, null);
     }
 
     public static AudioObject factory(String fileName, TrackAnalysis ta) {
-        if (fileName.startsWith("spotify:track:")) {
+        System.out.println(fileName);
+        if (fileName.contains("spotify:track:") || fileName.contains("https://open.spotify.com/track/")) {
+            if(fileName.lastIndexOf("/")>-1)spotifyId=fileName.substring(fileName.lastIndexOf("/")+1);
+            if(fileName.lastIndexOf(":")>-1)spotifyId=fileName.substring(fileName.lastIndexOf(":")+1);
+            System.out.println("spotifyID=" + spotifyId);
             try {
-                return new MP3Grab().grab(fileName);
-            } catch (Exception e) {
+                ta = SpotifyUtils.getAnalysis(spotifyId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
-            return null;
+            JFileChooser chooser = new JFileChooser(CentralCommand.lastDirectory);
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Audio", "mp3", "wav", "wub", "play");
+            chooser.setFileFilter(filter);
+//        chooser.setSelectedFile(new File("spotify:ID or WUB file"));
+//            chooser.setSelectedFile(new File("MP=));
+            int returnVal = chooser.showOpenDialog(new JFrame());
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                // System.out.println("You chose to open this file: " +
+                CentralCommand.lastDirectory = chooser.getSelectedFile();
+                if (chooser.getSelectedFile().getAbsolutePath().endsWith(".play")) {
+                    CentralCommand.loadPlay(chooser.getSelectedFile());
+                    return null;
+                }
+                return factory(chooser.getSelectedFile().getAbsolutePath(), ta);
+            }
         }
         File file = new File(fileName);
-		System.out.println(file.exists());
+        System.out.println(file.exists());
         File newFile = file;
         String extension = "";
         String filePrefix = "";
@@ -123,10 +145,12 @@ public class AudioObject implements Serializable {
                 e.printStackTrace();
             }
         }
+
         AudioObject au = new AudioObject(file, ta);
         try {
             Serializer.store(au, newFile);
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -135,7 +159,7 @@ public class AudioObject implements Serializable {
     }
 
     public AudioObject(final File file, TrackAnalysis ta) {
-        System.out.println("ta:"+ta);
+        System.out.println("ta:" + ta);
         this.file = file;
         convert(file);
         JTextArea msgLabel;

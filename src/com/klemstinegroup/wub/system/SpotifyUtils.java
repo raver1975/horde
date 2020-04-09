@@ -53,6 +53,7 @@ public class SpotifyUtils {
         try {
             ClientCredentials clientCredentials = request.get();
             token = clientCredentials.getAccessToken();
+            System.out.println(token.toString());
             api.setAccessToken(token);
         } catch (IOException e) {
             e.printStackTrace();
