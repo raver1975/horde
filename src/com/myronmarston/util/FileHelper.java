@@ -102,7 +102,7 @@ public class FileHelper {
         File tempFile = null;
         try {
             tempFile = File.createTempFile(tempFilePrefix, tempFileSuffix);
-            String tempFileName = tempFile.getCanonicalPath();
+            String tempFileName = tempFile.getAbsolutePath();
             tempFileUser.useTempFile(tempFileName);
         } finally {
             attemptTempFileDelete(tempFile);

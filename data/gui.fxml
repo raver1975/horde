@@ -402,7 +402,7 @@
                   <Button id="midi-stop" mnemonicParsing="false" text="Stop" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                   <Button id="midi-prog-change-down" mnemonicParsing="false" text="Prog -" GridPane.rowIndex="1" />
                   <Button id="midi-prog-change-up" mnemonicParsing="false" text="Prog +" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button mnemonicParsing="false" text="Button" GridPane.rowIndex="2" />
+                  <Button id="wub" mnemonicParsing="false" text="Wub" GridPane.rowIndex="2" />
                   <Button id="track-save" mnemonicParsing="false" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>

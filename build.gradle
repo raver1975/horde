@@ -19,7 +19,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.0.0'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
-group 'com.klemstinegroup'
+group 'com.kg'
 version '0.1'
 apply plugin: 'com.google.osdetector'
 ext.platform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'win' : osdetector.os
@@ -57,6 +57,16 @@ dependencies {
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     compile('se.michaelthelin.spotify:spotify-web-api-java:1.5.0')
 
+
+//    compile fileTree(include: ['*.jar'], dir: 'libs/*')
+
+    compile group: 'org.encog', name: 'encog-core', version: '3.3.0'
+    compile group: 'org.bytedeco', name: 'javacpp', version: '1.3.2'
+    compile 'org.deeplearning4j:deeplearning4j-nlp:0.8.0'
+    compile 'org.nd4j:nd4j-cuda-8.0-platform:0.8.0'
+    compile 'org.nd4j:nd4j-cuda-8.0:0.8.0:windows-x86_64'
+    compile group: 'jfree', name: 'jfreechart', version: '1.0.13'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
     compile fileTree(include: ['*.jar'], dir: 'libs/Algs4')
     compile fileTree(include: ['*.jar'], dir: 'libs/Graphstream')
     compile fileTree(include: ['*.jar'], dir: 'libs/Hsqldb')
@@ -67,13 +77,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs/Weka')
     compile fileTree(include: ['*.jar'], dir: 'libs/Wub')
 
-    compile group: 'org.encog', name: 'encog-core', version: '3.3.0'
-    compile group: 'org.bytedeco', name: 'javacpp', version: '1.3.2'
-    compile 'org.deeplearning4j:deeplearning4j-nlp:0.8.0'
-    compile 'org.nd4j:nd4j-cuda-8.0-platform:0.8.0'
-    compile 'org.nd4j:nd4j-cuda-8.0:0.8.0:windows-x86_64'
-    compile group: 'jfree', name: 'jfreechart', version: '1.0.13'
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 }
 
 //
@@ -84,7 +87,7 @@ javafx {
 
 application {
 //    mainClassName = 'eu.hansolo.fx.regulators.Main'
-    mainClassName = 'com.klemstine.TheHorde'
+    mainClassName = 'com.kg.TheHorde'
 }
 
 sourceSets {
@@ -121,7 +124,7 @@ run {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.klemstine.Main'
+        attributes 'Main-Class': 'com.kg.Main'
     }
 
     from {
@@ -157,7 +160,7 @@ apply plugin: 'com.sandec.jpro'
  * App Main Class
  */
 //mainClassName = 'com.jpro.hellojpro.HelloJPro'
-mainClassName = 'com.klemstine.TheHorde'
+mainClassName = 'com.kg.TheHorde'
 
 /**
  * jpro settings
