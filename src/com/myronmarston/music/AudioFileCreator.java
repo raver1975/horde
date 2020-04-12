@@ -19,7 +19,7 @@
 
 package com.myronmarston.music;
 
-import com.klemstine.synth.Output;
+import com.klemstinegroup.synth.Output;
 import com.myronmarston.util.FileHelper;
 import com.sun.media.sound.AudioSynthesizer;
 import org.tritonus.share.sampled.*;
