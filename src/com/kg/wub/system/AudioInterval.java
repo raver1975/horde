@@ -82,7 +82,7 @@ public class AudioInterval implements Serializable {
     public AudioInterval[] getMono() {
         AudioInterval left = new AudioInterval(new byte[data.length / 2]);
         AudioInterval right = new AudioInterval(new byte[data.length / 2]);
-        for (int i = 0; i < data.length; i += 4) {
+        for (int i = 0; i+4 <= data.length; i += 4) {
             left.data[i / 2] = data[i];
             left.data[i / 2 + 1] = data[i + 1];
             right.data[i / 2] = data[i + 2];

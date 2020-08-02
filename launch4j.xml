@@ -15,7 +15,7 @@
   <manifest></manifest>
   <icon></icon>
   <classPath>
-    <mainClass>com.klemstine.TheHorde</mainClass>
+    <mainClass>com.klemstinegroup.TheHorde</mainClass>
   </classPath>
   <jre>
     <path>./jre</path>

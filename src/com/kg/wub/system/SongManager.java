@@ -24,16 +24,17 @@ import java.util.ArrayList;
 public class SongManager {
 
     public static String directory;
+
     static {
-        for (int i=0;i<26;i++) {
-            String s=(char)('a'+i)+":\\wubdata\\";
-            File f=new File(s);
-            if (f.isDirectory()){
-                directory=s;
+        for (int i = 0; i < 26; i++) {
+            String s = (char) ('a' + i) + ":\\wubdata\\";
+            File f = new File(s);
+            if (f.isDirectory()) {
+                directory = s;
                 break;
             }
         }
-        System.out.println("directory = "+directory);
+        System.out.println("directory = " + directory);
     }
 
     private static final File[] list;
@@ -65,12 +66,11 @@ public class SongManager {
     public static Song getRandom(int i) {
         if (i < 0) return getRandom();
         if (i > -1 && i < list.length) {
-            Song ret= LoadFromFile.loadSong(list[i]);
-            ret.number=i;
+            Song ret = LoadFromFile.loadSong(list[i]);
+            ret.number = i;
             System.out.println(ret);
-        return ret;
-        }
-        else return null;
+            return ret;
+        } else return null;
     }
 
     public static int getSize() {

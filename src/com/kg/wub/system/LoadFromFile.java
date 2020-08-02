@@ -19,6 +19,7 @@ public class LoadFromFile {
 		String file=file1.getAbsolutePath();
 		byte[] data;
 		TrackAnalysis ta;
+		System.out.println("file:"+file);
 		if (file.endsWith(".au")){
 			data=loadData(file);
 			ta=loadAnalysis(file.replace(".au", ".an"));
@@ -46,11 +47,14 @@ public class LoadFromFile {
 
 	public synchronized static TrackAnalysis loadAnalysis(String file) {
 		Path path = new File(file).toPath();
+		System.out.println("path="+path);
 		try {
 			byte[] data = Files.readAllBytes(path);
 			ByteArrayInputStream bas = new ByteArrayInputStream(data);
 			ObjectInputStream in = new ObjectInputStream(bas);
-			return (TrackAnalysis) in.readObject();
+			Object pp=in.readObject();
+			System.out.println("pp="+pp.getClass());
+			return (TrackAnalysis)pp ;
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}

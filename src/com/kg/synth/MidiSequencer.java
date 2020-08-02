@@ -40,7 +40,7 @@ public class MidiSequencer extends Sequencer {
                         public void send(MidiMessage message, long timeStamp) {
                             if (message instanceof ShortMessage) {
                                 ShortMessage sm = (ShortMessage) message;
-                                System.out.print("Channel: " + sm.getChannel() + " ");
+//                                System.out.print("Channel: " + sm.getChannel() + " ");
                                 if (sm.getCommand() == ShortMessage.NOTE_ON) {
                                     int key = sm.getData1();
                                     int octave = (key / 12)-1;

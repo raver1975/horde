@@ -87,8 +87,8 @@ public class AudioObject implements Serializable {
     public static AudioObject factory(String fileName, TrackAnalysis ta) {
         System.out.println(fileName);
         if (fileName.contains("spotify:track:") || fileName.contains("https://open.spotify.com/track/")) {
-            if(fileName.lastIndexOf("/")>-1)spotifyId=fileName.substring(fileName.lastIndexOf("/")+1);
-            if(fileName.lastIndexOf(":")>-1)spotifyId=fileName.substring(fileName.lastIndexOf(":")+1);
+            if (fileName.lastIndexOf("/") > -1) spotifyId = fileName.substring(fileName.lastIndexOf("/") + 1);
+            if (fileName.lastIndexOf(":") > -1) spotifyId = fileName.substring(fileName.lastIndexOf(":") + 1);
             System.out.println("spotifyID=" + spotifyId);
             try {
                 ta = SpotifyUtils.getAnalysis(spotifyId);
@@ -570,7 +570,7 @@ public class AudioObject implements Serializable {
         }
 
         System.out.println(fa.duration);
-
+        if (file == null) file = new File(UUID.randomUUID().toString() + ".wav");
         String fileName = file.getAbsolutePath();
         String extension = "";
         String filePrefix = "";

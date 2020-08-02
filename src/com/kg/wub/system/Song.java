@@ -5,12 +5,12 @@ import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Song {
     public byte[] data;
     public TrackAnalysis analysis;
     public int number=-1;
-
 
     public Song(byte[] data, TrackAnalysis ta) {
         this.data = data;
@@ -35,6 +35,11 @@ public class Song {
 //    public AudioInterval getAudioInterval(Segment timedEvent, int s, int snum) {
 //        return new AudioInterval(timedEvent, data);
 //    }
+
+
+    public List<Segment> getSegments() {
+        return analysis.getSegments();
+    }
 
     public ArrayList<Segment> getSegments(TimedEvent timedEvent) {
         ArrayList<Segment> al = new ArrayList<>();
@@ -73,4 +78,5 @@ public class Song {
     public String toString(){
         return this.analysis.toString();
     }
+
 }

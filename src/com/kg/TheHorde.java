@@ -3,6 +3,10 @@ package com.kg;
 import com.kg.fft.FFT;
 import com.kg.synth.*;
 import com.kg.wub.AudioObject;
+import com.kg.wub.system.AudioUtils;
+import com.kg.wub.system.CentralCommand;
+import com.kg.wub.system.Song;
+import com.kg.wub.system.SongManager;
 import com.myronmarston.music.Instrument;
 import eu.hansolo.fx.regulators.GradientLookup;
 import eu.hansolo.fx.regulators.Regulator;
@@ -156,7 +160,18 @@ public class TheHorde extends Application {
         wub.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                AudioObject.factory();
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Song song = SongManager.getRandom();
+//                song.setBpm(output.getSequencers()[selectedSequencer].getBpm());
+                        System.out.println("bpm:" + output.getSequencers()[selectedSequencer].getBpm() + "\t" + song.analysis.getTempo());
+
+                        Song song1 = AudioUtils.timeStretch(song, output.getSequencers()[selectedSequencer].getBpm());
+                        new AudioObject(song1.data, song1.analysis, null);
+                    }
+                }).start();
             }
         });
 
