@@ -40,6 +40,7 @@ public class AudioUtils implements Handler {
         AudioInterval[] ai = ad.getMono();
         timeStretch1(ai[0], bpmFactor);
         timeStretch1(ai[1], bpmFactor);
+
         ad.makeStereo(ai);
         System.out.println("-------------------------------");
         System.out.println("old song data length:" + song.data.length);
@@ -100,7 +101,7 @@ public class AudioUtils implements Handler {
 
     private static void timeStretch1(AudioInterval ad, double stretch) {
         AudioDispatcher adp = null;
-        WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(WaveformSimilarityBasedOverlapAdd.Parameters.automaticDefaults(stretch, Audio.audioFormatMono.getSampleRate()));
+        WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(stretch, Audio.audioFormatMono.getSampleRate()));
         try {
             adp = AudioDispatcherFactory.fromByteArray(ad.data, Audio.audioFormatMono, wsola.getInputBufferSize(), wsola.getOverlap());
         } catch (UnsupportedAudioFileException e) {
@@ -146,7 +147,7 @@ public class AudioUtils implements Handler {
         shift = 1d / shift;
         AudioDispatcher adp = null;
         RateTransposer rateTransposer = new RateTransposer(shift);
-        WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(WaveformSimilarityBasedOverlapAdd.Parameters.automaticDefaults(shift, Audio.audioFormatMono.getSampleRate()));
+        WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(shift, Audio.audioFormatMono.getSampleRate()));
         try {
             adp = AudioDispatcherFactory.fromByteArray(ad.data, Audio.audioFormatMono, wsola.getInputBufferSize(), wsola.getOverlap());
         } catch (UnsupportedAudioFileException e) {
