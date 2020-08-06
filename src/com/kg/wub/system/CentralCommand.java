@@ -16,7 +16,7 @@ public class CentralCommand {
 	public static File lastDirectory = new File(System.getProperty("user.dir"));
 
 	public static void add(AudioObject ao) {
-
+		pf.frame.setVisible(true);
 		aolist.add(ao);
 		addRectangle(new Node(new Rectangle2D.Double(0, 0, 1, yOffset), ao));
 

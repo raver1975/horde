@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class PlayingField extends Canvas implements MouseListener, MouseMotionListener, KeyListener, ComponentListener, MouseWheelListener {
 
 	int oldWidth;
-	private JFrame frame;
+	public JFrame frame;
 	private JScrollBar jverticalbar;
 	private JScrollBar jhorizontalbar;
 	private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -92,7 +92,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 		oldWidth = 800;
 		setSize(new Dimension(oldWidth, 760));
 		frame = new JFrame("Play");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
 		// js = new JScrollPane(this);
 
@@ -286,7 +286,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public void keyPresd(KeyEvent e) {
 		if (e.isShiftDown())
 			moverlock = true;
 		if (e.isControlDown())
