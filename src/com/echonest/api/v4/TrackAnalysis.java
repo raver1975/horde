@@ -88,8 +88,12 @@ public class TrackAnalysis implements Serializable {
     public TrackAnalysis(Map map) {
         bpmFactor = 1d;
         finishInit(map, 1d);
-        duration = (double) mq.getDouble("track.duration");
-        tempo = (double) mq.getDouble("track.tempo");
+        if (mq.getDouble("track.duration") != null) {
+            duration = (double) mq.getDouble("track.duration");
+        }
+        if (mq.getDouble("track.tempo") != null) {
+            tempo = (double) mq.getDouble("track.tempo");
+        }
         System.out.println("tttempo=" + tempo);
 //        bpmFactor=(double)map.get("track.bpmFactor");
 //        song.analysis.setDuration(song.analysis.getDuration()*bpmFactor);
@@ -102,7 +106,10 @@ public class TrackAnalysis implements Serializable {
 
     @Override
     public String toString() {
-        return map.toString();
+        if (map != null) {
+            return map.toString();
+        }
+        return "map null";
     }
 
     public Integer getNumSamples() {
