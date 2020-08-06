@@ -18,6 +18,13 @@ public class TimedEvent implements Serializable {
         confidence = mq.getDouble("confidence");
     }
 
+    public TimedEvent(Map map, double bpmFactor) {
+        MQuery mq = new MQuery(map);
+        start = mq.getDouble("start")/bpmFactor;
+        duration = mq.getDouble("duration")/bpmFactor;
+        confidence = mq.getDouble("confidence")/bpmFactor;
+    }
+
     public TimedEvent(double start, double duration, double confidence) {
         this.start = start;
         this.duration = duration;

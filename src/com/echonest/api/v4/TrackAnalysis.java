@@ -24,26 +24,26 @@ public class TrackAnalysis implements Serializable {
     public ArrayList<TimedEvent> beats;
     public ArrayList<TimedEvent> tatums;
     private ArrayList<Segment> segments;
+    double tempo;
+    double bpmFactor = 1d;
+    double duration;
 
     @SuppressWarnings("unchecked")
     public TrackAnalysis(Map map, double bpmFactor, double tempo, double duration) {
-        if (map == null) map = new HashMap();
-        map.put("track.tempo", tempo);
-        map.put("track.bpmFactor", bpmFactor);
-//        song.analysis.setDuration(song.analysis.getDuration()*bpmFactor);
-        map.put("track.duration", duration / bpmFactor);
-        finishInit(map);
+        this.tempo = tempo;
+        this.duration = duration / bpmFactor;
+        this.bpmFactor = bpmFactor;
+        finishInit(map, bpmFactor);
     }
 
-    public void finishInit(Map map) {
+    public void finishInit(Map map, double bpmFactor) {
         this.mq = new MQuery(map);
         this.map = map;
-//        bpmFactor=1d/bpmFactor;
         sections = new ArrayList<TimedEvent>();
         List event = (List) mq.getObject("sections");
         if (event != null) {
             for (int i = 0; i < event.size(); i++) {
-                TimedEvent te = new TimedEvent((Map) event.get(i));
+                TimedEvent te = new TimedEvent((Map) event.get(i), bpmFactor);
                 sections.add(te);
             }
         }
@@ -52,7 +52,7 @@ public class TrackAnalysis implements Serializable {
         event = (List) mq.getObject("bars");
         if (event != null) {
             for (int i = 0; i < event.size(); i++) {
-                TimedEvent te = new TimedEvent((Map) event.get(i));
+                TimedEvent te = new TimedEvent((Map) event.get(i), bpmFactor);
                 bars.add(te);
             }
         }
@@ -61,7 +61,7 @@ public class TrackAnalysis implements Serializable {
         event = (List) mq.getObject("beats");
         if (event != null) {
             for (int i = 0; i < event.size(); i++) {
-                TimedEvent te = new TimedEvent((Map) event.get(i));
+                TimedEvent te = new TimedEvent((Map) event.get(i), bpmFactor);
                 beats.add(te);
             }
         }
@@ -70,7 +70,7 @@ public class TrackAnalysis implements Serializable {
         event = (List) mq.getObject("tatums");
         if (event != null) {
             for (int i = 0; i < event.size(); i++) {
-                TimedEvent te = new TimedEvent((Map) event.get(i));
+                TimedEvent te = new TimedEvent((Map) event.get(i), bpmFactor);
                 tatums.add(te);
             }
         }
@@ -79,14 +79,20 @@ public class TrackAnalysis implements Serializable {
         if (event != null) {
             event = (List) mq.getObject("segments");
             for (int i = 0; i < event.size(); i++) {
-                Segment te = new Segment((Map) event.get(i));
+                Segment te = new Segment((Map) event.get(i), bpmFactor);
                 segments.add(te);
             }
         }
     }
 
     public TrackAnalysis(Map map) {
-        finishInit(map);
+        bpmFactor = 1d;
+        finishInit(map, 1d);
+        duration = (double) mq.getDouble("track.duration");
+        tempo = (double) mq.getDouble("track.tempo");
+        System.out.println("tttempo=" + tempo);
+//        bpmFactor=(double)map.get("track.bpmFactor");
+//        song.analysis.setDuration(song.analysis.getDuration()*bpmFactor);
     }
 
     @SuppressWarnings("unchecked")
@@ -104,7 +110,7 @@ public class TrackAnalysis implements Serializable {
     }
 
     public Double getDuration() {
-        return mq.getDouble("track.duration");
+        return duration;
     }
 
     public String getMD5() {
@@ -132,7 +138,7 @@ public class TrackAnalysis implements Serializable {
     }
 
     public Double getTempo() {
-        return mq.getDouble("track.tempo");
+        return tempo;
     }
 
     public Double getTempoConfidence() {
@@ -219,5 +225,13 @@ public class TrackAnalysis implements Serializable {
         for (Segment e : segments) {
             System.out.println(e);
         }
+    }
+
+    public double getTempo1() {
+        return mq.getDouble("track.tempo");
+    }
+
+    public double getDuration1() {
+        return mq.getDouble("track.duration");
     }
 }

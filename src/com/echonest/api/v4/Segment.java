@@ -35,6 +35,29 @@ public class Segment extends TimedEvent {
 			timbre[i] = p;
 		}
 	}
+
+	public Segment(Map map,double bpmFactor){
+		super(map,bpmFactor);
+		MQuery mq = new MQuery(map);
+		loudnessStart = mq.getDouble("loudness_start");
+		loudnessMaxTime = mq.getDouble("loudness_max_time");
+		loudnessMax = mq.getDouble("loudness_max");
+		List lpitches = (List) mq.getObject("pitches");
+
+		pitches = new double[lpitches.size()];
+		for (int i = 0; i < lpitches.size(); i++) {
+			Double p = (Double) lpitches.get(i);
+			pitches[i] = p;
+		}
+
+		List ltimbre = (List) mq.getObject("timbre");
+		timbre = new double[ltimbre.size()];
+		for (int i = 0; i < ltimbre.size(); i++) {
+			Double p = (Double) ltimbre.get(i);
+			timbre[i] = p;
+		}
+
+	}
 	
 	
     @Override
