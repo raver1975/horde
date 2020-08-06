@@ -286,7 +286,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 	}
 
 	@Override
-	public void keyPresd(KeyEvent e) {
+	public void keyPressed(KeyEvent e) {
 		if (e.isShiftDown())
 			moverlock = true;
 		if (e.isControlDown())
