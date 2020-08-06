@@ -32,7 +32,7 @@ public class Custom implements KeyListener {
     int width = 1200;
     int height = 400;
     int numClusters = 200;
-    boolean generateGraph=false;
+    boolean generateGraph = false;
 
     public Custom() {
         this(SongManager.getRandom((int) (Math.random() * 1300)));
@@ -45,7 +45,7 @@ public class Custom implements KeyListener {
         tf.setSize(width, height);
 //        JTextArea jta = new JTextArea(4, 20);
         JFrame jframe = new JFrame("Wub");
-        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         jframe.setSize(width, height * 2);
         jframe.setResizable(true);
 
@@ -81,10 +81,8 @@ public class Custom implements KeyListener {
 //        tf.setPreferredSize(new Dimension(100, 100));
 
 
-
                     vp.addKeyListener(Custom.this);
-                }
-                else{
+                } else {
                     jframe.getContentPane().add("Center", tf);
                 }
                 jframe.invalidate();
@@ -134,7 +132,7 @@ public class Custom implements KeyListener {
             @Override
             public void run() {
                 try {
-                    String[] samples = RNNDemo.process(smallercluster,song,language, audio, finalOut);
+                    String[] samples = RNNDemo.process(smallercluster, song, language, audio, finalOut);
                     System.out.println(Arrays.toString(samples));
                 } catch (Exception e) {
                     e.printStackTrace();
