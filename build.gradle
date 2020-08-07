@@ -1,7 +1,5 @@
-
 buildscript {
     dependencies {
-//        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
         classpath 'com.sandec.jpro:jpro-plugin-gradle:2019.2.1'
     }
     repositories {
@@ -12,13 +10,15 @@ buildscript {
         }
     }
 }
-
 plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '5.0.0'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
+
+
+
 group 'com.kg'
 version '0.1'
 apply plugin: 'com.google.osdetector'
@@ -30,6 +30,7 @@ ext.platform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'wi
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
 }
 
 dependencies {
@@ -48,6 +49,9 @@ dependencies {
     compile "org.openjfx:javafx-media:13:$platform"
     compile "org.openjfx:javafx-web:13:$platform"
 
+//    compile group: 'com.palantir.python.miniconda', name: 'com.palantir.python.miniconda.gradle.plugin', version: '0.8.0', ext: 'pom'
+//    api 'anaconda:protobuf:3.8.0'
+//    test conda-forge:pytest:5.1.2
 
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
     compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.6'
@@ -77,12 +81,16 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs/Weka')
     compile fileTree(include: ['*.jar'], dir: 'libs/Wub')
 
+    implementation "org.gradle:gradle-tooling-api:+"
+    // The tooling API need an SLF4J implementation available at runtime, replace this with any other implementation
+//    runtimeOnly 'org.slf4j:slf4j-simple:1.7.10'
+
 }
 
 //
 javafx {
     version = "13"
-    modules = [ 'javafx.controls', 'javafx.fxml' ,'javafx.base', 'javafx.graphics','javafx.media','javafx.swing','javafx.web']
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.base', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web']
 }
 
 application {
@@ -98,6 +106,11 @@ sourceSets {
         resources {
             srcDir 'data'
         }
+        resources{
+            srcDir 'spleeter'
+        }
+
+
     }
 }
 
@@ -173,5 +186,33 @@ jpro {
 
     //jpro server port
     port = 8080
+
+}
+
+task installSpleeter {
+    doLast {
+        exec {
+            workingDir 'spleeter'
+            commandLine 'python', 'setup.py'
+        }
+//        exec {
+//            workingDir 'spleeter'
+//            commandLine 'python','-m','spleeter', 'separate','-h'
+//        }
+    }
+
+
+}
+task runSpleeter {
+doLast {
+//    exec {
+//        workingDir 'spleeter'
+//        commandLine 'python', 'setup.py'
+//    }
+    exec {
+        workingDir 'spleeter'
+        commandLine 'python','-m','spleeter', 'separate','-h'
+    }
+}
 
 }
