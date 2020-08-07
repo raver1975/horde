@@ -6,4 +6,4 @@ build
 gradle
 /src/com/klemstinegroup/wub/system/Credentials.java
 /out
-/venv
+/pretrained_models

@@ -8,7 +8,8 @@ try:
     from pip import main as pip
 except:
     from pip._internal.main import main as pip
-pip(['install',  'tensorflow'])
-pip(['install',  'ffmpeg'])
-pip(['install', 'spleeter'])
-pip(['show','spleeter'])
+# pip(['install', '--user','tensorflow'])
+# pip(['install', '--user','--upgrade','pip'])
+pip(['install', '--user','ffmpeg'])
+pip(['install', '--user','spleeter'])
+pip(['show', 'spleeter'])
