@@ -15,6 +15,7 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '5.0.0'
     id 'org.openjfx.javafxplugin' version '0.0.8'
+//    id 'com.redock.classpathtofile' version '0.0.1'
 }
 
 
@@ -29,7 +30,7 @@ ext.platform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'wi
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+    //maven { url 'https://repo.gradle.org/gradle/libs-releases' }
 }
 
 dependencies {
@@ -80,7 +81,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs/Weka')
     compile fileTree(include: ['*.jar'], dir: 'libs/Wub')
 
-    implementation "org.gradle:gradle-tooling-api:+"
+//    implementation "org.gradle:gradle-tooling-api:+"
     // The tooling API need an SLF4J implementation available at runtime, replace this with any other implementation
 //    runtimeOnly 'org.slf4j:slf4j-simple:1.7.10'
 
@@ -105,18 +106,16 @@ sourceSets {
         resources {
             srcDir 'data'
         }
-        resources {
-            srcDir 'spleeter'
-        }
-
-
     }
 }
 
 compileJava {
     doFirst {
+        def classpathJavaFX = classpath.filter{ File file ->
+            file.name.contains( "javafx" )
+        }
         options.compilerArgs = [
-                '--module-path', classpath.asPath,
+                '--module-path',classpathJavaFX.asPath,
                 '--add-exports', 'java.desktop/com.sun.media.sound=ALL-UNNAMED',
                 '--add-modules', 'javafx.fxml,javafx.controls'
         ]
@@ -126,8 +125,11 @@ compileJava {
 
 run {
     doFirst {
+        def classpathJavaFX = classpath.filter{ File file ->
+            file.name.contains( "javafx" )
+        }
         jvmArgs = [
-                '--module-path', classpath.asPath,
+                '--module-path', classpathJavaFX.asPath,
                 '--add-exports', 'java.desktop/com.sun.media.sound=ALL-UNNAMED',
                 '--add-modules', 'javafx.fxml,javafx.controls'
         ]
@@ -202,19 +204,21 @@ jpro {
 
 
 }*/
-task runSpleeter {
-    doLast {
-        exec {
-            workingDir 'spleeter'
-            commandLine 'python', 'setup.py'
-        }
-        exec {
-//            workingDir '.'
-            commandLine 'python','-m', 'spleeter','separate','-p','spleeter:2stems','-i', System.properties['spleeter1'],'-o',System.properties['spleeter2']
-//            commandLine 'spleeter', System.properties['spleeter']
-        }
-    }
-}
+//task runSpleeter {
+//    if (System.hasProperty("spleeter1")) {
+//        doLast {
+//            exec {
+//                workingDir 'spleeter'
+//                commandLine 'python', 'setup.py'
+//            }
+//            exec {
+////            workingDir '.'
+//                commandLine 'python', '-m', 'spleeter', 'separate', '-p', 'spleeter:2stems', '-i', System.properties['spleeter1'], '-o', System.properties['spleeter2']
+////            commandLine 'spleeter', System.properties['spleeter']
+//            }
+//        }
+//    }
+//}
 
 /*task runSpleeter2 {
     doLast {
