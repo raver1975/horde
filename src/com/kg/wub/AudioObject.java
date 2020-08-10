@@ -3,6 +3,7 @@ package com.kg.wub;
 import com.echonest.api.v4.Segment;
 import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
+import com.kg.python.SpotifyDLTest;
 import com.kg.wub.system.*;
 import com.sun.media.sound.WaveFileWriter;
 import org.json.simple.parser.ParseException;
@@ -12,8 +13,13 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
+import java.net.URLEncoder;
+import java.util.List;
 import java.util.Queue;
 import java.util.*;
+
+import static com.kg.python.SpotifyDLTest.STEMS.STEM2;
+import static com.kg.python.SpotifyDLTest.STEMS.STEM4;
 
 public class AudioObject implements Serializable {
 
@@ -51,9 +57,13 @@ public class AudioObject implements Serializable {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Audio", "mp3", "wav", "wub", "play");
         chooser.setFileFilter(filter);
 //        chooser.setSelectedFile(new File("spotify:ID or WUB file"));
-        chooser.setSelectedFile(new File("spotify:track:2KpILfzJhRkvHV4M64PL5v"));
+        chooser.setSelectedFile(new File("spotify:track:3rPFO1SnHNm0PKIrC5ciA3"));
         int returnVal = chooser.showOpenDialog(new JFrame());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            if (chooser.getSelectedFile().toString().contains("spotify:track:") || chooser.getSelectedFile().toString().contains("https://open.spotify.com/track/")) {
+                return factory(chooser.getSelectedFile().toString(), null);
+
+            }
             // System.out.println("You chose to open this file: " +
             CentralCommand.lastDirectory = chooser.getSelectedFile();
             if (chooser.getSelectedFile().getAbsolutePath().endsWith(".play")) {
@@ -88,7 +98,7 @@ public class AudioObject implements Serializable {
         System.out.println(fileName);
         if (fileName.contains("spotify:track:") || fileName.contains("https://open.spotify.com/track/")) {
             if (fileName.lastIndexOf("/") > -1) spotifyId = fileName.substring(fileName.lastIndexOf("/") + 1);
-            if (fileName.lastIndexOf(":") > -1) spotifyId = fileName.substring(fileName.lastIndexOf(":") + 1);
+            else if (fileName.lastIndexOf(":") > -1) spotifyId = fileName.substring(fileName.lastIndexOf(":") + 1);
             System.out.println("spotifyID=" + spotifyId);
             try {
                 ta = SpotifyUtils.getAnalysis(spotifyId);
@@ -97,22 +107,25 @@ public class AudioObject implements Serializable {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            JFileChooser chooser = new JFileChooser(CentralCommand.lastDirectory);
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Audio", "mp3", "wav", "wub", "play");
-            chooser.setFileFilter(filter);
-//        chooser.setSelectedFile(new File("spotify:ID or WUB file"));
-//            chooser.setSelectedFile(new File("MP=));
-            int returnVal = chooser.showOpenDialog(new JFrame());
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                // System.out.println("You chose to open this file: " +
-                CentralCommand.lastDirectory = chooser.getSelectedFile();
-                if (chooser.getSelectedFile().getAbsolutePath().endsWith(".play")) {
-                    CentralCommand.loadPlay(chooser.getSelectedFile());
-                    return null;
-                }
-                return factory(chooser.getSelectedFile().getAbsolutePath(), ta);
+//            JFileChooser chooser = new JFileChooser(CentralCommand.lastDirectory);
+//            FileNameExtensionFilter filter = new FileNameExtensionFilter("Audio", "mp3", "wav", "wub", "play");
+//            chooser.setFileFilter(filter);
+//            int returnVal = chooser.showOpenDialog(new JFrame());
+//            if (returnVal == JFileChooser.APPROVE_OPTION) {
+//                 System.out.println("You chose to open this file: " +
+//                CentralCommand.lastDirectory = chooser.getSelectedFile();
+//                if (chooser.getSelectedFile().getAbsolutePath().endsWith(".play")) {
+//                    CentralCommand.loadPlay(chooser.getSelectedFile());
+//                    return null;
+//                }
+            File spotifyFile = new File(System.getProperty("user.dir") + File.separator + URLEncoder.encode(spotifyId) + ".mp3");
+            List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, STEM4);
+            for (File f : spleets) {
+                factory(f.getAbsolutePath(), ta);
             }
+            return null;
         }
+//        }
         File file = new File(fileName);
         System.out.println(file.exists());
         File newFile = file;
