@@ -60,6 +60,7 @@ public class SpotifyDLTest {
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
         ProcessBuilder builder = new ProcessBuilder();
+        outputFile.delete();
         String pro = "python -m spotdl.command_line.__main__ --overwrite force --song " + trackurl + " -f " + outputFile.getAbsolutePath();
         if (isWindows) {
             builder.command("cmd.exe", "/c", pro);

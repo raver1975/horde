@@ -3,6 +3,7 @@ package com.kg.wub;
 import com.echonest.api.v4.Segment;
 import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
+import com.kg.TheHorde;
 import com.kg.python.SpotifyDLTest;
 import com.kg.wub.system.*;
 import com.sun.media.sound.WaveFileWriter;
@@ -51,6 +52,10 @@ public class AudioObject implements Serializable {
     public static final AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, resolution, channels, frameSize, sampleRate, false);
     static final int bufferSize = 8192;
     public static String key = null;
+
+    public AudioObject(Song song, File file) {
+        this(song.data, song.analysis, file);
+    }
 
     public static AudioObject factory() {
         JFileChooser chooser = new JFileChooser(CentralCommand.lastDirectory);
@@ -123,6 +128,7 @@ public class AudioObject implements Serializable {
             for (File f : spleets) {
                 factory(f.getAbsolutePath(), ta);
             }
+            CentralCommand.pf.makeData();
             return null;
         }
 //        }
@@ -158,6 +164,21 @@ public class AudioObject implements Serializable {
         }
 
         AudioObject au = new AudioObject(file, ta);
+        double bpm = 120;
+        if (TheHorde.output != null) {
+            bpm = TheHorde.output.getSequencers()[0].getBpm();
+
+            //Timestretch
+            AudioInterval ad = new AudioInterval(au.data);
+            AudioInterval[] ai = ad.getMono();
+            double bpmFactor = bpm / au.analysis.getTempo1();
+            AudioUtils.timeStretch1(ai[0], bpmFactor);
+            AudioUtils.timeStretch1(ai[1], bpmFactor);
+            ad.makeStereo(ai);
+            au.data = ad.data;
+            au.analysis = new TrackAnalysis(au.analysis.getMap(), bpmFactor, bpm, au.analysis.getDuration1());
+            //Timestretch
+        }
         try {
             Serializer.store(au, newFile);
         } catch (

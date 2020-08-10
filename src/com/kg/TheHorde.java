@@ -58,7 +58,7 @@ public class TheHorde extends Application {
     private Canvas visualizerCanvas;
     private Canvas trackerCanvas;
     private int selectedSequencer = 0;
-    Output output;
+    public static Output output;
     private int canvasYHeight;
     private int canvasYoffset;
     private GradientLookup gradientLookup;
@@ -164,12 +164,11 @@ public class TheHorde extends Application {
 
                     @Override
                     public void run() {
-                        Song song = SongManager.getRandom();
-//                song.setBpm(output.getSequencers()[selectedSequencer].getBpm());
-                        System.out.println("bpm:" + output.getSequencers()[selectedSequencer].getBpm() + "\t" + song.analysis.getTempo());
-
-                        Song song1 = AudioUtils.timeStretch(song, output.getSequencers()[selectedSequencer].getBpm());
-                        new AudioObject(song1.data, song1.analysis, null);
+//                        Song song = SongManager.getRandom();
+//                        System.out.println("bpm:" + output.getSequencers()[selectedSequencer].getBpm() + "\t" + song.analysis.getTempo());
+//                        Song song1 = AudioUtils.timeStretch(song, output.getSequencers()[selectedSequencer].getBpm());
+//                        new AudioObject(song1, null);
+                        AudioObject.factory();
                     }
                 }).start();
             }

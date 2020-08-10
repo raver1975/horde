@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class CentralCommand {
 
 	static ArrayList<AudioObject> aolist = new ArrayList<AudioObject>();
-	static PlayingField pf = new PlayingField();
+	public static PlayingField pf = new PlayingField();
 	static public CentralCommandNode ccn = new CentralCommandNode();
 	static int yOffset = 40;
 	public static File lastDirectory = new File(System.getProperty("user.dir"));

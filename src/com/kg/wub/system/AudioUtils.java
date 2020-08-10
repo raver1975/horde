@@ -99,7 +99,7 @@ public class AudioUtils implements Handler {
         return ad;
     }
 
-    private static void timeStretch1(AudioInterval ad, double stretch) {
+    public static void timeStretch1(AudioInterval ad, double stretch) {
         AudioDispatcher adp = null;
         WaveformSimilarityBasedOverlapAdd wsola = new WaveformSimilarityBasedOverlapAdd(WaveformSimilarityBasedOverlapAdd.Parameters.musicDefaults(stretch, Audio.audioFormatMono.getSampleRate()));
         try {

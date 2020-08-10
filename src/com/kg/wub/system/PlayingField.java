@@ -203,7 +203,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 		}).start();
 	}
 
-	protected void makeData() {
+	public void makeData() {
 		if (CentralCommand.ccn.nodes.size() == 0)
 			return;
 		double minx = Double.MAX_VALUE;
