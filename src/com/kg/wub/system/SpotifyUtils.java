@@ -156,6 +156,7 @@ public class SpotifyUtils {
     }
 
     public static TrackAnalysis getAnalysis(String id) throws IOException, ParseException {
+        System.out.println("getAnalysis id:"+id);
         if (token == null) setAccessToken();
         String stringUrl = "https://api.spotify.com/v1/audio-analysis/" + id;
         URL url = new URL(stringUrl);
