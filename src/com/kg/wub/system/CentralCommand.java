@@ -79,8 +79,12 @@ public class CentralCommand {
 	public static void loadPlay(File selectedFile) {
 		try {
 			CentralCommandNode cn = (CentralCommandNode) Serializer.load(selectedFile);
-			if (cn != null)
-				ccn = cn;
+			if (cn != null) {
+
+				for (Node n:cn.nodes){
+					addRectangle(n);
+				}
+			}
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

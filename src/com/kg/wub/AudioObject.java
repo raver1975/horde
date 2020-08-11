@@ -59,7 +59,7 @@ public class AudioObject implements Serializable {
 
     public static AudioObject factory() {
         JFileChooser chooser = new JFileChooser(CentralCommand.lastDirectory);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Audio", "mp3", "wav", "wub", "play");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Wub",  "wub", "play");
         chooser.setFileFilter(filter);
 //        chooser.setSelectedFile(new File("spotify:ID or WUB file"));
         chooser.setSelectedFile(new File("spotify:track:3rPFO1SnHNm0PKIrC5ciA3"));
@@ -148,9 +148,24 @@ public class AudioObject implements Serializable {
             CentralCommand.loadPlay(file);
             return null;
         }
-        if (newFile.exists()) {
+        if (extension.equals("wub")) {
             try {
                 AudioObject au = (AudioObject) Serializer.load(newFile);
+                double bpm = 120;
+                if (TheHorde.output != null) {
+                    bpm = TheHorde.output.getSequencers()[0].getBpm();
+
+                    //Timestretch
+                    AudioInterval ad = new AudioInterval(au.data);
+                    AudioInterval[] ai = ad.getMono();
+                    double bpmFactor = bpm / au.analysis.getTempo1();
+                    AudioUtils.timeStretch1(ai[0], bpmFactor);
+                    AudioUtils.timeStretch1(ai[1], bpmFactor);
+                    ad.makeStereo(ai);
+                    au.data = ad.data;
+                    au.analysis = new TrackAnalysis(au.analysis.getMap(), bpmFactor, bpm, au.analysis.getDuration1());
+                    //Timestretch
+                }
                 au.init(true);
                 return au;
             } catch (ClassNotFoundException e) {
@@ -178,8 +193,8 @@ public class AudioObject implements Serializable {
         }
         try {
             if (!extension.equals("wub")) {
-                newFile = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - 3) + "wub");
-                System.out.println(newFile.getAbsolutePath());
+                newFile = new File(filePrefix + ".wub");
+                System.out.println("saving to:"+newFile.getAbsolutePath());
             }
 
             Serializer.store(au, newFile);
