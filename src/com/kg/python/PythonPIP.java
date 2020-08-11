@@ -10,7 +10,7 @@ public class PythonPIP {
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
         ProcessBuilder builder = new ProcessBuilder();
-        String pro = "python " + new File(System.getProperty("user.dir")).getAbsolutePath() + File.separator + "setup.py";
+        String pro = "python " + new File(System.getProperty("user.dir")).getAbsolutePath() + File.separator + "src/setup.py";
         if (isWindows) {
             builder.command("cmd.exe", "/c", pro);
         } else {

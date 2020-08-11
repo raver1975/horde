@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class CentralCommand {
 
-	static ArrayList<AudioObject> aolist = new ArrayList<AudioObject>();
+	public static ArrayList<AudioObject> aolist = new ArrayList<AudioObject>();
 	public static PlayingField pf = new PlayingField();
 	static public CentralCommandNode ccn = new CentralCommandNode();
 	static int yOffset = 40;
@@ -27,8 +27,10 @@ public class CentralCommand {
 	}
 
 	public static void key(String s) {
+		System.out.println("key pressed:"+s);
 		for (AudioObject au : aolist) {
 			if (au.midiMap.containsKey(s)) {
+				System.out.println("found mapping");
 				au.queue.add(au.midiMap.get(s));
 			}
 		}
@@ -83,6 +85,7 @@ public class CentralCommand {
 
 				for (Node n:cn.nodes){
 					addRectangle(n);
+					aolist.add(n.ao);
 				}
 			}
 		} catch (ClassNotFoundException e) {

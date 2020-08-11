@@ -307,6 +307,10 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if (e.isShiftDown() && Character.isAlphabetic((char) e.getKeyCode())) {
+            CentralCommand.key((char) e.getKeyCode() + "");
+            System.out.println("keyevent:"+(char) e.getKeyCode() + "");
+        }
         if (e.isShiftDown())
             moverlock = true;
         if (e.isControlDown())
@@ -486,7 +490,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
         int y = e.getY();
         y -= y % CentralCommand.yOffset;
         Point p = new Point(x, y);
-        if (!frame.isActive()) {
+/*        if (!frame.isActive()) {
             frame.requestFocus();
             frame.toFront();
             try {
@@ -495,7 +499,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-        }
+        }*/
         for (Node node : CentralCommand.ccn.nodes) {
             if (node.rect.contains(p)) {
                 mover = node;

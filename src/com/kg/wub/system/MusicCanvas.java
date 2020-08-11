@@ -3,6 +3,7 @@ package com.kg.wub.system;
 import com.echonest.api.v4.Segment;
 import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
+import com.kg.TheHorde;
 import com.kg.wub.AudioObject;
 import com.kg.wub.ai.custom.Custom;
 
@@ -584,7 +585,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
         int x = e.getX();
         int y = e.getY();
         currPos = x;
-        if (!frame.isActive()) {
+        /*if (!frame.isActive()) {
             frame.requestFocus();
             frame.toFront();
             try {
@@ -593,7 +594,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-        }
+        }*/
         double loc = ((double) x / (double) this.getWidth()) *  au.analysis.getDuration();
         if (y >= 0 && y < 20) {
             hovering = null;
@@ -723,15 +724,16 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
 
     @Override
     public void keyPressed(KeyEvent e) {
-
         if (e.getKeyChar() == ' ')
             au.pause = !au.pause;
         else if (e.isAltDown() && Character.isAlphabetic((char) e.getKeyCode())) {
             au.midiMap.put((char) e.getKeyCode() + "", hovering);
+            System.out.println("keyevent:"+(char) e.getKeyCode() + "");
         } else if (e.isControlDown() && Character.isAlphabetic((char) e.getKeyCode())) {
             au.midiMap.remove((char) e.getKeyCode() + "");
         } else if (e.isShiftDown() && Character.isAlphabetic((char) e.getKeyCode())) {
             CentralCommand.key((char) e.getKeyCode() + "");
+            System.out.println("keyevent:"+(char) e.getKeyCode() + "");
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             AudioObject.factory();
         else if (e.getKeyCode() == KeyEvent.VK_L)
@@ -749,6 +751,20 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
 
         } else if (e.getKeyCode() == KeyEvent.VK_P) {
             au.createAudioObject();
+            if (TheHorde.output != null) {
+                double bpm = TheHorde.output.getSequencers()[0].getBpm();
+
+                //Timestretch
+                AudioInterval ad = new AudioInterval(au.data);
+                AudioInterval[] ai = ad.getMono();
+                double bpmFactor = bpm / au.analysis.getTempo1();
+                AudioUtils.timeStretch1(ai[0], bpmFactor);
+                AudioUtils.timeStretch1(ai[1], bpmFactor);
+                ad.makeStereo(ai);
+                au.data = ad.data;
+                au.analysis = new TrackAnalysis(au.analysis.getMap(), bpmFactor, bpm, au.analysis.getDuration1());
+                //Timestretch
+            }
             au.pause = true;
             au.breakPlay = true;
         }

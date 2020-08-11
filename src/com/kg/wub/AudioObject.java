@@ -59,7 +59,7 @@ public class AudioObject implements Serializable {
 
     public static AudioObject factory() {
         JFileChooser chooser = new JFileChooser(CentralCommand.lastDirectory);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Wub",  "wub", "play");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Wub", "wub", "play");
         chooser.setFileFilter(filter);
 //        chooser.setSelectedFile(new File("spotify:ID or WUB file"));
         chooser.setSelectedFile(new File("spotify:track:3rPFO1SnHNm0PKIrC5ciA3"));
@@ -194,7 +194,7 @@ public class AudioObject implements Serializable {
         try {
             if (!extension.equals("wub")) {
                 newFile = new File(filePrefix + ".wub");
-                System.out.println("saving to:"+newFile.getAbsolutePath());
+                System.out.println("saving to:" + newFile.getAbsolutePath());
             }
 
             Serializer.store(au, newFile);
@@ -203,7 +203,7 @@ public class AudioObject implements Serializable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
+        CentralCommand.pf.makeData();
         return au;
     }
 
@@ -489,7 +489,6 @@ public class AudioObject implements Serializable {
         boolean savePause = pause;
         pause = true;
         final FakeTrackAnalysis fa = new FakeTrackAnalysis();
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         LinkedList<Interval> ll = new LinkedList<Interval>();
         if (currentlyPlaying != null) {
@@ -619,7 +618,7 @@ public class AudioObject implements Serializable {
             });
         }
 
-        System.out.println(fa.duration);
+        System.out.println(fa.getDuration());
         if (file == null) file = new File(UUID.randomUUID().toString() + ".wav");
         String fileName = file.getAbsolutePath();
         String extension = "";

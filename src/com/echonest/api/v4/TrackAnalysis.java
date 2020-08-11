@@ -3,10 +3,7 @@ package com.echonest.api.v4;
 import com.echonest.api.v4.util.MQuery;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.kg.wub.ai.vectorrnn1.RNNDemo.song;
 
@@ -18,7 +15,7 @@ public class TrackAnalysis implements Serializable {
     private static final long serialVersionUID = -8164758136686318758l;
     @SuppressWarnings("unchecked")
     private Map map;
-    private MQuery mq;
+    public MQuery mq;
     public ArrayList<TimedEvent> sections;
     public ArrayList<TimedEvent> bars;
     public ArrayList<TimedEvent> beats;
@@ -26,7 +23,7 @@ public class TrackAnalysis implements Serializable {
     private ArrayList<Segment> segments;
     double tempo;
     double bpmFactor = 1d;
-    double duration;
+    protected double duration;
 
     @SuppressWarnings("unchecked")
     public TrackAnalysis(Map map, double bpmFactor, double tempo, double duration) {
@@ -240,5 +237,10 @@ public class TrackAnalysis implements Serializable {
 
     public double getDuration1() {
         return mq.getDouble("track.duration");
+    }
+
+
+    public void setDuration(double duration) {
+        this.duration = duration;
     }
 }

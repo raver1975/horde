@@ -14,7 +14,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -58,6 +60,9 @@ public class AudioUtils implements Handler {
 //        song.analysis.getTatums();
 //        song.analysis.getSections();
 //        double maxTime=0;
+//        song.analysis.getMap().computeIfAbsent("track", k -> new HashMap<String, Object>());
+//        ((Map) song.analysis.getMap().get("track")).put("tempo", newBpm);
+//        ((Map) song.analysis.getMap().get("track")).put("duration", song.analysis.getDuration1()/bpmFactor);
 //        song.analysis.getMap().put("track.tempo", newBpm);
 //        song.analysis.getMap().put("track.bpmFactor", bpmFactor);
 //        song.analysis.setDuration(song.analysis.getDuration()*bpmFactor);
