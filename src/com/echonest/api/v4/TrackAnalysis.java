@@ -1,8 +1,11 @@
 package com.echonest.api.v4;
 
 import com.echonest.api.v4.util.MQuery;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.kg.wub.ai.vectorrnn1.RNNDemo.song;
@@ -20,22 +23,31 @@ public class TrackAnalysis implements Serializable {
     public ArrayList<TimedEvent> bars;
     public ArrayList<TimedEvent> beats;
     public ArrayList<TimedEvent> tatums;
-    private ArrayList<Segment> segments;
-    double tempo;
-    double bpmFactor = 1d;
-    protected double duration;
+    public ArrayList<Segment> segments;
 
     @SuppressWarnings("unchecked")
-    public TrackAnalysis(Map map, double bpmFactor, double tempo, double duration) {
-        this.tempo = tempo;
-        this.duration = duration / bpmFactor;
-        this.bpmFactor = bpmFactor;
-        finishInit(map, bpmFactor);
+    public TrackAnalysis(TrackAnalysis ta, double bpmFactor, double tempo, double duration) {
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(ta.map);
+
+        Type type = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        this.map = gson.fromJson(jsonString, type);
+        setTempo(this.map, tempo);
+        setDuration(this.map, duration);
+        finishInit(this.map, bpmFactor);
     }
 
     public void finishInit(Map map, double bpmFactor) {
-        this.mq = new MQuery(map);
-        this.map = map;
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(map);
+
+        Type type = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        HashMap<Integer, Object> clonedMap = gson.fromJson(jsonString, type);
+
+        this.map = clonedMap;
+        this.mq = new MQuery(this.map);
         sections = new ArrayList<TimedEvent>();
         List event = (List) mq.getObject("sections");
         if (event != null) {
@@ -83,15 +95,15 @@ public class TrackAnalysis implements Serializable {
     }
 
     public TrackAnalysis(Map map) {
-        bpmFactor = 1d;
+//        bpmFactor = 1d;
         finishInit(map, 1d);
-        if (mq.getDouble("track.duration") != null) {
-            duration = (double) mq.getDouble("track.duration");
-        }
-        if (mq.getDouble("track.tempo") != null) {
-            tempo = (double) mq.getDouble("track.tempo");
-        }
-        System.out.println("tttempo=" + tempo);
+//        if (mq.getDouble("track.duration") != null) {
+//            duration = (double) mq.getDouble("track.duration");
+//        }
+//        if (mq.getDouble("track.tempo") != null) {
+//            tempo = (double) mq.getDouble("track.tempo");
+//        }
+//        System.out.println("tttempo=" + tempo);
 //        bpmFactor=(double)map.get("track.bpmFactor");
 //        song.analysis.setDuration(song.analysis.getDuration()*bpmFactor);
     }
@@ -113,9 +125,6 @@ public class TrackAnalysis implements Serializable {
         return mq.getInteger("track.num_samples");
     }
 
-    public Double getDuration() {
-        return duration;
-    }
 
     public String getMD5() {
         return mq.getString("track.sample_md5");
@@ -139,10 +148,6 @@ public class TrackAnalysis implements Serializable {
 
     public Double getLoudness() {
         return mq.getDouble("track.loudness");
-    }
-
-    public Double getTempo() {
-        return tempo;
     }
 
     public Double getTempoConfidence() {
@@ -231,16 +236,45 @@ public class TrackAnalysis implements Serializable {
         }
     }
 
-    public double getTempo1() {
+    public double getTempo() {
         return mq.getDouble("track.tempo");
     }
 
-    public double getDuration1() {
+    public double getDuration() {
         return mq.getDouble("track.duration");
     }
 
 
     public void setDuration(double duration) {
-        this.duration = duration;
+        if (map == null) {
+            map = new HashMap<String, Object>();
+        }
+        map.putIfAbsent("track", new HashMap<String, Object>());
+        ((Map) map.get("track")).put("duration", duration);
+    }
+
+
+    public void setDuration(Map map, double duration) {
+        if (map == null) {
+            map = new HashMap<String, Object>();
+        }
+        map.putIfAbsent("track", new HashMap<String, Object>());
+        ((Map) map.get("track")).put("duration", duration);
+    }
+
+    public void setTempo(Map map, double tempo) {
+        if (map == null) {
+            map = new HashMap<String, Object>();
+        }
+        map.putIfAbsent("track", new HashMap<String, Object>());
+        ((Map) map.get("track")).put("tempo", tempo);
+    }
+
+    public void setTempo(double tempo) {
+        if (map == null) {
+            map = new HashMap<String, Object>();
+        }
+        map.putIfAbsent("track", new HashMap<String, Object>());
+        ((Map) map.get("track")).put("tempo", tempo);
     }
 }

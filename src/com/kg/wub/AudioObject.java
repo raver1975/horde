@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.*;
 
-import static com.kg.python.SpotifyDLTest.STEMS.STEM2;
-import static com.kg.python.SpotifyDLTest.STEMS.STEM4;
+import static com.kg.python.SpotifyDLTest.STEMS.*;
 
 public class AudioObject implements Serializable {
 
@@ -124,7 +123,7 @@ public class AudioObject implements Serializable {
 //                    return null;
 //                }
             File spotifyFile = new File(System.getProperty("user.dir") + File.separator + URLEncoder.encode(spotifyId) + ".mp3");
-            List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, STEM4);
+            List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, STEM0);
             for (File f : spleets) {
                 factory(f.getAbsolutePath(), ta);
             }
@@ -158,12 +157,12 @@ public class AudioObject implements Serializable {
                     //Timestretch
                     AudioInterval ad = new AudioInterval(au.data);
                     AudioInterval[] ai = ad.getMono();
-                    double bpmFactor = bpm / au.analysis.getTempo1();
+                    double bpmFactor = bpm / au.analysis.getTempo();
                     AudioUtils.timeStretch1(ai[0], bpmFactor);
                     AudioUtils.timeStretch1(ai[1], bpmFactor);
                     ad.makeStereo(ai);
                     au.data = ad.data;
-                    au.analysis = new TrackAnalysis(au.analysis.getMap(), bpmFactor, bpm, au.analysis.getDuration1());
+                    au.analysis = new TrackAnalysis(au.analysis, bpmFactor, bpm, au.analysis.getDuration());
                     //Timestretch
                 }
                 au.init(true);
@@ -183,14 +182,15 @@ public class AudioObject implements Serializable {
             //Timestretch
             AudioInterval ad = new AudioInterval(au.data);
             AudioInterval[] ai = ad.getMono();
-            double bpmFactor = bpm / au.analysis.getTempo1();
+            double bpmFactor = bpm / au.analysis.getTempo();
             AudioUtils.timeStretch1(ai[0], bpmFactor);
             AudioUtils.timeStretch1(ai[1], bpmFactor);
             ad.makeStereo(ai);
             au.data = ad.data;
-            au.analysis = new TrackAnalysis(au.analysis.getMap(), bpmFactor, bpm, au.analysis.getDuration1());
+            au.analysis = new TrackAnalysis(au.analysis, bpmFactor, bpm, au.analysis.getDuration()/bpmFactor);
             //Timestretch
         }
+        au.init(true);
         try {
             if (!extension.equals("wub")) {
                 newFile = new File(filePrefix + ".wub");
@@ -236,8 +236,7 @@ public class AudioObject implements Serializable {
         dialog.setAlwaysOnTop(false);
         dialog.setVisible(true);
         msgLabel.setBackground(panel.getBackground());
-        if (ta != null) analysis = ta;
-        init(true);
+        if (ta != null) analysis = new TrackAnalysis(ta.getMap());
         dialog.dispose();
     }
 
@@ -488,7 +487,13 @@ public class AudioObject implements Serializable {
     public void createAudioObject() {
         boolean savePause = pause;
         pause = true;
-        final FakeTrackAnalysis fa = new FakeTrackAnalysis();
+        final FakeTrackAnalysis fa = new FakeTrackAnalysis(analysis.getMap());
+        fa.getBars().clear();
+        fa.getBeats().clear();
+        fa.getSections().clear();
+        fa.getSegments().clear();
+        fa.getTatums().clear();
+//        fa.setTempo(analysis.getTempo());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         LinkedList<Interval> ll = new LinkedList<Interval>();
         if (currentlyPlaying != null) {
@@ -508,6 +513,7 @@ public class AudioObject implements Serializable {
         }
         byte[] by = baos.toByteArray();
         fa.setDuration(convertByteToTime(by.length));
+        //fa.setTempo(this.analysis.getTempo());
         Collections.sort(ll, new Comparator<Interval>() {
 
             @Override

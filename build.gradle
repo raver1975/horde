@@ -80,7 +80,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs/Tarsos')
     compile fileTree(include: ['*.jar'], dir: 'libs/Weka')
     compile fileTree(include: ['*.jar'], dir: 'libs/Wub')
-
+    implementation 'com.google.code.gson:gson:2.8.6'
 //    implementation "org.gradle:gradle-tooling-api:+"
     // The tooling API need an SLF4J implementation available at runtime, replace this with any other implementation
 //    runtimeOnly 'org.slf4j:slf4j-simple:1.7.10'

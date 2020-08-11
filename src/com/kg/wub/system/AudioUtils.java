@@ -35,8 +35,8 @@ public class AudioUtils implements Handler {
     }
 
     public static Song timeStretch(Song song, double newBpm) {
-        double bpmFactor = newBpm / song.analysis.getTempo1();
-        System.out.println("BpmFactor=" + bpmFactor + "\tnewpm=" + newBpm + "\told=" + song.analysis.getTempo1());
+        double bpmFactor = newBpm / song.analysis.getTempo();
+        System.out.println("BpmFactor=" + bpmFactor + "\tnewpm=" + newBpm + "\told=" + song.analysis.getTempo());
 //        ByteArrayOutputStream ba = new ByteArrayOutputStream();
         AudioInterval ad = new AudioInterval(song.data);
         AudioInterval[] ai = ad.getMono();
@@ -68,7 +68,7 @@ public class AudioUtils implements Handler {
 //        song.analysis.setDuration(song.analysis.getDuration()*bpmFactor);
 //        song.analysis.getMap().put("track.duration", song.analysis.getDuration() * bpmFactor);
 //        System.out.println(song.analysis.getMap());
-        song.analysis = new TrackAnalysis(song.analysis.getMap(), bpmFactor, newBpm, song.analysis.getDuration1());
+        song.analysis = new TrackAnalysis(song.analysis, bpmFactor, newBpm, song.analysis.getDuration());
 //        bpmFactor = 1.0d / bpmFactor;
 //        for (Segment seg : song.analysis.getSegments()) {
 //            seg.duration *= bpmFactor;

@@ -750,23 +750,27 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
             CentralCommand.addRectangle(n);
 
         } else if (e.getKeyCode() == KeyEvent.VK_P) {
+
             au.createAudioObject();
             if (TheHorde.output != null) {
                 double bpm = TheHorde.output.getSequencers()[0].getBpm();
+                double bpmFactor = bpm / au.analysis.getTempo();
 
                 //Timestretch
                 AudioInterval ad = new AudioInterval(au.data);
                 AudioInterval[] ai = ad.getMono();
-                double bpmFactor = bpm / au.analysis.getTempo1();
                 AudioUtils.timeStretch1(ai[0], bpmFactor);
                 AudioUtils.timeStretch1(ai[1], bpmFactor);
                 ad.makeStereo(ai);
                 au.data = ad.data;
-                au.analysis = new TrackAnalysis(au.analysis.getMap(), bpmFactor, bpm, au.analysis.getDuration1());
+                au.analysis = new TrackAnalysis(au.analysis, bpmFactor, bpm, au.analysis.getDuration()/bpmFactor);
                 //Timestretch
             }
+
             au.pause = true;
             au.breakPlay = true;
+            CentralCommand.pf.makeData();
+            //au.init(false);
         }
 //		else if (e.getKeyCode() == KeyEvent.VK_F7) {
 //			au.createReverseAudioObject();

@@ -7,6 +7,7 @@ import com.echonest.api.v4.TrackAnalysis;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FakeTrackAnalysis extends TrackAnalysis {
 
@@ -18,8 +19,8 @@ public class FakeTrackAnalysis extends TrackAnalysis {
 
 
 
-	public FakeTrackAnalysis() {
-		super(new HashMap<String,Object>());
+	public FakeTrackAnalysis(Map map) {
+		super(map);
 	}
 
 	@Override
