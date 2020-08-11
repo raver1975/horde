@@ -134,6 +134,7 @@ public class AudioObject implements Serializable {
 //        }
         File file = new File(fileName);
         System.out.println(file.exists());
+
         File newFile = file;
         String extension = "";
         String filePrefix = "";
@@ -147,10 +148,6 @@ public class AudioObject implements Serializable {
             CentralCommand.loadPlay(file);
             return null;
         }
-//        if (!extension.equals("wub")) {
-//            newFile = new File((file.getParent() == null ? "" : (file.getParent() + File.separator)) + filePrefix + ".wub");
-//            System.out.println(newFile.getAbsolutePath());
-//        }
         if (newFile.exists()) {
             try {
                 AudioObject au = (AudioObject) Serializer.load(newFile);
@@ -180,6 +177,11 @@ public class AudioObject implements Serializable {
             //Timestretch
         }
         try {
+            if (!extension.equals("wub")) {
+                newFile = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - 3) + "wub");
+                System.out.println(newFile.getAbsolutePath());
+            }
+
             Serializer.store(au, newFile);
         } catch (
                 IOException e) {
@@ -191,7 +193,6 @@ public class AudioObject implements Serializable {
     }
 
     public AudioObject(final File file, TrackAnalysis ta) {
-        System.out.println("ta:" + ta);
         this.file = file;
         convert(file);
         JTextArea msgLabel;

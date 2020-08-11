@@ -39,9 +39,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
 
     public MusicCanvas(AudioObject au) {
         this.au = au;
-        System.out.println(au);
         analysis = au.analysis;
-        System.out.println(au.analysis);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addComponentListener(this);

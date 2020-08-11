@@ -9,7 +9,9 @@ AI powered music groovebox.
 * 2 simulated Roland bass synthesizers (TB-303)
 * 2 simulated Roland drum synthesizers (TR-808 or TR-909) 
 * records entire session into WAV file
-* partial UI interface
+* Grab a track from spotify, chop it up.
+* Spleeter stem separation
+* Tatum based sampler
 
 ## Roadmap
 
@@ -23,7 +25,7 @@ AI powered music groovebox.
 
 ## Getting Started
 prerequisites:
-Java 1.8+ and Gradle
+Java 1.8+, Python 3.6 and Gradle
 
 ```
 git clone https://github.com/raver1975/horde.git
