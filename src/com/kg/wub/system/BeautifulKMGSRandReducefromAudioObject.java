@@ -49,67 +49,67 @@ public class BeautifulKMGSRandReducefromAudioObject {
                     jframe.setAlwaysOnTop(true);
                 }
 
-                JSONObject js = (JSONObject) song.analysis.getMap().get("meta");
-                String title = null;
-                String artist = null;
-                String album = null;
-                String genre = null;
-                Long seconds = null;
-
-                try {
-                    title = (String) js.get("title");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    artist = (String) js.get("artist");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    album = (String) js.get("album");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    genre = (String) js.get("genre");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    seconds = (Long) js.get("seconds");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (seconds == null || seconds == 0) seconds = new Long(-61);
-
-
-                int segm = song.analysis.getSegments().size();
-                totsegm += segm;
-                // float scale = (int) (((float) numClusters / (float) song1.analysis.getSegments().size()) * 1000) / 10f;
-                System.out.println("------------------------------");
-                System.out.println("size = " + segm);
-                System.out.println("title\t" + title);
-                System.out.println("artist\t" + artist);
-                System.out.println("album\t" + album);
-                System.out.println("genre\t" + genre);
-                String secs = seconds % 60 + "";
-                while (secs.length() < 2) secs = "0" + secs;
-                System.out.println("time\t" + seconds / 60 + ":" + secs);
-                jta.append("song #\t" + 0);
-                jta.append("\n");
-                jta.append("Title\t" + title);
-                jta.append("\n");
-                jta.append("Artist\t" + artist);
-                jta.append("\n");
-                jta.append("Album\t" + album);
-                jta.append("\n");
-                jta.append("Genre\t" + genre);
-                jta.append("\n");
-                jta.append("Time\t" + seconds / 60 + ": " + secs);
-                jta.append("\n");
-                jta.append("------------------------------");
-                jta.append("\n");
+//                JSONObject js = (JSONObject) song.analysis.getMap().get("meta");
+//                String title = null;
+//                String artist = null;
+//                String album = null;
+//                String genre = null;
+//                Long seconds = null;
+//
+//                try {
+//                    title = (String) js.get("title");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    artist = (String) js.get("artist");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    album = (String) js.get("album");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    genre = (String) js.get("genre");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    seconds = (Long) js.get("seconds");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                if (seconds == null || seconds == 0) seconds = new Long(-61);
+//
+//
+//                int segm = song.analysis.getSegments().size();
+//                totsegm += segm;
+// //                float scale = (int) (((float) numClusters / (float) song1.analysis.getSegments().size()) * 1000) / 10f;
+//                System.out.println("------------------------------");
+//                System.out.println("size = " + segm);
+//                System.out.println("title\t" + title);
+//                System.out.println("artist\t" + artist);
+//                System.out.println("album\t" + album);
+//                System.out.println("genre\t" + genre);
+//                String secs = seconds % 60 + "";
+//                while (secs.length() < 2) secs = "0" + secs;
+//                System.out.println("time\t" + seconds / 60 + ":" + secs);
+//                jta.append("song #\t" + 0);
+//                jta.append("\n");
+//                jta.append("Title\t" + title);
+//                jta.append("\n");
+//                jta.append("Artist\t" + artist);
+//                jta.append("\n");
+//                jta.append("Album\t" + album);
+//                jta.append("\n");
+//                jta.append("Genre\t" + genre);
+//                jta.append("\n");
+//                jta.append("Time\t" + seconds / 60 + ": " + secs);
+//                jta.append("\n");
+//                jta.append("------------------------------");
+//                jta.append("\n");
                 System.out.println("total segments=" + totsegm);
                 System.out.println(" path clusters=" + (totsegm - Settings.decreaseClustersBy));
                 System.out.println(" kept clusters=" + ((int) (totsegm * Settings.segmentsKept)));

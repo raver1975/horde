@@ -162,7 +162,7 @@ public class AudioObject implements Serializable {
                     AudioUtils.timeStretch1(ai[1], bpmFactor);
                     ad.makeStereo(ai);
                     au.data = ad.data;
-                    au.analysis = new TrackAnalysis(au.analysis, bpmFactor, bpm, au.analysis.getDuration());
+                    au.analysis.timeStretch(bpmFactor);
                     //Timestretch
                 }
                 au.init(true);
@@ -187,7 +187,9 @@ public class AudioObject implements Serializable {
             AudioUtils.timeStretch1(ai[1], bpmFactor);
             ad.makeStereo(ai);
             au.data = ad.data;
-            au.analysis = new TrackAnalysis(au.analysis, bpmFactor, bpm, au.analysis.getDuration()/bpmFactor);
+//            au.analysis = new TrackAnalysis(au.analysis);
+            au.analysis.timeStretch(bpmFactor);
+            System.out.println("2bpm:" + au.analysis.getTempo());
             //Timestretch
         }
         au.init(true);
@@ -236,7 +238,15 @@ public class AudioObject implements Serializable {
         dialog.setAlwaysOnTop(false);
         dialog.setVisible(true);
         msgLabel.setBackground(panel.getBackground());
-        if (ta != null) analysis = new TrackAnalysis(ta.getMap());
+        if (ta != null) {
+            try {
+                analysis = (TrackAnalysis) Serializer.deepclone(ta);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         dialog.dispose();
     }
 
@@ -244,7 +254,6 @@ public class AudioObject implements Serializable {
         this.file = file;
         analysis = fa;
         data = by;
-        System.out.println(data.length);
         init(true);
     }
 
@@ -484,16 +493,11 @@ public class AudioObject implements Serializable {
         }
     }
 
-    public void createAudioObject() {
+    public AudioObject createAudioObject() {
         boolean savePause = pause;
         pause = true;
-        final FakeTrackAnalysis fa = new FakeTrackAnalysis(analysis.getMap());
-        fa.getBars().clear();
-        fa.getBeats().clear();
-        fa.getSections().clear();
-        fa.getSegments().clear();
-        fa.getTatums().clear();
-//        fa.setTempo(analysis.getTempo());
+        TrackAnalysis fa = new TrackAnalysis(null);
+        fa.setTempo(analysis.getTempo());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         LinkedList<Interval> ll = new LinkedList<Interval>();
         if (currentlyPlaying != null) {
@@ -504,9 +508,12 @@ public class AudioObject implements Serializable {
         if (ll.size() == 0 && mc.hovering != null)
             ll.add(mc.hovering);
         if (ll.size() == 0)
-            return;
+            return null;
         for (Interval i : ll) {
             i.newbytestart = bytecnt;
+            if (i.lengthBytes + i.startBytes > data.length) {
+                i.lengthBytes = data.length - i.startBytes;
+            }
             baos.write(data, i.startBytes, i.lengthBytes);
             bytecnt += i.lengthBytes;
 
@@ -523,25 +530,17 @@ public class AudioObject implements Serializable {
 
         });
         for (Interval i : ll) {
-            double ts = i.te.getStart();
-            double te = i.te.getStart() + i.te.getDuration();
             for (Segment e : analysis.getSegments()) {
-                double es = e.getStart();
-                double ee = e.getStart() + e.getDuration();
-//				if ((es>=ts||ee>=ts)&&(es<=te||ee<=te) ){
-                if (true) {
-//				if (e.getStart() >= i.te.getStart() - 1d && e.getStart() + e.getDuration() <= i.te.getStart() + i.te.getDuration() + 1d) {
-                    Segment f = null;
-                    try {
-                        f = (Segment) Serializer.deepclone(e);
-                    } catch (ClassNotFoundException e1) {
-                        e1.printStackTrace();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    f.start = e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart);
-                    fa.segments.add(f);
+                Segment f = null;
+                try {
+                    f = (Segment) Serializer.deepclone(e);
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
+                f.start = e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart);
+                fa.getSegments().add(f);
             }
 
             HashMap<String, Double> hm1 = new HashMap<String, Double>();
@@ -549,51 +548,33 @@ public class AudioObject implements Serializable {
             hm1.put("duration", fa.getDuration());
             hm1.put("confidence", 1d);
 
-            fa.sections.add(new TimedEvent(hm1));
+            fa.getSections().add(new TimedEvent(hm1));
 
             for (TimedEvent e : analysis.getBars()) {
-                double es = e.getStart();
-                double ee = e.getStart() + e.getDuration();
-//				if ((es>=ts||ee>=ts)&&(es<=te||ee<=te) ){
-                if (true) {
-//				if (e.getStart() >= i.te.getStart() - tolerance && e.getStart() + e.getDuration() <= i.te.getStart() + i.te.getDuration() + tolerance) {
-                    HashMap<String, Double> hm = new HashMap<String, Double>();
-                    hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
-                    hm.put("duration", e.getDuration());
-                    hm.put("confidence", e.getConfidence());
-                    fa.bars.add(new TimedEvent(hm));
-                }
+                HashMap<String, Double> hm = new HashMap<String, Double>();
+                hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
+                hm.put("duration", e.getDuration());
+                hm.put("confidence", e.getConfidence());
+                fa.getBars().add(new TimedEvent(hm));
             }
 
             for (TimedEvent e : analysis.getBeats()) {
-                double es = e.getStart();
-                double ee = e.getStart() + e.getDuration();
-//				if ((es>=ts||ee>=ts)&&(es<=te||ee<=te) ){
-                if (true) {
-//				if (e.getStart() >= i.te.getStart() - tolerance && e.getStart() + e.getDuration() <= i.te.getStart() + i.te.getDuration() + tolerance) {
-                    HashMap<String, Double> hm = new HashMap<String, Double>();
-                    hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
-                    hm.put("duration", e.getDuration());
-                    hm.put("confidence", e.getConfidence());
-                    fa.beats.add(new TimedEvent(hm));
-                }
+                HashMap<String, Double> hm = new HashMap<String, Double>();
+                hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
+                hm.put("duration", e.getDuration());
+                hm.put("confidence", e.getConfidence());
+                fa.getBeats().add(new TimedEvent(hm));
             }
 
             for (TimedEvent e : analysis.getTatums()) {
-                double es = e.getStart();
-                double ee = e.getStart() + e.getDuration();
-//				if ((es>=ts||ee>=ts)&&(es<=te||ee<=te) ){
-                if (true) {
-//				if (e.getStart() >= i.te.getStart() - tolerance && e.getStart() + e.getDuration() <= i.te.getStart() + i.te.getDuration() + tolerance) {
-                    HashMap<String, Double> hm = new HashMap<String, Double>();
-                    hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
-                    hm.put("duration", e.getDuration());
-                    hm.put("confidence", e.getConfidence());
-                    fa.tatums.add(new TimedEvent(hm));
-                }
+                HashMap<String, Double> hm = new HashMap<String, Double>();
+                hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
+                hm.put("duration", e.getDuration());
+                hm.put("confidence", e.getConfidence());
+                fa.getTatums().add(new TimedEvent(hm));
             }
 
-            Collections.sort(fa.segments, new Comparator<TimedEvent>() {
+            Collections.sort(fa.getSegments(), new Comparator<TimedEvent>() {
                 @Override
                 public int compare(TimedEvent o1, TimedEvent o2) {
                     return Double.compare(o1.getStart(), o2.getStart());
@@ -601,21 +582,21 @@ public class AudioObject implements Serializable {
 
             });
 
-            Collections.sort(fa.bars, new Comparator<TimedEvent>() {
+            Collections.sort(fa.getBars(), new Comparator<TimedEvent>() {
                 @Override
                 public int compare(TimedEvent o1, TimedEvent o2) {
                     return Double.compare(o1.getStart(), o2.getStart());
                 }
 
             });
-            Collections.sort(fa.beats, new Comparator<TimedEvent>() {
+            Collections.sort(fa.getBeats(), new Comparator<TimedEvent>() {
                 @Override
                 public int compare(TimedEvent o1, TimedEvent o2) {
                     return Double.compare(o1.getStart(), o2.getStart());
                 }
 
             });
-            Collections.sort(fa.tatums, new Comparator<TimedEvent>() {
+            Collections.sort(fa.getTatums(), new Comparator<TimedEvent>() {
                 @Override
                 public int compare(TimedEvent o1, TimedEvent o2) {
                     return Double.compare(o1.getStart(), o2.getStart());
@@ -624,7 +605,6 @@ public class AudioObject implements Serializable {
             });
         }
 
-        System.out.println(fa.getDuration());
         if (file == null) file = new File(UUID.randomUUID().toString() + ".wav");
         String fileName = file.getAbsolutePath();
         String extension = "";
@@ -669,7 +649,7 @@ public class AudioObject implements Serializable {
         }).start();
 
         pause = savePause;
-
+        return ao;
     }
 
     public double convertByteToTime(int pos) {

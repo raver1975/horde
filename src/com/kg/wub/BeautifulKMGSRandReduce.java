@@ -89,40 +89,40 @@ import java.util.*;
                     Song song1 = null;
                     for (int v : playback) {
                         song1 = SongManager.getRandom(v);
-                        JSONObject js = (JSONObject) song1.analysis.getMap().get("meta");
-                        String title = null;
-                        String artist = null;
-                        String album = null;
-                        String genre = null;
-                        Long seconds = null;
-
-                        try {
-                            title = (String) js.get("title");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            artist = (String) js.get("artist");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            album = (String) js.get("album");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            genre = (String) js.get("genre");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            seconds = (Long) js.get("seconds");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        if (seconds == null || seconds == 0) seconds = new Long(-61);
-
+//                        JSONObject js = (JSONObject) song1.analysis.getMap().get("meta");
+//                        String title = null;
+//                        String artist = null;
+//                        String album = null;
+//                        String genre = null;
+//                        Long seconds = null;
+//
+//                        try {
+//                            title = (String) js.get("title");
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        try {
+//                            artist = (String) js.get("artist");
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        try {
+//                            album = (String) js.get("album");
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        try {
+//                            genre = (String) js.get("genre");
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        try {
+//                            seconds = (Long) js.get("seconds");
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        if (seconds == null || seconds == 0) seconds = new Long(-61);
+//
 
                         int segm = song1.analysis.getSegments().size();
                         totsegm += segm;
@@ -130,24 +130,24 @@ import java.util.*;
                         System.out.println("------------------------------");
                         System.out.println("segment #" + v);
                         System.out.println("size = " + segm);
-                        System.out.println("title\t" + title);
-                        System.out.println("artist\t" + artist);
-                        System.out.println("album\t" + album);
-                        System.out.println("genre\t" + genre);
-                        String secs = seconds % 60 + "";
-                        while (secs.length() < 2) secs = "0" + secs;
-                        System.out.println("time\t" + seconds / 60 + ":" + secs);
-                        jta.append("song #\t" + v);
-                        jta.append("\n");
-                        jta.append("Title\t" + title);
-                        jta.append("\n");
-                        jta.append("Artist\t" + artist);
-                        jta.append("\n");
-                        jta.append("Album\t" + album);
-                        jta.append("\n");
-                        jta.append("Genre\t" + genre);
-                        jta.append("\n");
-                        jta.append("Time\t" + seconds / 60 + ": " + secs);
+//                        System.out.println("title\t" + title);
+//                        System.out.println("artist\t" + artist);
+//                        System.out.println("album\t" + album);
+//                        System.out.println("genre\t" + genre);
+//                        String secs = seconds % 60 + "";
+//                        while (secs.length() < 2) secs = "0" + secs;
+//                        System.out.println("time\t" + seconds / 60 + ":" + secs);
+//                        jta.append("song #\t" + v);
+//                        jta.append("\n");
+//                        jta.append("Title\t" + title);
+//                        jta.append("\n");
+//                        jta.append("Artist\t" + artist);
+//                        jta.append("\n");
+//                        jta.append("Album\t" + album);
+//                        jta.append("\n");
+//                        jta.append("Genre\t" + genre);
+//                        jta.append("\n");
+//                        jta.append("Time\t" + seconds / 60 + ": " + secs);
                         jta.append("\n");
                         jta.append("------------------------------");
                         jta.append("\n");

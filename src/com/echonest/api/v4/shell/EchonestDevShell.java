@@ -1299,7 +1299,7 @@ public class EchonestDevShell {
 
             TrackAnalysis analysis = track.getAnalysis();
             if (full && analysis != null) {
-                analysis.dump();
+//                analysis.dump();
             }
         }
     }

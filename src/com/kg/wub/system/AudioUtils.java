@@ -5,18 +5,8 @@ import be.tarsos.dsp.WaveformSimilarityBasedOverlapAdd;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
 import be.tarsos.dsp.resample.RateTransposer;
-import com.echonest.api.v4.Segment;
-import com.echonest.api.v4.TimedEvent;
-import com.echonest.api.v4.TrackAnalysis;
 
-import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -68,7 +58,8 @@ public class AudioUtils implements Handler {
 //        song.analysis.setDuration(song.analysis.getDuration()*bpmFactor);
 //        song.analysis.getMap().put("track.duration", song.analysis.getDuration() * bpmFactor);
 //        System.out.println(song.analysis.getMap());
-        song.analysis = new TrackAnalysis(song.analysis, bpmFactor, newBpm, song.analysis.getDuration());
+//        song.analysis = new TrackAnalysis(song.analysis, bpmFactor, newBpm, song.analysis.getDuration());
+        song.analysis.timeStretch(bpmFactor);
 //        bpmFactor = 1.0d / bpmFactor;
 //        for (Segment seg : song.analysis.getSegments()) {
 //            seg.duration *= bpmFactor;
