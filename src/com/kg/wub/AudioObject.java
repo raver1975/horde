@@ -99,7 +99,9 @@ public class AudioObject implements Serializable {
     }
 
     public static AudioObject factory(String fileName, TrackAnalysis ta) {
-        System.out.println(fileName);
+        if (PlayingField.frame != null) {
+            PlayingField.frame.setVisible(true);
+        }
         if (fileName.contains("spotify:track:") || fileName.contains("https://open.spotify.com/track/")) {
             if (fileName.lastIndexOf("/") > -1) spotifyId = fileName.substring(fileName.lastIndexOf("/") + 1);
             else if (fileName.lastIndexOf(":") > -1) spotifyId = fileName.substring(fileName.lastIndexOf(":") + 1);
@@ -123,7 +125,7 @@ public class AudioObject implements Serializable {
 //                    return null;
 //                }
             File spotifyFile = new File(System.getProperty("user.dir") + File.separator + URLEncoder.encode(spotifyId) + ".mp3");
-            List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, STEM0);
+            List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, STEM4);
             for (File f : spleets) {
                 factory(f.getAbsolutePath(), ta);
             }
@@ -529,49 +531,46 @@ public class AudioObject implements Serializable {
             }
 
         });
+
+        fa.getSections().add(new TimedEvent(0d, fa.getDuration(), 1d));
+
         for (Interval i : ll) {
             for (Segment e : analysis.getSegments()) {
-                Segment f = null;
-                try {
-                    f = (Segment) Serializer.deepclone(e);
-                } catch (ClassNotFoundException e1) {
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                TimedEvent nt = intersects(i.te, e, i.newbytestart);
+                if (nt != null) {
+                    Segment f = null;
+                    try {
+                        f = (Segment) Serializer.deepclone(e);
+                    } catch (ClassNotFoundException e1) {
+                        e1.printStackTrace();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    f.start = nt.start;
+                    f.duration = nt.duration;
+                    fa.getSegments().add(f);
                 }
-                f.start = e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart);
-                fa.getSegments().add(f);
             }
 
-            HashMap<String, Double> hm1 = new HashMap<String, Double>();
-            hm1.put("start", 0d);
-            hm1.put("duration", fa.getDuration());
-            hm1.put("confidence", 1d);
-
-            fa.getSections().add(new TimedEvent(hm1));
-
             for (TimedEvent e : analysis.getBars()) {
-                HashMap<String, Double> hm = new HashMap<String, Double>();
-                hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
-                hm.put("duration", e.getDuration());
-                hm.put("confidence", e.getConfidence());
-                fa.getBars().add(new TimedEvent(hm));
+                TimedEvent nt = intersects(i.te, e, i.newbytestart);
+                if (nt != null) {
+                    fa.getBars().add(nt);
+                }
             }
 
             for (TimedEvent e : analysis.getBeats()) {
-                HashMap<String, Double> hm = new HashMap<String, Double>();
-                hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
-                hm.put("duration", e.getDuration());
-                hm.put("confidence", e.getConfidence());
-                fa.getBeats().add(new TimedEvent(hm));
+                TimedEvent nt = intersects(i.te, e, i.newbytestart);
+                if (nt != null) {
+                    fa.getBeats().add(nt);
+                }
             }
 
             for (TimedEvent e : analysis.getTatums()) {
-                HashMap<String, Double> hm = new HashMap<String, Double>();
-                hm.put("start", e.getStart() - i.te.getStart() + convertByteToTime(i.newbytestart));
-                hm.put("duration", e.getDuration());
-                hm.put("confidence", e.getConfidence());
-                fa.getTatums().add(new TimedEvent(hm));
+                TimedEvent nt = intersects(i.te, e, i.newbytestart);
+                if (nt != null) {
+                    fa.getTatums().add(nt);
+                }
             }
 
             Collections.sort(fa.getSegments(), new Comparator<TimedEvent>() {
@@ -660,5 +659,46 @@ public class AudioObject implements Serializable {
         int c = (int) (time * AudioObject.sampleRate * AudioObject.frameSize);
         c += c % AudioObject.frameSize;
         return c;
+    }
+
+    public TimedEvent intersects(TimedEvent i, TimedEvent e, int newbytestart) {
+        if (e.start + e.duration <= i.start) {
+            return null;
+        }
+        if (e.start >= i.start + i.duration) {
+            return null;
+        }
+        boolean startInInterval = false;
+        boolean endInInterval = false;
+
+        //event e start is in i interval
+        if (e.start >= i.start && e.start <= i.start + i.duration) {
+            startInInterval = true;
+        }
+
+        //event e end is in i interval
+        if (e.start + e.duration >= i.start && e.start + e.duration <= i.start + i.duration) {
+            endInInterval = true;
+        }
+        TimedEvent te = null;
+        if (startInInterval && endInInterval) {
+            te = new TimedEvent(e.start, e.duration, 1f);
+        }
+
+        if (startInInterval && !endInInterval) {
+            double end = i.start + i.duration;
+            te = new TimedEvent(e.start, e.duration - (e.start + e.duration - end), 1f);
+        }
+
+        if (!startInInterval && endInInterval) {
+            te = new TimedEvent(i.start, e.duration - (i.start - e.start), 1f);
+        }
+
+        if (!startInInterval && !endInInterval) {
+            te = new TimedEvent(i.start, i.duration, 1f);
+        }
+
+        te.start = te.start - i.start + convertByteToTime(newbytestart);
+        return te;
     }
 }

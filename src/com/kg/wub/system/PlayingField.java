@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class PlayingField extends Canvas implements MouseListener, MouseMotionListener, KeyListener, ComponentListener, MouseWheelListener {
 
     int oldWidth;
-    public JFrame frame;
+    public static JFrame frame;
     private JScrollBar jverticalbar;
     private JScrollBar jhorizontalbar;
     private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -343,6 +343,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
             makeData();
         } else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
             CentralCommand.removeRectangle(mover);
+
             mover = null;
             makeData();
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
