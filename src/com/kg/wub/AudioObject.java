@@ -532,7 +532,7 @@ public class AudioObject implements Serializable {
 
         });
 
-        fa.getSections().add(new TimedEvent(0d, fa.getDuration(), 1d));
+//        fa.getSections().add(new TimedEvent(0d, fa.getDuration(), 1d));
 
         for (Interval i : ll) {
             for (Segment e : analysis.getSegments()) {
@@ -549,6 +549,13 @@ public class AudioObject implements Serializable {
                     f.start = nt.start;
                     f.duration = nt.duration;
                     fa.getSegments().add(f);
+                }
+            }
+
+            for (TimedEvent e : analysis.getSections()) {
+                TimedEvent nt = intersects(i.te, e, i.newbytestart);
+                if (nt != null) {
+                    fa.getSections().add(nt);
                 }
             }
 
