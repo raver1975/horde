@@ -580,35 +580,18 @@ public class AudioObject implements Serializable {
                 }
             }
 
-            Collections.sort(fa.getSegments(), new Comparator<TimedEvent>() {
+            Comparator<TimedEvent> compare = new Comparator<TimedEvent>() {
                 @Override
                 public int compare(TimedEvent o1, TimedEvent o2) {
                     return Double.compare(o1.getStart(), o2.getStart());
                 }
 
-            });
-
-            Collections.sort(fa.getBars(), new Comparator<TimedEvent>() {
-                @Override
-                public int compare(TimedEvent o1, TimedEvent o2) {
-                    return Double.compare(o1.getStart(), o2.getStart());
-                }
-
-            });
-            Collections.sort(fa.getBeats(), new Comparator<TimedEvent>() {
-                @Override
-                public int compare(TimedEvent o1, TimedEvent o2) {
-                    return Double.compare(o1.getStart(), o2.getStart());
-                }
-
-            });
-            Collections.sort(fa.getTatums(), new Comparator<TimedEvent>() {
-                @Override
-                public int compare(TimedEvent o1, TimedEvent o2) {
-                    return Double.compare(o1.getStart(), o2.getStart());
-                }
-
-            });
+            };
+            Collections.sort(fa.getSegments(), compare);
+            Collections.sort(fa.getSections(), compare);
+            Collections.sort(fa.getBars(), compare);
+            Collections.sort(fa.getBeats(), compare);
+            Collections.sort(fa.getTatums(), compare);
         }
 
         if (file == null) file = new File(UUID.randomUUID().toString() + ".wav");
@@ -623,7 +606,7 @@ public class AudioObject implements Serializable {
         String filePrefix1 = null;
         do {
             filecount++;
-            filePrefix1 = filePrefix + String.format("%03d", filecount);
+            filePrefix1 = filePrefix + String.format("_%03d", filecount);
         } while (new File(filePrefix1 + ".wav").exists());
         ByteArrayInputStream bais = new ByteArrayInputStream(by);
         long length = (long) (by.length / audioFormat.getFrameSize());
