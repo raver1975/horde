@@ -124,6 +124,9 @@ compileJava {
 
 
 run {
+//    if (project.hasProperty("appArgs")) {
+//        args Eval.me(appArgs)
+//    }
     doFirst {
         def classpathJavaFX = classpath.filter{ File file ->
             file.name.contains( "javafx" )
@@ -131,8 +134,11 @@ run {
         jvmArgs = [
                 '--module-path', classpathJavaFX.asPath,
                 '--add-exports', 'java.desktop/com.sun.media.sound=ALL-UNNAMED',
-                '--add-modules', 'javafx.fxml,javafx.controls'
+                '--add-modules', 'javafx.fxml,javafx.controls',
         ]
+        if (project.hasProperty("args")){
+            args(project.property("args"))
+        }
     }
 }
 

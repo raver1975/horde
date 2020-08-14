@@ -5,7 +5,7 @@ import com.kg.SequencerData;
 import java.util.Arrays;
 
 public abstract class Sequencer {
-    public double bpm = 120.0D;
+    public static double bpm = 120.0D;
     public double vol = 0f;
     private BasslinePattern bassline;
     public int[][] rhythm;

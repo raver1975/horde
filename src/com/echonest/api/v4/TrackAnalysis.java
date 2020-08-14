@@ -1,6 +1,8 @@
 package com.echonest.api.v4;
 
 import com.echonest.api.v4.util.MQuery;
+import com.kg.synth.Sequencer;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -16,7 +18,7 @@ public class TrackAnalysis implements Serializable {
     private ArrayList<TimedEvent> beats=new ArrayList<>();;
     private ArrayList<TimedEvent> tatums=new ArrayList<>();;
     private ArrayList<Segment> segments=new ArrayList<>();;
-    private double tempo=120;
+    private double tempo= Sequencer.bpm;
     private double duration=1;
 
 

@@ -1,6 +1,7 @@
 package com.kg;
 
 import com.kg.fft.FFT;
+import com.kg.python.SpotifyDLTest;
 import com.kg.synth.*;
 import com.kg.wub.AudioObject;
 import com.kg.wub.system.AudioUtils;
@@ -44,8 +45,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
+import static com.kg.python.SpotifyDLTest.STEMS.*;
 import static com.kg.synth.BasslineSynthesizer.MSG_CC_ACCENT;
 import static com.kg.synth.BasslineSynthesizer.MSG_CC_CUTOFF;
 import static com.kg.synth.BasslineSynthesizer.MSG_CC_DECAY;
@@ -54,6 +57,7 @@ import static com.kg.synth.BasslineSynthesizer.MSG_CC_RESONANCE;
 import static com.kg.synth.BasslineSynthesizer.MSG_CC_TUNE;
 
 public class TheHorde extends Application {
+    public static SpotifyDLTest.STEMS stem = STEM0;
     private Canvas sequencerCanvas;
     private Canvas visualizerCanvas;
     private Canvas trackerCanvas;
@@ -133,7 +137,7 @@ public class TheHorde extends Application {
         });
 
         for (Sequencer s : output.getSequencers()) {
-            s.setBpm(120d);
+//            s.setBpm(120d);
             s.randomizeSequence();
         }
 //        output.setVolume(1d);
@@ -381,7 +385,7 @@ public class TheHorde extends Application {
 
         //bpm knob
         final Regulator bpm = (Regulator) scene.lookup("#midi-bpm");
-        bpm.setTargetValue(120);
+        bpm.setTargetValue(Sequencer.bpm);
         bpm.targetValueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -852,6 +856,58 @@ public class TheHorde extends Application {
 
 
     public static void main(String args[]) {
+        System.out.println("horde started");
+        if (args.length == 1) {
+            String[] temp = args[0].split(" ");
+            if (temp.length > 1) {
+                args = temp;
+            }
+        }
+        System.out.println("args=" + Arrays.toString(args));
+        String wub = null;
+        top:
+        for (String arg : args) {
+            switch (arg) {
+                default:
+                    break;
+                case "STEM0":
+                    TheHorde.stem = STEM0;
+                    System.out.println("STEM0");
+                    continue top;
+                case "STEM2":
+                    TheHorde.stem = STEM2;
+                    System.out.println("STEM2");
+                    continue top;
+                case "STEM4":
+                    TheHorde.stem = STEM4;
+                    System.out.println("STEM4");
+                    continue top;
+                case "STEM5":
+                    TheHorde.stem = STEM5;
+                    System.out.println("STEM5");
+                    continue top;
+            }
+            try {
+                Sequencer.bpm = Integer.parseInt(arg);
+                System.out.println("set tempo to:" + Sequencer.bpm);
+            } catch (NumberFormatException e) {
+                wub = arg;
+            }
+
+        }
+        String finalWub = wub;
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                AudioObject.factory(finalWub);
+            }
+        }).start();
         launch(args);
     }
 

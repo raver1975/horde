@@ -125,7 +125,7 @@ public class AudioObject implements Serializable {
 //                    return null;
 //                }
             File spotifyFile = new File(System.getProperty("user.dir") + File.separator + URLEncoder.encode(spotifyId) + ".mp3");
-            List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, STEM4);
+            List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, TheHorde.stem);
             for (File f : spleets) {
                 factory(f.getAbsolutePath(), ta);
             }
