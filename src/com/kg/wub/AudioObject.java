@@ -5,9 +5,11 @@ import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
 import com.kg.TheHorde;
 import com.kg.python.SpotifyDLTest;
+import com.kg.synth.Sequencer;
 import com.kg.wub.system.*;
 import com.sun.media.sound.WaveFileWriter;
 import org.json.simple.parser.ParseException;
+import scala.collection.Seq;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -154,7 +156,11 @@ public class AudioObject implements Serializable {
                 AudioObject au = (AudioObject) Serializer.load(newFile);
                 double bpm = 120;
                 if (TheHorde.output != null) {
-                    bpm = TheHorde.output.getSequencers()[0].getBpm();
+                    bpm = Sequencer.bpm;
+                    if (bpm<1){
+                        bpm=au.analysis.getTempo();
+                        TheHorde.bpm.setTargetValue(bpm);
+                    }
 
                     //Timestretch
                     AudioInterval ad = new AudioInterval(au.data);
@@ -179,7 +185,13 @@ public class AudioObject implements Serializable {
         AudioObject au = new AudioObject(file, ta);
         double bpm = 120;
         if (TheHorde.output != null) {
-            bpm = TheHorde.output.getSequencers()[0].getBpm();
+            bpm = Sequencer.bpm;
+            if (bpm<1){
+                bpm=ta.getTempo();
+                TheHorde.bpm.setTargetValue(bpm);
+            }
+            System.out.println("newest tempo="+bpm);
+
 
             //Timestretch
             AudioInterval ad = new AudioInterval(au.data);
@@ -315,7 +327,7 @@ public class AudioObject implements Serializable {
                         if (loop)
                             queue.add(i);
                     } else
-
+                        line.flush();
                         currentlyPlaying = null;
                     if (!mc.mouseDown)
                         mc.tempTimedEvent = null;
@@ -324,7 +336,9 @@ public class AudioObject implements Serializable {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
                 }
+
             }
         }).start();
     }

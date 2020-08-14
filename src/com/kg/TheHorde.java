@@ -70,6 +70,7 @@ public class TheHorde extends Application {
     private static final double SCALE_FACTOR = 0.80;
     private boolean drawSequencerPosition = true;
     ArrayList<SequencerData>[] sd = new ArrayList[16];
+    public static Regulator bpm;
 
     //    FFT fft = new FFT(Output.BUFFER_SIZE, (float) Output.SAMPLE_RATE);
 
@@ -384,7 +385,7 @@ public class TheHorde extends Application {
 
 
         //bpm knob
-        final Regulator bpm = (Regulator) scene.lookup("#midi-bpm");
+        bpm = (Regulator) scene.lookup("#midi-bpm");
         bpm.setTargetValue(Sequencer.bpm);
         bpm.targetValueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -865,6 +866,7 @@ public class TheHorde extends Application {
         }
         System.out.println("args=" + Arrays.toString(args));
         String wub = null;
+        double tempo=0;
         top:
         for (String arg : args) {
             switch (arg) {
@@ -890,24 +892,30 @@ public class TheHorde extends Application {
             try {
                 Sequencer.bpm = Integer.parseInt(arg);
                 System.out.println("set tempo to:" + Sequencer.bpm);
+                tempo=Sequencer.bpm;
             } catch (NumberFormatException e) {
                 wub = arg;
             }
 
         }
-        String finalWub = wub;
-        new Thread(new Runnable() {
+        Sequencer.bpm=120;
 
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        if (wub!=null){
+                Sequencer.bpm=tempo;
+            String finalWub = wub;
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    AudioObject.factory(finalWub);
                 }
-                AudioObject.factory(finalWub);
-            }
-        }).start();
+            }).start();
+        }
         launch(args);
     }
 
@@ -936,7 +944,7 @@ public class TheHorde extends Application {
                     gc.setStroke(new Color(1d, 1d, 1d, 1d));
                     double dw = width / 256d;
                     gc.setLineWidth(dw + .03f);
-                    for (int i = 0; i < 256; i++) {
+                   for (int i = 0; i < 256; i++) {
                         double perc = (double) i / width;
                         int l = (int) (perc * fft.length);
                         double mag = fft[l];

@@ -31,3 +31,23 @@ Java 1.8+, Python 3.6 and Gradle
 git clone https://github.com/raver1975/horde.git
 gradle run
 ```
+## Command Line
+
+(in any order)
+
+* spotify uri or file to open
+
+
+* Use Spleeter to divide song into stems
+STEM0 - none
+STEM2 - vocals, other
+STEM4 - vocals,bass,drum,other
+STEM5 - vocals,piano,bass,drum,other
+
+* tempo in beats per minute to timeshift song
+(0 to change tempo to match song)
+
+
+```
+gradle run --args="spotify:track:0gtZnyaA8Et7P4PqSowzu3 STEM4 60"
+```

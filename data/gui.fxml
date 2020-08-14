@@ -368,7 +368,7 @@
         </rowConstraints>
          <children>
             <Regulator id="midi-vol" knobRotateLock="true" maxHeight="30.0" maxValue="100.0" maxWidth="30.0" minValue="0.0" prefHeight="30.0" prefWidth="30.0" GridPane.halignment="CENTER" />
-            <Regulator id="midi-bpm" knobRotateLock="true" maxValue="300.0" minValue="1.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+            <Regulator id="midi-bpm" knobRotateLock="true" maxValue="300.0" minValue="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
             <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

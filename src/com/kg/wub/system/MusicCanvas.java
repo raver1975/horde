@@ -4,6 +4,7 @@ import com.echonest.api.v4.Segment;
 import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
 import com.kg.TheHorde;
+import com.kg.synth.Sequencer;
 import com.kg.wub.AudioObject;
 import com.kg.wub.ai.custom.Custom;
 
@@ -37,6 +38,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
     Queue<Interval> tempQueue = new LinkedList<Interval>();
     public boolean mouseDown;
     public JFrame frame;
+    private int APP_HEIGHT=370;
 
     public MusicCanvas(AudioObject au) {
         this.au = au;
@@ -276,7 +278,9 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
             range[i] = max[i] - min[i];
         }
 
-        for (int i = 0; i < list1.size() - 1; i++) {
+
+        //draw pitch and timbre!
+        /*for (int i = 0; i < list1.size() - 1; i++) {
             Segment testart = list1.get(i);
             Segment teend = list1.get(i + 1);
             int x1 = (int) ((testart.getStart() / au.analysis.getDuration()) * (double) x + .5d);
@@ -315,7 +319,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
             }
 
             // g.drawLine(x3, (int)(70-loudmax), x2, (int)(70-loudend));
-        }
+        }*/
         image = bi;
         bufferedimage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics g1 = bufferedimage.getGraphics();
@@ -667,7 +671,8 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
     public void makeCanvas() {
         frame = new JFrame(au.getFileName());
         oldWidth = 800;
-        setSize(new Dimension(oldWidth, 760));
+        //old height=760
+        setSize(new Dimension(oldWidth, APP_HEIGHT));
 
         js = new JScrollPane(this);
         frame.addKeyListener(this);
@@ -708,7 +713,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
 
         frame.getContentPane().add(jbar, "East");
 
-        frame.setBounds(100, 100, oldWidth + 50, 760);
+        frame.setBounds(100, 100, oldWidth + 50, APP_HEIGHT);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
         frame.setVisible(true);
@@ -753,7 +758,11 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
             System.out.println("bpm:"+au.analysis.getTempo());
             AudioObject ao=au.createAudioObject();
             if (TheHorde.output != null) {
-                double bpm = TheHorde.output.getSequencers()[0].getBpm();
+                double bpm = Sequencer.bpm;
+                if (bpm<1){
+                    bpm=au.analysis.getTempo();
+                    TheHorde.bpm.setTargetValue(bpm);
+                }
                 double bpmFactor = bpm / au.analysis.getTempo();
                 System.out.println("bpm:"+au.analysis.getTempo());
                 System.out.println("bpmHorde:"+bpm);
