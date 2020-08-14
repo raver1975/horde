@@ -726,7 +726,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
     public void keyTyped(KeyEvent e) {
 
     }
-
+    int temp_cnt =0;
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyChar() == ' ')
@@ -761,7 +761,19 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                 double bpm = Sequencer.bpm;
                 if (bpm<1){
                     bpm=au.analysis.getTempo();
-                    TheHorde.bpm.setTargetValue(bpm);
+
+                    while(TheHorde.bpm==null&& temp_cnt++<100){
+                        if (TheHorde.bpm!=null){
+                            TheHorde.bpm.setTargetValue(bpm);
+                        }
+                        else{
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException interruptedException) {
+                                interruptedException.printStackTrace();
+                            }
+                        }
+                    }
                 }
                 double bpmFactor = bpm / au.analysis.getTempo();
                 System.out.println("bpm:"+au.analysis.getTempo());

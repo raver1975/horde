@@ -126,7 +126,7 @@ public class AudioObject implements Serializable {
 //                    CentralCommand.loadPlay(chooser.getSelectedFile());
 //                    return null;
 //                }
-            File spotifyFile = new File(System.getProperty("user.dir") + File.separator + URLEncoder.encode(spotifyId) + ".mp3");
+            File spotifyFile = new File(System.getProperty("user.dir") + File.separator + "spotify" + String.format("_%.1f", ta.getTempo()).replace('.','-') + "bpm_" + URLEncoder.encode(spotifyId) + ".mp3");
             List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, TheHorde.stem);
             for (File f : spleets) {
                 factory(f.getAbsolutePath(), ta);
@@ -157,8 +157,8 @@ public class AudioObject implements Serializable {
                 double bpm = 120;
                 if (TheHorde.output != null) {
                     bpm = Sequencer.bpm;
-                    if (bpm<1){
-                        bpm=au.analysis.getTempo();
+                    if (bpm < 1) {
+                        bpm = au.analysis.getTempo();
                         TheHorde.bpm.setTargetValue(bpm);
                     }
 
@@ -186,11 +186,11 @@ public class AudioObject implements Serializable {
         double bpm = 120;
         if (TheHorde.output != null) {
             bpm = Sequencer.bpm;
-            if (bpm<1){
-                bpm=ta.getTempo();
+            if (bpm < 1) {
+                bpm = ta.getTempo();
                 TheHorde.bpm.setTargetValue(bpm);
             }
-            System.out.println("newest tempo="+bpm);
+            System.out.println("newest tempo=" + bpm);
 
 
             //Timestretch
@@ -203,7 +203,6 @@ public class AudioObject implements Serializable {
             au.data = ad.data;
 //            au.analysis = new TrackAnalysis(au.analysis);
             au.analysis.timeStretch(bpmFactor);
-            System.out.println("2bpm:" + au.analysis.getTempo());
             //Timestretch
         }
         au.init(true);
@@ -328,7 +327,7 @@ public class AudioObject implements Serializable {
                             queue.add(i);
                     } else
                         line.flush();
-                        currentlyPlaying = null;
+                    currentlyPlaying = null;
                     if (!mc.mouseDown)
                         mc.tempTimedEvent = null;
                     try {

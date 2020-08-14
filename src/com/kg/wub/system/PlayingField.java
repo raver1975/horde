@@ -83,6 +83,8 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
             // g1.drawRect((int) (node.rect.x - offset + .5d) + 1, (int)
             // (node.rect.y + .5d) + 1, w - 2, (int) CentralCommand.yOffset -
             // 3);
+            g1.drawString(node.ao.file.getName(), (int) (node.rect.x+5),(int) (node.rect.y + .4d*CentralCommand.yOffset));
+
         }
         if (mover != null) {
             if (mover.isMute()) {
