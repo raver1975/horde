@@ -334,14 +334,17 @@ public class Audio {
                                                 }
                                             }
                                         } else {
-                                            Node n = AudioParams.graph.getNode(audioInterval.hashCode() + "");
-                                            n.addAttribute("ui.style", "fill-color: rgba(255,0,0,255);");
-                                            n.addAttribute("ui.style", "size: 25;");
-                                            if (lastPlayed[0] != null) {
-                                                n = AudioParams.graph.getNode(lastPlayed[0].hashCode() + "");
-                                                n.addAttribute("ui.style", "fill-color: rgba(0,0,255,255);");
-                                                n.addAttribute("ui.style", "size: 10;");
+                                            if (audioInterval != null) {
+                                                Node n = AudioParams.graph.getNode(audioInterval.hashCode() + "");
+                                                n.addAttribute("ui.style", "fill-color: rgba(255,0,0,255);");
+                                                n.addAttribute("ui.style", "size: 25;");
 
+                                                if (lastPlayed[0] != null) {
+                                                    n = AudioParams.graph.getNode(lastPlayed[0].hashCode() + "");
+                                                    n.addAttribute("ui.style", "fill-color: rgba(0,0,255,255);");
+                                                    n.addAttribute("ui.style", "size: 10;");
+
+                                                }
                                             }
                                         }
 //                                    if (Aud

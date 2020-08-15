@@ -116,10 +116,10 @@ public class MultiTimestepRegressionExample {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(140)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .iterations(1)
+//                .iterations(1)
                 .weightInit(WeightInit.XAVIER)
-                .updater(Updater.NESTEROVS).momentum(0.9)
-                .learningRate(0.15)
+                .updater(Updater.NESTEROVS)//.momentum(0.9)
+                //.learningRate(0.15)
                 .list()
                 .layer(0, new GravesLSTM.Builder().activation(Activation.TANH).nIn(numOfVariables).nOut(10)
                         .build())
@@ -145,7 +145,7 @@ public class MultiTimestepRegressionExample {
             //Run evaluation. This is on 25k reviews, so can take some time
             while (testDataIter.hasNext()) {
                 DataSet t = testDataIter.next();
-                INDArray features = t.getFeatureMatrix();
+                INDArray features = t.getFeatures();
                 INDArray lables = t.getLabels();
                 INDArray predicted = net.output(features, true);
                 for(int i=0; i < numOfVariables; i++ ) {
@@ -167,13 +167,13 @@ public class MultiTimestepRegressionExample {
         //Init rrnTimeStemp with train data and predict test data
         while (trainDataIter.hasNext()) {
             DataSet t = trainDataIter.next();
-            net.rnnTimeStep(t.getFeatureMatrix());
+            net.rnnTimeStep(t.getFeatures());
         }
 
         trainDataIter.reset();
 
         DataSet t = testDataIter.next();
-        INDArray predicted = net.rnnTimeStep(t.getFeatureMatrix());
+        INDArray predicted = net.rnnTimeStep(t.getFeatures());
         normalizer.revertLabels(predicted);
 
         //Convert raw string data to IndArrays for plotting
@@ -214,9 +214,9 @@ public class MultiTimestepRegressionExample {
      * Used to create the different time series for ploting purposes
      */
     private static XYSeriesCollection createSeries(XYSeriesCollection seriesCollection, INDArray data, int offset, String name) {
-        int nRows = data.shape()[2];
+        long nRows = data.shape()[2];
         boolean predicted = name.startsWith("Predicted");
-        int repeat = predicted ? data.shape()[1] : data.shape()[0];
+        long repeat = predicted ? data.shape()[1] : data.shape()[0];
 
         for (int j = 0; j < repeat; j++) {
             XYSeries series = new XYSeries(name + j);

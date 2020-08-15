@@ -54,11 +54,11 @@ public class CompGraphLSTMExample {
 
         //Set up network configuration:
         ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
-            .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).iterations(1)
-            .learningRate(0.1)
-            .rmsDecay(0.95)
-            .seed(12345)
-            .regularization(true)
+            .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+//            .learningRate(0.1)
+//            .rmsDecay(0.95)
+//            .seed(12345)
+//            .regularization(true)
             .l2(0.001)
             .weightInit(WeightInit.XAVIER)
             .graphBuilder()
@@ -86,7 +86,7 @@ public class CompGraphLSTMExample {
         //Print the  number of parameters in the network (and for each layer)
         int totalNumParams = 0;
         for( int i=0; i<net.getNumLayers(); i++ ){
-            int nParams = net.getLayer(i).numParams();
+            long nParams = net.getLayer(i).numParams();
             System.out.println("Number of parameters in layer " + i + ": " + nParams);
             totalNumParams += nParams;
         }
@@ -149,7 +149,7 @@ public class CompGraphLSTMExample {
         //Sampling is done in parallel here
         net.rnnClearPreviousState();
         INDArray output = net.rnnTimeStep(initializationInput)[0];
-        output = output.tensorAlongDimension(output.size(2)-1,1,0);	//Gets the last time step output
+        output = output.tensorAlongDimension((int) (output.size(2)-1),1,0);	//Gets the last time step output
 
         for( int i=0; i<charactersToSample; i++ ){
             //Set up next input (single time step) by sampling from previous output

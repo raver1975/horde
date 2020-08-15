@@ -22,10 +22,10 @@ public class MusicVectorIterator implements DataSetIterator {
         return null;
     }
 
-    @Override
-    public int totalExamples() {
-        return 0;
-    }
+//    @Override
+//    public int totalExamples() {
+//        return 0;
+//    }
 
     @Override
     public int inputColumns() {
@@ -57,15 +57,15 @@ public class MusicVectorIterator implements DataSetIterator {
         return 0;
     }
 
-    @Override
-    public int cursor() {
-        return 0;
-    }
-
-    @Override
-    public int numExamples() {
-        return 0;
-    }
+//    @Override
+//    public int cursor() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public int numExamples() {
+//        return 0;
+//    }
 
     @Override
     public void setPreProcessor(DataSetPreProcessor preProcessor) {

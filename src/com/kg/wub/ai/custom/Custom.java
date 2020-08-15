@@ -3,6 +3,7 @@ package com.kg.wub.ai.custom;
 import com.echonest.api.v4.Segment;
 import com.kg.wub.ai.vectorrnn.RNNDemo;
 import com.kg.wub.system.*;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.layout.springbox.implementations.SpringBox;
 import org.graphstream.ui.swingViewer.ViewPanel;
@@ -56,7 +57,7 @@ public class Custom implements KeyListener {
             public void run() {
 
                 if (generateGraph) {
-                    AudioParams.graph = new SingleGraph("id");
+                    AudioParams.graph = new MultiGraph("id");
                     AudioParams.graph.addAttribute("ui.quality");
                     AudioParams.graph.addAttribute("ui.antialias");
                     Viewer viewer = new Viewer(AudioParams.graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);

@@ -589,7 +589,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
         int x = e.getX();
         int y = e.getY();
         currPos = x;
-        /*if (!frame.isActive()) {
+        if (!frame.isActive()) {
             frame.requestFocus();
             frame.toFront();
             try {
@@ -598,7 +598,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-        }*/
+        }
         double loc = ((double) x / (double) this.getWidth()) * au.analysis.getDuration();
         if (y >= 0 && y < 20) {
             hovering = null;
@@ -773,6 +773,11 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                                 interruptedException.printStackTrace();
                             }
                         }
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
                     }
                 }
                 double bpmFactor = bpm / au.analysis.getTempo();

@@ -3,6 +3,7 @@ package com.kg.wub.system;
 import com.echonest.api.v4.Segment;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.layout.springbox.implementations.SpringBox;
 import org.graphstream.ui.view.View;
@@ -43,6 +44,7 @@ public class BeautifulKMGSRandReducefromAudioObject {
                 int totsegm = 0;
                 JTextArea jta = new JTextArea(4, 20);
                 JFrame jframe = new JFrame("Wub");
+                jframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 jframe.setSize(width, height);
                 jframe.setResizable(false);
                 if (Settings.makeVideo) {
@@ -84,8 +86,8 @@ public class BeautifulKMGSRandReducefromAudioObject {
 //                if (seconds == null || seconds == 0) seconds = new Long(-61);
 //
 //
-//                int segm = song.analysis.getSegments().size();
-//                totsegm += segm;
+                int segm = song.analysis.getSegments().size();
+                totsegm += segm;
 // //                float scale = (int) (((float) numClusters / (float) song1.analysis.getSegments().size()) * 1000) / 10f;
 //                System.out.println("------------------------------");
 //                System.out.println("size = " + segm);
@@ -124,7 +126,7 @@ public class BeautifulKMGSRandReducefromAudioObject {
                 Audio audio = new Audio( tf, (totsegm - Settings.decreaseClustersBy));
 
 
-                AudioParams.graph = new SingleGraph("id");
+                AudioParams.graph = new MultiGraph("id");
                 AudioParams.graph.addAttribute("ui.quality");
                 AudioParams.graph.addAttribute("ui.antialias");
                 Viewer viewer = new Viewer(AudioParams.graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
@@ -166,15 +168,6 @@ public class BeautifulKMGSRandReducefromAudioObject {
                     cnt2++;
                 }
                 AudioParams.graph.addEdge((cnt2++) + "", startNode[0].hashCode() + "", firstSaved.hashCode() + "", true);
-
-
-                jframe.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowClosing(WindowEvent windowEvent) {
-                        Audio.stop();
-
-                    }
-                });
 
                 JPanel panel = new JPanel();
                 panel.setLayout(new BorderLayout());
