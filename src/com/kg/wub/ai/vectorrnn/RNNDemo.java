@@ -70,8 +70,8 @@ public class RNNDemo {
         boolean smoothing = true;
         final double[] bestScore = {Double.MAX_VALUE};
         double startPlayingScore = 10040d;
-        int lstmLayerSize = 50;                    //Number of units in each GravesLSTM layer
-        int mstmLayerSize = 50;                    //Number of units in each GravesLSTM layer
+        int lstmLayerSize = 250;                    //Number of units in each GravesLSTM layer
+        int mstmLayerSize = 250;                    //Number of units in each GravesLSTM layer
 //        int nstmLayerSize = 200;                    //Number of units in each GravesLSTM layer
         int miniBatchSize = 30;                        //Size of mini batch to use when  training
         int exampleLength = 60;                    //Length of each training example sequence to use. This could certainly be increased

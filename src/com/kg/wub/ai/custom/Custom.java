@@ -32,7 +32,7 @@ public class Custom implements KeyListener {
     public Attribute[] attlist;
     int width = 1200;
     int height = 400;
-    int numClusters = 200;
+    int numClusters = 20;
     boolean generateGraph = false;
 
     public Custom() {

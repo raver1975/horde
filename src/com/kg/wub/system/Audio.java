@@ -208,7 +208,7 @@ public class Audio {
                                         if (seg1 != null) {
                                             int x = (int) ((bi.getWidth() * seg1.getStart()) / maxDuration) - cnt;
                                             int y = bi.getHeight() / 2 - (bi.getHeight() / 2) * cnt / qsize;
-                                            int w = (int) ((bi.getWidth() * seg1.getDuration() * cnt * 2) / maxDuration);
+                                            int w = (int) ((bi.getWidth() * seg1.getDuration() * cnt) / maxDuration);
                                             int h = (bi.getHeight()) * cnt / qsize;
                                             g.fillRect(x, y, w, h);
                                         }
@@ -336,14 +336,16 @@ public class Audio {
                                         } else {
                                             if (audioInterval != null) {
                                                 Node n = AudioParams.graph.getNode(audioInterval.hashCode() + "");
-                                                n.addAttribute("ui.style", "fill-color: rgba(255,0,0,255);");
-                                                n.addAttribute("ui.style", "size: 25;");
+                                                if (n!=null) {
+                                                    n.addAttribute("ui.style", "fill-color: rgba(255,0,0,255);");
+                                                    n.addAttribute("ui.style", "size: 25;");
 
-                                                if (lastPlayed[0] != null) {
-                                                    n = AudioParams.graph.getNode(lastPlayed[0].hashCode() + "");
-                                                    n.addAttribute("ui.style", "fill-color: rgba(0,0,255,255);");
-                                                    n.addAttribute("ui.style", "size: 10;");
+                                                    if (lastPlayed[0] != null) {
+                                                        n = AudioParams.graph.getNode(lastPlayed[0].hashCode() + "");
+                                                        n.addAttribute("ui.style", "fill-color: rgba(0,0,255,255);");
+                                                        n.addAttribute("ui.style", "size: 10;");
 
+                                                    }
                                                 }
                                             }
                                         }
