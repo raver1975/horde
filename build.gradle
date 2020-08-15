@@ -167,6 +167,7 @@ shadowJar {
     baseName = 'horde'
     classifier = null
     version = null
+    zip64 true
 }
 
 //apply plugin: 'javafx-gradle-plugin'
