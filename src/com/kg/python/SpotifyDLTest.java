@@ -91,6 +91,7 @@ public class SpotifyDLTest {
     }
 
     public static List<File> spotifyAndSpleeter(String trackURL, File outputFile, STEMS stem) {
+        PythonPIP.installPIP();
         ArrayList<File> outfiles = new ArrayList<>();
         SpotifyDLTest.spotify(trackURL, outputFile);
         outfiles = new ArrayList<>();

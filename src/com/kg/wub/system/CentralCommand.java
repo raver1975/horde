@@ -50,8 +50,10 @@ public class CentralCommand {
 	}
 
 	public static void removeRectangle(Node mover) {
-		ccn.nodes.remove(mover);
-		mover.ao.mc.frame.dispose();
+		if (mover!=null) {
+			ccn.nodes.remove(mover);
+			mover.ao.mc.frame.dispose();
+		}
 	}
 
 	public static boolean intersects(Rectangle2D.Double r) {

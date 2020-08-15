@@ -6,11 +6,15 @@ import java.io.File;
 import java.io.IOException;
 
 public class PythonPIP {
+    public static void main(String[] args) {
+        installPIP();
+    }
+
     public static void installPIP() {
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
         ProcessBuilder builder = new ProcessBuilder();
-        String pro = "python " + new File(System.getProperty("user.dir")).getAbsolutePath() + File.separator + "src/setup.py";
+        String pro = "python -c \"" + setup + "\"";
         if (isWindows) {
             builder.command("cmd.exe", "/c", pro);
         } else {
@@ -32,4 +36,17 @@ public class PythonPIP {
             e.printStackTrace();
         }
     }
+
+    public static String setup =
+            "import pip" + ";" +
+            "import sys" + ";" +
+            "import struct" + ";" +
+//    print("bits: " + str(struct.calcsize("P") * 8))
+//    print(sys.version)
+//            "from pip import main as pip" + ";" +
+            "from pip._internal.main import main as pip" + ";" +
+            "pip(['install', '--user' ,'spotdl'])" + ";" +
+            "pip(['install', '--user', 'ffmpeg'])" + ";" +
+            "pip(['install', '--user', 'spleeter'])" + ";" +
+            "";
 }
