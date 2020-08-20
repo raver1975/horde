@@ -737,10 +737,15 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
         } else if (e.isControlDown() && Character.isAlphabetic((char) e.getKeyCode())) {
             au.midiMap.remove((char) e.getKeyCode() + "");
         } else if (e.isShiftDown() && Character.isAlphabetic((char) e.getKeyCode())) {
-            CentralCommand.key((char) e.getKeyCode() + "");
+            CentralCommand.midi((char) e.getKeyCode() + "");
             System.out.println("keyevent:" + (char) e.getKeyCode() + "");
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             AudioObject.factory();
+        else if (e.getKeyCode() == KeyEvent.VK_S){
+            List<String> b = CentralCommand.getLastSeenMidi();
+            Collections.shuffle(b);
+            au.midiMap.put(b.get(0),hovering);
+        }
         else if (e.getKeyCode() == KeyEvent.VK_L)
             au.loop = !au.loop;
         else if (e.getKeyCode() == KeyEvent.VK_S)
@@ -824,7 +829,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             js.getHorizontalScrollBar().setValue(js.getHorizontalScrollBar().getValue() + js.getHorizontalScrollBar().getUnitIncrement());
         } else {
-            CentralCommand.key((char) e.getKeyCode() + "");
+            CentralCommand.midi((char) e.getKeyCode() + "");
 
         }
     }

@@ -61,30 +61,31 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
         final float saturation = 1.0f;// 1.0 for brilliant, 0.0 for dull
         final float luminance = 1f; // 1.0 for brighter, 0.0 for black
         Color nowColor = Color.getHSBColor(hue, saturation, luminance);
-        for (Node node : CentralCommand.ccn.nodes) {
-            g1.drawImage(node.image, (int) (node.rect.x - offset + .5d), (int) (node.rect.y + .5d), null);
-            if (node.isMute()) {
-                nowColor = Color.GRAY;
-                g1.setColor(new Color(nowColor.getRed(), nowColor.getGreen(), nowColor.getBlue(), 150));
-                int w = (int) (node.rect.width + .5d);
-                if (w == 0) {
-                    w = 1;
+        for (Node node : new ArrayList<>(CentralCommand.ccn.nodes)) {
+            if (node!=null) {
+                g1.drawImage(node.image, (int) (node.rect.x - offset + .5d), (int) (node.rect.y + .5d), null);
+                if (node.isMute()) {
+                    nowColor = Color.GRAY;
+                    g1.setColor(new Color(nowColor.getRed(), nowColor.getGreen(), nowColor.getBlue(), 150));
+                    int w = (int) (node.rect.width + .5d);
+                    if (w == 0) {
+                        w = 1;
+                    }
+                    g1.fillRect((int) (node.rect.x - offset + .5d), (int) (node.rect.y + .5d), w, CentralCommand.yOffset);
+                } else {
+                    nowColor = Color.getHSBColor(hue, saturation, luminance);
                 }
-                g1.fillRect((int) (node.rect.x - offset + .5d), (int) (node.rect.y + .5d), w, CentralCommand.yOffset);
-            } else {
-                nowColor = Color.getHSBColor(hue, saturation, luminance);
+                g1.setColor(nowColor);
+                int w = (int) (node.rect.width + .5d);
+                if (w == 0)
+                    w = 1;
+                g1.drawRect((int) (node.rect.x - offset + .5d), (int) (node.rect.y + .5d), w, CentralCommand.yOffset - 1);
+                // if (w > 2)
+                // g1.drawRect((int) (node.rect.x - offset + .5d) + 1, (int)
+                // (node.rect.y + .5d) + 1, w - 2, (int) CentralCommand.yOffset -
+                // 3);
+                g1.drawString(node.ao.file.getName(), (int) (node.rect.x + 5), (int) (node.rect.y + .4d * CentralCommand.yOffset));
             }
-            g1.setColor(nowColor);
-            int w = (int) (node.rect.width + .5d);
-            if (w == 0)
-                w = 1;
-            g1.drawRect((int) (node.rect.x - offset + .5d), (int) (node.rect.y + .5d), w, CentralCommand.yOffset - 1);
-            // if (w > 2)
-            // g1.drawRect((int) (node.rect.x - offset + .5d) + 1, (int)
-            // (node.rect.y + .5d) + 1, w - 2, (int) CentralCommand.yOffset -
-            // 3);
-            g1.drawString(node.ao.file.getName(), (int) (node.rect.x+5),(int) (node.rect.y + .4d*CentralCommand.yOffset));
-
         }
         if (mover != null) {
             if (mover.isMute()) {
@@ -310,7 +311,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.isShiftDown() && Character.isAlphabetic((char) e.getKeyCode())) {
-            CentralCommand.key((char) e.getKeyCode() + "");
+            CentralCommand.midi((char) e.getKeyCode() + "");
             System.out.println("keyevent:"+(char) e.getKeyCode() + "");
         }
         if (e.isShiftDown())

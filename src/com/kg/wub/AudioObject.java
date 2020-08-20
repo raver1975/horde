@@ -43,7 +43,7 @@ public class AudioObject implements Serializable {
     public transient boolean breakPlay;
     public transient boolean pause = false;
     public transient boolean loop = false;
-    public transient HashMap<String, Interval> midiMap;
+    public transient HashMap<String, Interval> midiMap=new HashMap<>();
 //	public static double tolerance = .2d;
 
     public static final int resolution = 16;
@@ -280,65 +280,63 @@ public class AudioObject implements Serializable {
     }
 
     private void startPlaying() {
-        line = getLine();
-        new Thread(new Runnable() {
-            public void run() {
-                top:
-                while (true) {
+        new Thread(() -> {
+            line = getLine();
+            double rampFactor=0;
+            boolean fadeOut=false;
 
-                    // System.out.println(queue.size());
-                    if (!queue.isEmpty()) {
-                        Interval i = queue.poll();
+            top:
+            while (true) {
 
-                        currentlyPlaying = i;
-                        int j = 0;
-                        for (j = Math.max(0, i.startBytes); j <= i.endBytes - bufferSize && j < data.length - bufferSize; j += bufferSize) {
-                            while (pause || breakPlay) {
-                                if (breakPlay) {
-                                    breakPlay = false;
-                                    // if (loop)
-                                    // queue.add(i);
-                                    // queue.clear();
-                                    try {
-                                        Thread.sleep(10);
-                                    } catch (InterruptedException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-                                    continue top;
-                                }
+                // System.out.println(queue.size());
+                if (!queue.isEmpty()) {
+                    Interval i = queue.poll();
+                    currentlyPlaying = i;
+                    int j = 0;
+                    for (j = Math.max(0, i.startBytes); j <= i.endBytes - bufferSize && j < data.length - bufferSize; j += bufferSize) {
+                        while (pause || breakPlay) {
+                            if (breakPlay) {
+                                breakPlay = false;
+                                // if (loop)
+                                // queue.add(i);
+                                // queue.clear();
                                 try {
                                     Thread.sleep(10);
                                 } catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
+                                continue top;
                             }
-                            position = j;
-                            line.write(data, j, bufferSize);
-
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
+                        position = j;
 
-                        if (j < i.endBytes && i.endBytes < data.length) {
-                            position = j;
-                            line.write(data, j, i.endBytes - j);
-                            // line.drain();
-                        }
-                        if (loop)
-                            queue.add(i);
-                    } else
-                        line.flush();
-                    currentlyPlaying = null;
-                    if (!mc.mouseDown)
-                        mc.tempTimedEvent = null;
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        line.write(data, j, bufferSize);
                     }
 
+                    if (j < i.endBytes) {
+                        position = j;
+                        line.write(data, j, i.endBytes - j);
+                    }
+                    if (loop)
+                        queue.add(i);
+                }
+                currentlyPlaying = null;
+                if (!mc.mouseDown)
+                    mc.tempTimedEvent = null;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
 
             }
+
         }).start();
     }
 

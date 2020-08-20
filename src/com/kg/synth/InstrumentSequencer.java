@@ -1,5 +1,6 @@
 package com.kg.synth;
 
+import com.kg.wub.system.CentralCommand;
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.music.Instrument;
 import com.sun.media.sound.AudioSynthesizer;
@@ -96,6 +97,7 @@ public class InstrumentSequencer extends Sequencer {
                             setChannel(channel);
                             noteOn.add(pitch);
                             audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
+                            CentralCommand.midi("midi-"+String.format("%02d",channel)+"-"+String.format("%02d",pitch));
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
                         } catch (InvalidMidiDataException e) {
