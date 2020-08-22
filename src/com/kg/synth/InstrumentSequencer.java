@@ -14,12 +14,12 @@ import java.util.HashMap;
 public class InstrumentSequencer extends Sequencer {
     public String instrument;
     AudioInputStream audioInputStream;
-    private ArrayList<Integer> noteOn = new ArrayList<Integer>();
+    private final ArrayList<Integer> noteOn = new ArrayList<Integer>();
     private AudioSynthesizer audioSynthesizer = null;
 
     public int channel = 0;
-    private static String[] channels = new String[16];
-    private boolean drum;
+    private static final String[] channels = new String[16];
+    private final boolean drum;
 
     InstrumentSequencer(int channel, boolean drum) {
         this(Instrument.AVAILABLE_INSTRUMENTS.get((int) (Instrument.AVAILABLE_INSTRUMENTS.size() * Math.random())), channel, drum);

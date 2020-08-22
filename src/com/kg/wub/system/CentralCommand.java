@@ -43,7 +43,7 @@ public class CentralCommand<lastSeenMidi> {
 //		System.out.println("key pressed:"+s);
 //        getLastSeenMidi();
         for (AudioObject au : aolist) {
-            if (au != null && au.midiMap != null && au.midiMap.containsKey(s)&&!lastSeenMidi.containsKey(s)) {
+            if (au != null && au.midiMap != null && au.midiMap.containsKey(s) && !lastSeenMidi.containsKey(s)) {
                 System.out.println("found mapping");
                 au.queue.add(au.midiMap.get(s));
             }
@@ -67,7 +67,10 @@ public class CentralCommand<lastSeenMidi> {
     public static void removeRectangle(Node mover) {
         if (mover != null) {
             ccn.nodes.remove(mover);
-            mover.ao.mc.frame.dispose();
+            try {
+                mover.ao.mc.frame.dispose();
+            } catch (Exception e) {
+            }
         }
     }
 

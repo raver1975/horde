@@ -43,7 +43,7 @@ public class AudioObject implements Serializable {
     public transient boolean breakPlay;
     public transient boolean pause = false;
     public transient boolean loop = false;
-    public transient HashMap<String, Interval> midiMap=new HashMap<>();
+    public transient HashMap<String, Interval> midiMap = new HashMap<>();
 //	public static double tolerance = .2d;
 
     public static final int resolution = 16;
@@ -126,7 +126,7 @@ public class AudioObject implements Serializable {
 //                    CentralCommand.loadPlay(chooser.getSelectedFile());
 //                    return null;
 //                }
-            File spotifyFile = new File(System.getProperty("user.dir") + File.separator + "spotify" + String.format("_%.1f", ta.getTempo()).replace('.','-') + "bpm_" + URLEncoder.encode(spotifyId) + ".mp3");
+            File spotifyFile = new File(System.getProperty("user.dir") + File.separator + "spotify" + String.format("_%.1f", ta.getTempo()).replace('.', '-') + "bpm_" + URLEncoder.encode(spotifyId) + ".mp3");
             List<File> spleets = SpotifyDLTest.spotifyAndSpleeter(fileName, spotifyFile, TheHorde.stem);
             for (File f : spleets) {
                 factory(f.getAbsolutePath(), ta);
@@ -282,13 +282,8 @@ public class AudioObject implements Serializable {
     private void startPlaying() {
         new Thread(() -> {
             line = getLine();
-            double rampFactor=0;
-            boolean fadeOut=false;
-
             top:
             while (true) {
-
-                // System.out.println(queue.size());
                 if (!queue.isEmpty()) {
                     Interval i = queue.poll();
                     currentlyPlaying = i;
@@ -315,16 +310,16 @@ public class AudioObject implements Serializable {
                             }
                         }
                         position = j;
-
                         line.write(data, j, bufferSize);
                     }
 
-                    if (j < i.endBytes) {
+                    if (j < i.endBytes&&data.length>i.endBytes) {
                         position = j;
                         line.write(data, j, i.endBytes - j);
                     }
                     if (loop)
                         queue.add(i);
+                } else {
                 }
                 currentlyPlaying = null;
                 if (!mc.mouseDown)
@@ -432,6 +427,14 @@ public class AudioObject implements Serializable {
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
+
+        Control ct[] = res.getControls();
+        for (Control c : ct) {
+            System.out.println("Control:" + c);
+            System.out.println(c.getType().getClass());
+        }
+//        System.exit(0);
+
         return res;
     }
 

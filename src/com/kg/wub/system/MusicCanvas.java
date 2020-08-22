@@ -38,7 +38,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
     Queue<Interval> tempQueue = new LinkedList<Interval>();
     public boolean mouseDown;
     public JFrame frame;
-    private int APP_HEIGHT=370;
+    private int APP_HEIGHT = 370;
 
     public MusicCanvas(AudioObject au) {
         this.au = au;
@@ -446,7 +446,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                 en = selectedStart;
             }
             en = en - st;
-            au.play(new Interval(new TimedEvent(Math.max(st, 0), Math.min(au.analysis.getDuration() - st, en),1f), 80));
+            au.play(new Interval(new TimedEvent(Math.max(st, 0), Math.min(au.analysis.getDuration() - st, en), 1f), 80));
         }
         selectedPress = false;
 
@@ -726,7 +726,9 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
     public void keyTyped(KeyEvent e) {
 
     }
-    int temp_cnt =0;
+
+    int temp_cnt = 0;
+
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyChar() == ' ')
@@ -741,12 +743,13 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
             System.out.println("keyevent:" + (char) e.getKeyCode() + "");
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             AudioObject.factory();
-        else if (e.getKeyCode() == KeyEvent.VK_S){
+        else if (e.getKeyCode() == KeyEvent.VK_Q) {
             List<String> b = CentralCommand.getLastSeenMidi();
             Collections.shuffle(b);
-            au.midiMap.put(b.get(0),hovering);
-        }
-        else if (e.getKeyCode() == KeyEvent.VK_L)
+            au.midiMap.put(b.get(0), hovering);
+        } else if (Character.isDigit((char) e.getKeyCode())) {
+            au.midiMap.put(("midi-01-0" + Character.digit((char) e.getKeyCode(), 10)), hovering);
+        } else if (e.getKeyCode() == KeyEvent.VK_L)
             au.loop = !au.loop;
         else if (e.getKeyCode() == KeyEvent.VK_S)
             au.breakPlay = true;
@@ -760,18 +763,17 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
             CentralCommand.addRectangle(n);
 
         } else if (e.getKeyCode() == KeyEvent.VK_P) {
-            System.out.println("bpm:"+au.analysis.getTempo());
-            AudioObject ao=au.createAudioObject();
+            System.out.println("bpm:" + au.analysis.getTempo());
+            AudioObject ao = au.createAudioObject();
             if (TheHorde.output != null) {
                 double bpm = Sequencer.bpm;
-                if (bpm<1){
-                    bpm=au.analysis.getTempo();
+                if (bpm < 1) {
+                    bpm = au.analysis.getTempo();
 
-                    while(TheHorde.bpm==null&& temp_cnt++<100){
-                        if (TheHorde.bpm!=null){
+                    while (TheHorde.bpm == null && temp_cnt++ < 100) {
+                        if (TheHorde.bpm != null) {
                             TheHorde.bpm.setTargetValue(bpm);
-                        }
-                        else{
+                        } else {
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException interruptedException) {
@@ -786,9 +788,9 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                     }
                 }
                 double bpmFactor = bpm / au.analysis.getTempo();
-                System.out.println("bpm:"+au.analysis.getTempo());
-                System.out.println("bpmHorde:"+bpm);
-                System.out.println("bpmFactor:"+bpmFactor);
+                System.out.println("bpm:" + au.analysis.getTempo());
+                System.out.println("bpmHorde:" + bpm);
+                System.out.println("bpmFactor:" + bpmFactor);
                 //Timestretch
                 AudioInterval ad = new AudioInterval(ao.data);
                 AudioInterval[] ai = ad.getMono();
