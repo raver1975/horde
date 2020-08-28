@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PlayingField extends Canvas implements MouseListener, MouseMotionListener, KeyListener, ComponentListener, MouseWheelListener {
 
@@ -62,7 +63,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
         final float luminance = 1f; // 1.0 for brighter, 0.0 for black
         Color nowColor = Color.getHSBColor(hue, saturation, luminance);
         for (Node node : new ArrayList<>(CentralCommand.ccn.nodes)) {
-            if (node!=null) {
+            if (node != null) {
                 g1.drawImage(node.image, (int) (node.rect.x - offset + .5d), (int) (node.rect.y + .5d), null);
                 if (node.isMute()) {
                     nowColor = Color.GRAY;
@@ -242,7 +243,9 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
         lengthInBytes = (int) (lengthInPixels * bytesPerPixel);
         lengthInBytes += lengthInBytes % AudioObject.frameSize;
 
-        for (Node node : CentralCommand.ccn.nodes) {
+        Iterator<Node> ii = CentralCommand.ccn.nodes.iterator();
+        while (ii.hasNext()) {
+            Node node = ii.next();
             node.image = new SamplingGraph().createWaveForm(node.ao.analysis.getSegments(), node.ao.analysis.getDuration(), node.ao.data, AudioObject.audioFormat, (int) (node.ao.data.length * (double) oldWidth / lengthInBytes), CentralCommand.yOffset - 1);
             double oldbb = node.rect.width;
             node.rect.width = (node.ao.data.length * (double) oldWidth / lengthInBytes);
@@ -312,7 +315,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
     public void keyPressed(KeyEvent e) {
         if (e.isShiftDown() && Character.isAlphabetic((char) e.getKeyCode())) {
             CentralCommand.midi((char) e.getKeyCode() + "");
-            System.out.println("keyevent:"+(char) e.getKeyCode() + "");
+            System.out.println("keyevent:" + (char) e.getKeyCode() + "");
         }
         if (e.isShiftDown())
             moverlock = true;
