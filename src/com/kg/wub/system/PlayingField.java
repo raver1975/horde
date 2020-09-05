@@ -552,6 +552,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if (CentralCommand.ccn.nodes.size()==0){return;}
         int x = (int) (e.getX() + offset);
         int y = e.getY();
         y -= y % CentralCommand.yOffset;
@@ -590,6 +591,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (CentralCommand.ccn.nodes.size()==0){return;}
         if (moved) {
             makeData();
         }
