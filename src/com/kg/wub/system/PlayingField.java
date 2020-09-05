@@ -224,86 +224,104 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
         }).start();
     }
 
+    Thread makeDataThread = null;
+
     public void makeData() {
-        if (CentralCommand.ccn.nodes.size() == 0)
+        System.out.println(Thread.currentThread().getId());
+        if (CentralCommand.ccn.nodes.size() == 0) {
             return;
-        double minx = Double.MAX_VALUE;
-        double maxx = Double.MIN_VALUE;
-        for (Node node : CentralCommand.ccn.nodes) {
-            if (node.rect.x < minx)
-                minx = node.rect.x;
-            if (node.rect.width + node.rect.x > maxx)
-                maxx = node.rect.width + node.rect.x;
-
         }
-        // minx--;
-        // maxx--;
-        lengthInPixels = maxx - minx;
-        bytesPerPixel = CentralCommand.ccn.nodes.get(0).ao.data.length / CentralCommand.ccn.nodes.get(0).rect.width;
-        lengthInBytes = (int) (lengthInPixels * bytesPerPixel);
-        lengthInBytes += lengthInBytes % AudioObject.frameSize;
-
-        Iterator<Node> ii = CentralCommand.ccn.nodes.iterator();
-        while (ii.hasNext()) {
-            Node node = ii.next();
-            node.image = new SamplingGraph().createWaveForm(node.ao.analysis.getSegments(), node.ao.analysis.getDuration(), node.ao.data, AudioObject.audioFormat, (int) (node.ao.data.length * (double) oldWidth / lengthInBytes), CentralCommand.yOffset - 1);
-            double oldbb = node.rect.width;
-            node.rect.width = (node.ao.data.length * (double) oldWidth / lengthInBytes);
-            if (node.rect.width < 1)
-                node.rect.width = 1;
-            node.rect.x /= oldbb / node.rect.width;
-        }
-        minx = Double.MAX_VALUE;
-        maxx = Double.MIN_VALUE;
-        for (Node node : CentralCommand.ccn.nodes) {
-            if (node.rect.x < minx)
-                minx = node.rect.x;
-            if (node.rect.width + node.rect.x > maxx)
-                maxx = node.rect.width + node.rect.x;
-        }
-        // minx--;
-        // maxx--;
-        lengthInPixels = maxx - minx;
-        bytesPerPixel = CentralCommand.ccn.nodes.get(0).ao.data.length / CentralCommand.ccn.nodes.get(0).rect.width;
-        lengthInBytes = (int) (lengthInPixels * bytesPerPixel);
-        lengthInBytes += lengthInBytes % AudioObject.frameSize;
-        data = new byte[lengthInBytes];
-
-        for (Node node : CentralCommand.ccn.nodes) {
-            if (node.isMute()) {
-                continue;
+        if (makeDataThread!=null) {
+            if (makeDataThread.isAlive()) {
+                makeDataThread.stop();
             }
-            node.rect.x -= minx;
-            int start = (int) (node.rect.x / lengthInPixels * (double) lengthInBytes);
-            start -= start % AudioObject.frameSize;
-            short g, h;
-            for (int i = 0; i < node.ao.data.length; i += 2) {
-                g = data[i + start];
-                h = data[i + start + 1];
-                g += node.ao.data[i];
-                if (g > 127) {
-                    g = 127;
-                    h += 1;
-                } else if (g < -128) {
-                    g = -128;
-                    h -= 1;
-                }
-                h += node.ao.data[i + 1];
-                if (h > 127) {
-                    h = 127;
-                } else if (h < -128) {
-                    h = -128;
-                }
-                data[i + start] = (byte) g;
-                data[i + start + 1] = (byte) h;
-            }
-
         }
-        // north.image = new SamplingGraph().createWaveForm(null, data.length /
-        // AudioObject.frameSize / AudioObject.channels /
-        // AudioObject.resolution, data, AudioObject.audioFormat, getWidth(),
-        // CentralCommand.yOffset);
+        makeDataThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                double minx = Double.MAX_VALUE;
+                double maxx = Double.MIN_VALUE;
+                for (Node node : CentralCommand.ccn.nodes) {
+                    if (node.rect.x < minx)
+                        minx = node.rect.x;
+                    if (node.rect.width + node.rect.x > maxx)
+                        maxx = node.rect.width + node.rect.x;
+
+                }
+                // minx--;
+                // maxx--;
+                lengthInPixels = maxx - minx;
+                bytesPerPixel = CentralCommand.ccn.nodes.get(0).ao.data.length / CentralCommand.ccn.nodes.get(0).rect.width;
+                lengthInBytes = (int) (lengthInPixels * bytesPerPixel);
+                lengthInBytes += lengthInBytes % AudioObject.frameSize;
+
+                Iterator<Node> ii = CentralCommand.ccn.nodes.iterator();
+                while (ii.hasNext()) {
+                    Node node = ii.next();
+                    node.image = new SamplingGraph().createWaveForm(node.ao.analysis.getSegments(), node.ao.analysis.getDuration(), node.ao.data, AudioObject.audioFormat, (int) (node.ao.data.length * (double) oldWidth / lengthInBytes), CentralCommand.yOffset - 1);
+                    double oldbb = node.rect.width;
+                    node.rect.width = (node.ao.data.length * (double) oldWidth / lengthInBytes);
+                    if (node.rect.width < 1)
+                        node.rect.width = 1;
+                    node.rect.x /= oldbb / node.rect.width;
+                }
+                minx = Double.MAX_VALUE;
+                maxx = Double.MIN_VALUE;
+                for (Node node : CentralCommand.ccn.nodes) {
+                    if (node.rect.x < minx)
+                        minx = node.rect.x;
+                    if (node.rect.width + node.rect.x > maxx)
+                        maxx = node.rect.width + node.rect.x;
+                }
+                // minx--;
+                // maxx--;
+                lengthInPixels = maxx - minx;
+                bytesPerPixel = CentralCommand.ccn.nodes.get(0).ao.data.length / CentralCommand.ccn.nodes.get(0).rect.width;
+                lengthInBytes = (int) (lengthInPixels * bytesPerPixel);
+                lengthInBytes += lengthInBytes % AudioObject.frameSize;
+                data = new byte[lengthInBytes];
+
+                for (Node node : CentralCommand.ccn.nodes) {
+                    if (node.isMute()) {
+                        continue;
+                    }
+                    node.rect.x -= minx;
+                    int start = (int) (node.rect.x / lengthInPixels * (double) lengthInBytes);
+                    start -= start % AudioObject.frameSize;
+                    short g, h;
+                    for (int i = 0; i < node.ao.data.length; i += 2) {
+                        g = data[i + start];
+                        h = data[i + start + 1];
+                        g += node.ao.data[i];
+                        if (g > 127) {
+                            g = 127;
+                            h += 1;
+                        } else if (g < -128) {
+                            g = -128;
+                            h -= 1;
+                        }
+                        h += node.ao.data[i + 1];
+                        if (h > 127) {
+                            h = 127;
+                        } else if (h < -128) {
+                            h = -128;
+                        }
+                        data[i + start] = (byte) g;
+                        data[i + start + 1] = (byte) h;
+                    }
+
+                }
+            }
+        });
+        makeDataThread.start();
     }
+
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -530,6 +548,8 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     }
 
+    public boolean moved = false;
+
     @Override
     public void mousePressed(MouseEvent e) {
         int x = (int) (e.getX() + offset);
@@ -561,6 +581,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
                 if (e.getClickCount() == 2) {
                     mover.ao.mc.frame.setVisible(true);
                 }
+                moved = true;
                 break;
             }
         }
@@ -569,8 +590,10 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        makeData();
-
+        if (moved) {
+            makeData();
+        }
+        moved = false;
     }
 
     @Override
