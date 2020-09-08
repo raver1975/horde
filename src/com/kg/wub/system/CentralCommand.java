@@ -42,7 +42,9 @@ public class CentralCommand<lastSeenMidi> {
     public static void midi(String s) {
 //		System.out.println("key pressed:"+s);
 //        getLastSeenMidi();
-        for (AudioObject au : aolist) {
+        Iterator<AudioObject> ii = aolist.iterator();
+        while (ii.hasNext()) {
+            AudioObject au = ii.next();
             if (au != null && au.midiMap != null && au.midiMap.containsKey(s) && !lastSeenMidi.containsKey(s)) {
                 System.out.println("found mapping");
                 au.queue.add(au.midiMap.get(s));
