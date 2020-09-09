@@ -274,7 +274,7 @@ public class MixingAudioInputStream
                 if (encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
                     switch (nSampleSize) {
                         case 1:
-                            abData[nBufferOffset] = (byte) clamp(anMixedSamples[nChannel],Integer.MIN_VALUE,Integer.MAX_VALUE);
+                            abData[nBufferOffset] = (byte) clamp(anMixedSamples[nChannel],Byte.MIN_VALUE,Byte.MAX_VALUE);
                             break;
                         case 2:
                             TConversionTool.intToBytes16((int) clamp(anMixedSamples[nChannel],Short.MIN_VALUE,Short.MAX_VALUE), abData, nBufferOffset, bBigEndian);
