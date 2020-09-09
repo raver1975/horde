@@ -288,7 +288,7 @@ public class MixingAudioInputStream
                     }
                 } // TODO: pcm unsigned
                 else if (encoding.equals(AudioFormat.Encoding.ALAW)) {
-                    abData[nBufferOffset] = TConversionTool.linear2alaw((short) clamp(anMixedSamples[nChannel],Integer.MIN_VALUE,Integer.MAX_VALUE));
+                    abData[nBufferOffset] = TConversionTool.linear2alaw((short) clamp(anMixedSamples[nChannel],Short.MIN_VALUE,Short.MAX_VALUE));
                 } else if (encoding.equals(AudioFormat.Encoding.ULAW)) {
                     abData[nBufferOffset] = TConversionTool.linear2ulaw((int) clamp(anMixedSamples[nChannel],Integer.MIN_VALUE,Integer.MAX_VALUE));
                 }
