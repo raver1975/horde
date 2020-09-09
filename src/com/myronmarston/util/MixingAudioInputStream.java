@@ -57,6 +57,9 @@ import javax.sound.sampled.AudioSystem;
  * You need to have tritonus_share.jar in the classpath.
  * Get it from http://www.tritonus.org .
  */
+import com.kg.TheHorde;
+import com.kg.synth.Output;
+import edu.uci.ics.jung.algorithms.scoring.util.ScoringUtils;
 import org.tritonus.share.sampled.TConversionTool;
 
 /**
@@ -73,6 +76,7 @@ public class MixingAudioInputStream
     private static final boolean DEBUG = false;
 
     private List m_audioInputStreamList;
+    public int activeInputStreams;
 
     public MixingAudioInputStream(AudioFormat audioFormat, Collection audioInputStreams) {
         super(new ByteArrayInputStream(new byte[0]),
@@ -124,7 +128,7 @@ public class MixingAudioInputStream
 //        return (byte) ((nSample) & 0xFF);
 //    }
 
-//    public void read(byte[] buffer1, byte[] buffer2) {
+    //    public void read(byte[] buffer1, byte[] buffer2) {
 //        try {
 //            read(buffer1);
 //        } catch (IOException e) {
@@ -134,7 +138,7 @@ public class MixingAudioInputStream
 //            buffer1[i] = (byte) (((buffer1[i] + buffer2[i])/2) & 0xFF);
 //        }
 //    }
-
+    @Override
     public int read(byte[] abData, int nOffset, int nLength)
             throws IOException {
         if (DEBUG) {
@@ -158,7 +162,7 @@ public class MixingAudioInputStream
             out("MixingAudioInputStream.read(byte[], int, int): encoding: " + encoding);
         }
         byte[] abBuffer = new byte[nFrameSize];
-        int[] anMixedSamples = new int[nChannels];
+        long[] anMixedSamples = new long[nChannels];
         for (int nFrameBoundry = 0; nFrameBoundry < nLength; nFrameBoundry += nFrameSize) {
             if (DEBUG) {
                 out("MixingAudioInputStream.read(byte[], int, int): frame boundry: " + nFrameBoundry);
@@ -166,9 +170,18 @@ public class MixingAudioInputStream
             for (int i = 0; i < nChannels; i++) {
                 anMixedSamples[i] = 0;
             }
+            int cnt = 0;
             Iterator streamIterator = m_audioInputStreamList.iterator();
-            while (streamIterator.hasNext()) {
+            while (cnt++ <= activeInputStreams && streamIterator.hasNext()) {
                 InputStream stream = (InputStream) streamIterator.next();
+                if ((cnt - 1) < Output.PARTS - 4) {
+                    if (TheHorde.output.getSequencers()[cnt - 1].getVolume() == 0) {
+                        continue;
+                    }
+                }
+//                for (int ii=0;ii<Output.PARTS;ii++){
+//                    System.out.println(ii+"\t"+TheHorde.output.getSequencers()[ii].getClass());
+//                }
                 if (DEBUG) {
                     out("MixingAudioInputStream.read(byte[], int, int): AudioInputStream: " + stream);
                 }
@@ -214,6 +227,7 @@ public class MixingAudioInputStream
                     }
                     anMixedSamples[nChannel] += nSampleToAdd;
 
+
                 } // loop over channels
             } // loop over streams
             if (DEBUG) {
@@ -256,26 +270,27 @@ public class MixingAudioInputStream
                 if (DEBUG) {
                     out("MixingAudioInputStream.read(byte[], int, int): buffer offset: " + nBufferOffset);
                 }
+//                System.out.println("encode:"+encoding+"\t"+nSampleSize);
                 if (encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
                     switch (nSampleSize) {
                         case 1:
-                            abData[nBufferOffset] = (byte) anMixedSamples[nChannel];
+                            abData[nBufferOffset] = (byte) clamp(anMixedSamples[nChannel],Integer.MIN_VALUE,Integer.MAX_VALUE);
                             break;
                         case 2:
-                            TConversionTool.intToBytes16(anMixedSamples[nChannel], abData, nBufferOffset, bBigEndian);
+                            TConversionTool.intToBytes16((int) clamp(anMixedSamples[nChannel],Short.MIN_VALUE,Short.MAX_VALUE), abData, nBufferOffset, bBigEndian);
                             break;
                         case 3:
-                            TConversionTool.intToBytes24(anMixedSamples[nChannel], abData, nBufferOffset, bBigEndian);
+                            TConversionTool.intToBytes24((int) clamp(anMixedSamples[nChannel],Integer.MIN_VALUE,Integer.MAX_VALUE), abData, nBufferOffset, bBigEndian);
                             break;
                         case 4:
-                            TConversionTool.intToBytes32(anMixedSamples[nChannel], abData, nBufferOffset, bBigEndian);
+                            TConversionTool.intToBytes32((int) clamp(anMixedSamples[nChannel],Long.MIN_VALUE,Long.MAX_VALUE), abData, nBufferOffset, bBigEndian);
                             break;
                     }
                 } // TODO: pcm unsigned
                 else if (encoding.equals(AudioFormat.Encoding.ALAW)) {
-                    abData[nBufferOffset] = TConversionTool.linear2alaw((short) anMixedSamples[nChannel]);
+                    abData[nBufferOffset] = TConversionTool.linear2alaw((short) clamp(anMixedSamples[nChannel],Integer.MIN_VALUE,Integer.MAX_VALUE));
                 } else if (encoding.equals(AudioFormat.Encoding.ULAW)) {
-                    abData[nBufferOffset] = TConversionTool.linear2ulaw(anMixedSamples[nChannel]);
+                    abData[nBufferOffset] = TConversionTool.linear2ulaw((int) clamp(anMixedSamples[nChannel],Integer.MIN_VALUE,Integer.MAX_VALUE));
                 }
 
             } // (final) loop over channels
@@ -286,7 +301,9 @@ public class MixingAudioInputStream
         // TODO: return a useful value
         return nLength;
     }
-
+    public static long clamp(long val, long min, long max) {
+        return Math.max(min, Math.min(max, val));
+    }
     /**
      * calls skip() on all input streams. There is no way to assure that the
      * number of bytes really skipped is the same for all input streams. Due to

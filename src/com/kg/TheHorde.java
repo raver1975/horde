@@ -491,7 +491,7 @@ public class TheHorde extends Application {
         }
 
 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < Output.PARTS; i++) {
             final Slider slider = (Slider) scene.lookup("#midi-sl-" + (i + 1));
             final ToggleButton onButton = (ToggleButton) scene.lookup("#midi-bt-" + (i + 1));
             final Button shuffleButton = (Button) scene.lookup("#midi-shuffle-" + (i + 1));
@@ -551,7 +551,7 @@ public class TheHorde extends Application {
 //        observableList.add("MIDI Out");
         observableList.addAll(Instrument.AVAILABLE_INSTRUMENTS);
 
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < Output.PARTS - 4; i++) {
 
             final ChoiceBox cb = (ChoiceBox) scene.lookup("#midi-instrument-" + (i + 1));
             if (i == 9 || ((output.getSequencers()[i] instanceof MidiSequencer && ((MidiSequencer) output.getSequencers()[i]).midiDeviceReceiver != null))) {
@@ -866,7 +866,7 @@ public class TheHorde extends Application {
         }
         System.out.println("args=" + Arrays.toString(args));
         String wub = null;
-        double tempo=0;
+        double tempo = 0;
         top:
         for (String arg : args) {
             switch (arg) {
@@ -892,28 +892,27 @@ public class TheHorde extends Application {
             try {
                 Sequencer.bpm = Integer.parseInt(arg);
                 System.out.println("set tempo to:" + Sequencer.bpm);
-                tempo=Sequencer.bpm;
+                tempo = Sequencer.bpm;
             } catch (NumberFormatException e) {
                 wub = arg;
             }
 
         }
-        Sequencer.bpm=120;
+        Sequencer.bpm = 120;
 
-        if (wub!=null){
-                Sequencer.bpm=tempo;
+        if (wub != null) {
+            Sequencer.bpm = tempo;
             String finalWub = wub;
             new Thread(new Runnable() {
 
                 @Override
                 public void run() {
-                    while(true){
+                    while (true) {
                         try {
                             CentralCommand.ccn.nodes.size();
                             TheHorde.output.mixingAudioInputStream.getFormat();
                             break;
-                        }
-                        catch(Exception e){
+                        } catch (Exception e) {
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException e1) {
@@ -954,7 +953,7 @@ public class TheHorde extends Application {
                     gc.setStroke(new Color(1d, 1d, 1d, 1d));
                     double dw = width / 256d;
                     gc.setLineWidth(dw + .03f);
-                   for (int i = 0; i < 256; i++) {
+                    for (int i = 0; i < 256; i++) {
                         double perc = (double) i / width;
                         int l = (int) (perc * fft.length);
                         double mag = fft[l];

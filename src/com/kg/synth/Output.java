@@ -17,11 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Output implements Runnable {
+    public static final int PARTS = 16;
     public static Output instance;
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
-
-    public static final int BUFFER_SIZE = 16384*2;
+    public static final int BUFFER_SIZE = 16384/2;
     private final TheHorde horde;
 
     public Synthesizer[] synthesizers;
@@ -31,8 +31,9 @@ public class Output implements Runnable {
     public Delay[] delay;
     public float[] pan;
 
-    private byte[][] buffers = new byte[10][BUFFER_SIZE];
-    private InputStream[] pins = new InputStream[10];
+    private final static int audioLines = 30;
+    private byte[][] buffers = new byte[audioLines][BUFFER_SIZE];
+    private InputStream[] pins = new InputStream[buffers.length];
     private boolean running = false;
 
     private boolean paused = false;
@@ -50,8 +51,8 @@ public class Output implements Runnable {
     double panl = 0;
     double panr = 0;
     private int lastStep = -1;
-    private List<Tickable> lines = new ArrayList<>();
-    private byte[] bufferOut = new byte[BUFFER_SIZE];
+    private final List<Tickable> lines = new ArrayList<>();
+    private final byte[] bufferOut = new byte[BUFFER_SIZE];
 
     public Output(TheHorde horde) {
         instance = this;
@@ -64,15 +65,15 @@ public class Output implements Runnable {
             e.printStackTrace();
         }
         synthesizers = new Synthesizer[4];
-        delay = new Delay[16];
-        reverb = new Reverb[16];
-        pan = new float[16];
-        for (int i = 0; i < 16; i++) {
+        delay = new Delay[PARTS];
+        reverb = new Reverb[PARTS];
+        pan = new float[PARTS];
+        for (int i = 0; i < PARTS; i++) {
             delay[i] = new Delay();
             reverb[i] = new Reverb();
         }
         ArrayList<InputStream> streams = new ArrayList<InputStream>();
-        this.sequencer = new Sequencer[16];
+        this.sequencer = new Sequencer[PARTS];
         for (int it = 0; it < this.sequencer.length - 4; it++) {
             Sequencer its = null;
             if (it < 8) {
@@ -186,7 +187,7 @@ public class Output implements Runnable {
                 left4 = right4 = 0;
 
                 tmp = synthesizers[0].stereoOutput();
-                int col = 15;
+                int col = PARTS-1;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left1 += tmp[0];
@@ -201,9 +202,15 @@ public class Output implements Runnable {
                 panr = 2f * Math.min(.5f, (pan[col] + 63.5f) / 127f);
                 left1 *= panl;
                 right1 *= panr;
+                sample_left_int1 = (int) (left1 * 32767.0D * sequencer[sequencer.length - 1].getVolume());
+                sample_right_int1 = (int) (right1 * 32767.0D * sequencer[sequencer.length - 1].getVolume());
+                buffers[0][i] = ((byte) (sample_left_int1 & 0xFF));
+                buffers[0][(i + 1)] = ((byte) (sample_left_int1 >> 8 & 0xFF));
+                buffers[0][(i + 2)] = ((byte) (sample_right_int1 & 0xFF));
+                buffers[0][(i + 3)] = ((byte) (sample_right_int1 >> 8 & 0xFF));
 
                 tmp = synthesizers[1].stereoOutput();
-                col = 14;
+                col = PARTS-2;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left2 += tmp[0];
@@ -218,10 +225,16 @@ public class Output implements Runnable {
                 panr = 2f * Math.min(.5f, (pan[col] + 63.5f) / 127f);
                 left2 *= panl;
                 right2 *= panr;
+                sample_left_int2 = (int) (left2 * 32767.0D * sequencer[sequencer.length - 2].getVolume());
+                sample_right_int2 = (int) (right2 * 32767.0D * sequencer[sequencer.length - 2].getVolume());
+                buffers[1][i] = ((byte) (sample_left_int2 & 0xFF));
+                buffers[1][(i + 1)] = ((byte) (sample_left_int2 >> 8 & 0xFF));
+                buffers[1][(i + 2)] = ((byte) (sample_right_int2 & 0xFF));
+                buffers[1][(i + 3)] = ((byte) (sample_right_int2 >> 8 & 0xFF));
 
 
                 tmp = synthesizers[2].stereoOutput();
-                col = 13;
+                col = PARTS-3;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left3 += tmp[0];
@@ -236,9 +249,16 @@ public class Output implements Runnable {
                 panr = 2f * Math.min(.5f, (pan[col] + 63.5f) / 127f);
                 left3 *= panl;
                 right3 *= panr;
+                sample_left_int3 = (int) (left3 * 32767.0D * sequencer[sequencer.length - 3].getVolume());
+                sample_right_int3 = (int) (right3 * 32767.0D * sequencer[sequencer.length - 3].getVolume());
+                buffers[2][i] = ((byte) (sample_left_int3 & 0xFF));
+                buffers[2][(i + 1)] = ((byte) (sample_left_int3 >> 8 & 0xFF));
+                buffers[2][(i + 2)] = ((byte) (sample_right_int3 & 0xFF));
+                buffers[2][(i + 3)] = ((byte) (sample_right_int3 >> 8 & 0xFF));
+
 
                 tmp = synthesizers[3].stereoOutput();
-                col = 12;
+                col = PARTS-4;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left4 += tmp[0];
@@ -253,32 +273,8 @@ public class Output implements Runnable {
                 panr = 2f * Math.min(.5f, (pan[col] + 63.5f) / 127f);
                 left4 *= panl;
                 right4 *= panr;
-
-
-                sample_left_int1 = (int) (left1 * 32767.0D * sequencer[sequencer.length - 1].getVolume());
-                sample_right_int1 = (int) (right1 * 32767.0D * sequencer[sequencer.length - 1].getVolume());
-                sample_left_int2 = (int) (left2 * 32767.0D * sequencer[sequencer.length - 2].getVolume());
-                sample_right_int2 = (int) (right2 * 32767.0D * sequencer[sequencer.length - 2].getVolume());
-                sample_left_int3 = (int) (left3 * 32767.0D * sequencer[sequencer.length - 3].getVolume());
-                sample_right_int3 = (int) (right3 * 32767.0D * sequencer[sequencer.length - 3].getVolume());
                 sample_left_int4 = (int) (left4 * 32767.0D * sequencer[sequencer.length - 4].getVolume());
                 sample_right_int4 = (int) (right4 * 32767.0D * sequencer[sequencer.length - 4].getVolume());
-
-                buffers[0][i] = ((byte) (sample_left_int1 & 0xFF));
-                buffers[0][(i + 1)] = ((byte) (sample_left_int1 >> 8 & 0xFF));
-                buffers[0][(i + 2)] = ((byte) (sample_right_int1 & 0xFF));
-                buffers[0][(i + 3)] = ((byte) (sample_right_int1 >> 8 & 0xFF));
-
-                buffers[1][i] = ((byte) (sample_left_int2 & 0xFF));
-                buffers[1][(i + 1)] = ((byte) (sample_left_int2 >> 8 & 0xFF));
-                buffers[1][(i + 2)] = ((byte) (sample_right_int2 & 0xFF));
-                buffers[1][(i + 3)] = ((byte) (sample_right_int2 >> 8 & 0xFF));
-
-                buffers[2][i] = ((byte) (sample_left_int3 & 0xFF));
-                buffers[2][(i + 1)] = ((byte) (sample_left_int3 >> 8 & 0xFF));
-                buffers[2][(i + 2)] = ((byte) (sample_right_int3 & 0xFF));
-                buffers[2][(i + 3)] = ((byte) (sample_right_int3 >> 8 & 0xFF));
-
                 buffers[3][i] = ((byte) (sample_left_int4 & 0xFF));
                 buffers[3][(i + 1)] = ((byte) (sample_left_int4 >> 8 & 0xFF));
                 buffers[3][(i + 2)] = ((byte) (sample_right_int4 & 0xFF));
@@ -288,15 +284,19 @@ public class Output implements Runnable {
             Iterator<Tickable> it = lines.iterator();
             while (it.hasNext()) {
                 Tickable au = it.next();
-                if (bb < buffers.length-4) {
-                    au.tick(buffers[bb + 4]);
+                if (bb < buffers.length - 4) {
+                    if (au.tick(buffers[bb + 4])) {
+                        bb++;
+                    }
                 }
-                bb++;
             }
+
+
             try {
                 for (InputStream pin : pins) {
                     pin.reset();
                 }
+                mixingAudioInputStream.activeInputStreams = bb + 15;
                 mixingAudioInputStream.read(bufferOut);
                 audioWriter.write(bufferOut);
                 horde.drawVisualizer(bufferOut);
@@ -386,4 +386,5 @@ public class Output implements Runnable {
     public void addLine(Tickable audioObject) {
         lines.add(audioObject);
     }
+
 }

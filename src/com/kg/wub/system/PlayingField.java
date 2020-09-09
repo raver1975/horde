@@ -201,10 +201,11 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     }
 
-    public void tick(byte[] buffer) {
+    @Override
+    public boolean tick(byte[] buffer) {
         if (pause) {
-            Arrays.fill(buffer, (byte) 0);
-            return;
+//            arrayFill(buffer, (byte) 0);
+            return false;
         }
 
 
@@ -222,20 +223,19 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 //
 //        line.write(data, playByte, bufferSize);
         if (playByte < data.length - Output.BUFFER_SIZE) {
-
             System.arraycopy(data, playByte, buffer, 0, Output.BUFFER_SIZE);
             playByte += Output.BUFFER_SIZE;
-            return;
+            return true;
         }
         if (playByte < data.length) {
 //                        line.write(data, j, i.endBytes - j);
-            Arrays.fill(buffer, (byte) 0);
+            arrayFill(buffer, (byte) 0);
             System.arraycopy(data, playByte, buffer, 0, data.length - playByte);
             playByte += data.length - playByte;
-            return;
+            return true;
         }
-        Arrays.fill(buffer, (byte) 0);
-
+        arrayFill(buffer, (byte) 0);
+        return false;
     }
 
     Thread makeDataThread = null;
@@ -690,4 +690,17 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
     // public int convertByteToPixel(int loc){
     // (double)loc/double()getWidth
     // }
+    private static final int SMALL = 16;
+    public static void arrayFill(byte[] array, byte value) {
+        int len = array.length;
+        int lenB = len < SMALL ? len : SMALL;
+
+        for (int i = 0; i < lenB; i++) {
+            array[i] = value;
+        }
+
+        for (int i = SMALL; i < len; i += i) {
+            System.arraycopy(array, 0, array, i, len < i + i ? len - i : i);
+        }
+    }
 }

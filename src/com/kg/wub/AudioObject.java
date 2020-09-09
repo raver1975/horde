@@ -280,11 +280,12 @@ public class AudioObject implements Serializable,Tickable {
 
     int jPos;
 
-    public void tick(byte[] buffer) {
+    @Override
+    public boolean tick(byte[] buffer) {
 //            line = getLine();
         if (pause) {
-            Arrays.fill(buffer, (byte) 0);
-            return;
+//            arrayFill(buffer, (byte) 0);
+            return false;
         }
         if (currentlyPlaying == null) {
             if (!queue.isEmpty()) {
@@ -297,19 +298,18 @@ public class AudioObject implements Serializable,Tickable {
             if (breakPlay) {
                 breakPlay = false;
                 currentlyPlaying = null;
-                Arrays.fill(buffer, (byte) 0);
-                return;
+//                arrayFill(buffer, (byte) 0);
+                return false;
             }
             if (jPos <= currentlyPlaying.endBytes - Output.BUFFER_SIZE && jPos < data.length - Output.BUFFER_SIZE) {
-
                 System.arraycopy(data, jPos, buffer, 0, Output.BUFFER_SIZE);
                 jPos += Output.BUFFER_SIZE;
                 position = jPos;
-                return;
+                return true;
             }
             if (jPos < currentlyPlaying.endBytes && data.length > currentlyPlaying.endBytes) {
 //                        line.write(data, j, i.endBytes - j);
-                Arrays.fill(buffer, (byte) 0);
+                arrayFill(buffer, (byte) 0);
                 System.arraycopy(data, jPos, buffer, 0, currentlyPlaying.endBytes - jPos);
                 jPos += currentlyPlaying.endBytes - jPos;
                 position = jPos;
@@ -320,9 +320,9 @@ public class AudioObject implements Serializable,Tickable {
             currentlyPlaying = null;
         }
         else{
-            Arrays.fill(buffer, (byte) 0);
+            arrayFill(buffer, (byte) 0);
         }
-
+        return false;
     }
 
 	/*public TrackAnalysis echoNest(File file) {
@@ -699,5 +699,19 @@ public class AudioObject implements Serializable,Tickable {
 
         te.start = te.start - i.start + convertByteToTime(newbytestart);
         return te;
+    }
+
+    private static final int SMALL = 16;
+    public static void arrayFill(byte[] array, byte value) {
+        int len = array.length;
+        int lenB = len < SMALL ? len : SMALL;
+
+        for (int i = 0; i < lenB; i++) {
+            array[i] = value;
+        }
+
+        for (int i = SMALL; i < len; i += i) {
+            System.arraycopy(array, 0, array, i, len < i + i ? len - i : i);
+        }
     }
 }
