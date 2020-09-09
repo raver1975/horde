@@ -5,11 +5,12 @@ import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
 import com.kg.TheHorde;
 import com.kg.python.SpotifyDLTest;
+import com.kg.synth.Output;
 import com.kg.synth.Sequencer;
 import com.kg.wub.system.*;
+import com.myronmarston.util.MixingAudioInputStream;
 import com.sun.media.sound.WaveFileWriter;
 import org.json.simple.parser.ParseException;
-import scala.collection.Seq;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -21,9 +22,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.*;
 
-import static com.kg.python.SpotifyDLTest.STEMS.*;
-
-public class AudioObject implements Serializable {
+public class AudioObject implements Serializable,Tickable {
 
     /**
      *
@@ -35,10 +34,10 @@ public class AudioObject implements Serializable {
     public TrackAnalysis analysis;
     public static String spotifyId;
 
+    public transient int position;
     public transient MusicCanvas mc;
-    public transient SourceDataLine line;
+    //    public transient byte[] line;
     public transient Queue<Interval> queue;
-    public transient int position = 0;
     public transient Interval currentlyPlaying;
     public transient boolean breakPlay;
     public transient boolean pause = false;
@@ -46,12 +45,12 @@ public class AudioObject implements Serializable {
     public transient HashMap<String, Interval> midiMap = new HashMap<>();
 //	public static double tolerance = .2d;
 
-    public static final int resolution = 16;
-    public static final int channels = 2;
-    public static final int frameSize = channels * resolution / 8;
-    public static final int sampleRate = 44100;
-    public static final AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, resolution, channels, frameSize, sampleRate, false);
-    static final int bufferSize = 8192;
+    //    public static final int resolution = 16;
+//    public static final int channels = 2;
+//    public static final int frameSize = channels * resolution / 8;
+//    public static final int sampleRate = 44100;
+//    public static final AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, resolution, channels, frameSize, sampleRate, false);
+//    static final int bufferSize = 8192;
     public static String key = null;
 
     public AudioObject(Song song, File file) {
@@ -276,63 +275,54 @@ public class AudioObject implements Serializable {
         mc = new MusicCanvas(this);
         if (addtoCentral)
             CentralCommand.add(this);
-        startPlaying();
+        TheHorde.output.addLine(this);
     }
 
-    private void startPlaying() {
-        new Thread(() -> {
-            line = getLine();
-            top:
-            while (true) {
-                if (!queue.isEmpty()) {
-                    Interval i = queue.poll();
-                    currentlyPlaying = i;
-                    int j = 0;
-                    for (j = Math.max(0, i.startBytes); j <= i.endBytes - bufferSize && j < data.length - bufferSize; j += bufferSize) {
-                        while (pause || breakPlay) {
-                            if (breakPlay) {
-                                breakPlay = false;
-                                // if (loop)
-                                // queue.add(i);
-                                // queue.clear();
-                                try {
-                                    Thread.sleep(10);
-                                } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                                continue top;
-                            }
-                            try {
-                                Thread.sleep(10);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        position = j;
-                        line.write(data, j, bufferSize);
-                    }
+    int jPos;
 
-                    if (j < i.endBytes&&data.length>i.endBytes) {
-                        position = j;
-                        line.write(data, j, i.endBytes - j);
-                    }
-                    if (loop)
-                        queue.add(i);
-                } else {
-                }
-                currentlyPlaying = null;
-                if (!mc.mouseDown)
-                    mc.tempTimedEvent = null;
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+    public void tick(byte[] buffer) {
+//            line = getLine();
+        if (pause) {
+            Arrays.fill(buffer, (byte) 0);
+            return;
+        }
+        if (currentlyPlaying == null) {
+            if (!queue.isEmpty()) {
+                currentlyPlaying = queue.poll();
+                jPos = Math.max(0, currentlyPlaying.startBytes);
             }
+        }
+        if (currentlyPlaying != null) {
+//            Interval i = queue.poll();
+            if (breakPlay) {
+                breakPlay = false;
+                currentlyPlaying = null;
+                Arrays.fill(buffer, (byte) 0);
+                return;
+            }
+            if (jPos <= currentlyPlaying.endBytes - Output.BUFFER_SIZE && jPos < data.length - Output.BUFFER_SIZE) {
 
-        }).start();
+                System.arraycopy(data, jPos, buffer, 0, Output.BUFFER_SIZE);
+                jPos += Output.BUFFER_SIZE;
+                position = jPos;
+                return;
+            }
+            if (jPos < currentlyPlaying.endBytes && data.length > currentlyPlaying.endBytes) {
+//                        line.write(data, j, i.endBytes - j);
+                Arrays.fill(buffer, (byte) 0);
+                System.arraycopy(data, jPos, buffer, 0, currentlyPlaying.endBytes - jPos);
+                jPos += currentlyPlaying.endBytes - jPos;
+                position = jPos;
+            }
+            if (loop) {
+                queue.add(currentlyPlaying);
+            }
+            currentlyPlaying = null;
+        }
+        else{
+            Arrays.fill(buffer, (byte) 0);
+        }
+
     }
 
 	/*public TrackAnalysis echoNest(File file) {
@@ -376,7 +366,7 @@ public class AudioObject implements Serializable {
         }
 
         File temp = new File("temp.wav");
-        mp3InputStream = AudioSystem.getAudioInputStream(new AudioFormat(mp3InputStream.getFormat().getSampleRate(), resolution, AudioObject.channels, true, false), mp3InputStream);
+        mp3InputStream = AudioSystem.getAudioInputStream(new AudioFormat(mp3InputStream.getFormat().getSampleRate(), TheHorde.output.mixingAudioInputStream.getFormat().getSampleSizeInBits(), TheHorde.output.mixingAudioInputStream.getFormat().getChannels(), true, false), mp3InputStream);
         try {
             AudioSystem.write(mp3InputStream, AudioFileFormat.Type.WAVE, temp);
         } catch (IOException e) {
@@ -394,7 +384,7 @@ public class AudioObject implements Serializable {
             e1.printStackTrace();
         }
 
-        mp3InputStream = AudioSystem.getAudioInputStream(AudioObject.audioFormat, mp3InputStream);
+        mp3InputStream = AudioSystem.getAudioInputStream(TheHorde.output.mixingAudioInputStream.getFormat(), mp3InputStream);
 
         ByteArrayOutputStream bo = new ByteArrayOutputStream();
         try {
@@ -417,26 +407,31 @@ public class AudioObject implements Serializable {
         return file.getName();
     }
 
-    public SourceDataLine getLine() {
-        SourceDataLine res = null;
-        DataLine.Info info = new DataLine.Info(SourceDataLine.class, AudioObject.audioFormat);
-        try {
-            res = (SourceDataLine) AudioSystem.getLine(info);
-            res.open(AudioObject.audioFormat);
-            res.start();
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        }
-
-        Control ct[] = res.getControls();
+    /*public byte[] getLine() {
+//        SourceDataLine res = null;
+//        DataLine.Info info = new DataLine.Info(SourceDataLine.class, AudioObject.audioFormat);
+//        try {
+//            res = (SourceDataLine) AudioSystem.getLine(info);
+//            res.open(AudioObject.audioFormat);
+//            res.start();
+//        } catch (LineUnavailableException e) {
+//            e.printStackTrace();
+//        }
+//        for (int i=0;i<4;i++){
+//            InputStream temp=null;
+//
+//             temp = (InputStream) TheHorde.output.buffer5;
+//            if (temp.)
+//        }
+        *//*Control ct[] = res.getControls();
         for (Control c : ct) {
             System.out.println("Control:" + c);
             System.out.println(c.getType().getClass());
-        }
+        }*//*
 //        System.exit(0);
 
-        return res;
-    }
+        return TheHorde.output.getLine();
+    }*/
 
     public void play(Interval i) {
         queue.add(i);
@@ -623,8 +618,8 @@ public class AudioObject implements Serializable {
             filePrefix1 = filePrefix + String.format("_%03d", filecount);
         } while (new File(filePrefix1 + ".wav").exists());
         ByteArrayInputStream bais = new ByteArrayInputStream(by);
-        long length = (long) (by.length / audioFormat.getFrameSize());
-        AudioInputStream audioInputStreamTemp = new AudioInputStream(bais, audioFormat, length);
+        long length = (by.length / TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize());
+        AudioInputStream audioInputStreamTemp = new AudioInputStream(bais, TheHorde.output.mixingAudioInputStream.getFormat(), length);
         WaveFileWriter writer = new WaveFileWriter();
         FileOutputStream fos;
         try {
@@ -656,12 +651,12 @@ public class AudioObject implements Serializable {
     }
 
     public double convertByteToTime(int pos) {
-        return (double) pos / (double) AudioObject.sampleRate / (double) AudioObject.frameSize;
+        return (double) pos / (double) TheHorde.output.mixingAudioInputStream.getFormat().getSampleRate() / (double) TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
     }
 
     public int convertTimeToByte(double time) {
-        int c = (int) (time * AudioObject.sampleRate * AudioObject.frameSize);
-        c += c % AudioObject.frameSize;
+        int c = (int) (time * TheHorde.output.mixingAudioInputStream.getFormat().getSampleRate() * TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize());
+        c += c % TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
         return c;
     }
 

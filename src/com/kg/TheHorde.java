@@ -907,6 +907,21 @@ public class TheHorde extends Application {
 
                 @Override
                 public void run() {
+                    while(true){
+                        try {
+                            CentralCommand.ccn.nodes.size();
+                            TheHorde.output.mixingAudioInputStream.getFormat();
+                            break;
+                        }
+                        catch(Exception e){
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+
                     AudioObject.factory(finalWub);
                 }
             }).start();

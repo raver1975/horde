@@ -1,6 +1,8 @@
 package com.kg.wub.system;
 
 import com.echonest.api.v4.TimedEvent;
+import com.kg.TheHorde;
+import com.kg.synth.Output;
 import com.kg.wub.AudioObject;
 
 public class Interval {
@@ -15,9 +17,11 @@ public class Interval {
 	public Interval(TimedEvent te, int y) {
 		double start1 = te.getStart();
 		double duration = te.getDuration();
-		startBytes = (int) (start1 * AudioObject.sampleRate * AudioObject.frameSize) - (int) (start1 * AudioObject.sampleRate * AudioObject.frameSize) % AudioObject.frameSize;
-		double lengthInFrames = duration * AudioObject.sampleRate;
-		lengthBytes = (int) (lengthInFrames * AudioObject.frameSize) - (int) (lengthInFrames * AudioObject.frameSize) % AudioObject.frameSize;
+		double sampleRate= Output.SAMPLE_RATE;
+		int frameSize= TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
+		startBytes = (int) (start1 * sampleRate * frameSize) - (int) (start1 * sampleRate * frameSize) % frameSize;
+		double lengthInFrames = duration * sampleRate;
+		lengthBytes = (int) (lengthInFrames * frameSize) - (int) (lengthInFrames * frameSize) % frameSize;
 		endBytes = startBytes + lengthBytes;
 		// queue.add(new Interval(startInBytes, Math.min(startInBytes +
 		// lengthInBytes, data.length),te,y));

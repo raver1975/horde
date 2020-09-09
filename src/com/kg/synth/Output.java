@@ -1,46 +1,38 @@
 package com.kg.synth;
 
 import com.kg.TheHorde;
+import com.kg.wub.AudioObject;
+import com.kg.wub.system.CentralCommand;
+import com.kg.wub.system.Tickable;
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.util.MixingAudioInputStream;
+import edu.princeton.cs.algs4.In;
+import org.encog.bot.browse.range.Input;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Output implements Runnable {
     public static Output instance;
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
 
-    public static final int BUFFER_SIZE = 16384 / 2;
+    public static final int BUFFER_SIZE = 16384*2;
     private final TheHorde horde;
 
     public Synthesizer[] synthesizers;
-    private MixingAudioInputStream mixingAudioInputStream;
+    public MixingAudioInputStream mixingAudioInputStream;
     private Sequencer[] sequencer;
     public Reverb[] reverb;
     public Delay[] delay;
     public float[] pan;
 
-    private byte[] buffer1 = new byte[BUFFER_SIZE];
-    private byte[] buffer2 = new byte[BUFFER_SIZE];
-    private byte[] buffer3 = new byte[BUFFER_SIZE];
-    private byte[] buffer4 = new byte[BUFFER_SIZE];
-    private byte[] buffer5 = new byte[BUFFER_SIZE];
-    private InputStream pin1 = new ByteArrayInputStream(buffer1);
-    private InputStream pin2 = new ByteArrayInputStream(buffer2);
-    private InputStream pin3 = new ByteArrayInputStream(buffer3);
-    private InputStream pin4 = new ByteArrayInputStream(buffer4);
+    private byte[][] buffers = new byte[10][BUFFER_SIZE];
+    private InputStream[] pins = new InputStream[10];
     private boolean running = false;
 
     private boolean paused = false;
@@ -58,6 +50,8 @@ public class Output implements Runnable {
     double panl = 0;
     double panr = 0;
     private int lastStep = -1;
+    private List<Tickable> lines = new ArrayList<>();
+    private byte[] bufferOut = new byte[BUFFER_SIZE];
 
     public Output(TheHorde horde) {
         instance = this;
@@ -86,8 +80,8 @@ public class Output implements Runnable {
             } else {
                 its = new InstrumentSequencer(it, it == 9);
             }
-            if (its instanceof MidiSequencer){
-                if (((MidiSequencer) its).midiDeviceReceiver ==null){
+            if (its instanceof MidiSequencer) {
+                if (((MidiSequencer) its).midiDeviceReceiver == null) {
                     its = new InstrumentSequencer(it, it == 9);
                 }
             }
@@ -97,10 +91,13 @@ public class Output implements Runnable {
                 streams.add(((InstrumentSequencer) its).audioInputStream);
             }
         }
-        streams.add(pin1);
-        streams.add(pin2);
-        streams.add(pin3);
-        streams.add(pin4);
+        int cc = 0;
+        for (byte[] buffer : buffers) {
+            buffers[cc] = new byte[BUFFER_SIZE];
+            InputStream pin = new ByteArrayInputStream(buffers[cc]);
+            pins[cc++] = pin;
+            streams.add(pin);
+        }
         AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
         mixingAudioInputStream = new MixingAudioInputStream(audioFormat, streams);
         BasslineSynthesizer tb1 = new BasslineSynthesizer();
@@ -179,7 +176,7 @@ public class Output implements Runnable {
             }
             lastStep = sequencer[0].step;
 //            horde.drawVisualizer(buffer1);
-            for (int i = 0; i < buffer1.length; i += 4) {
+            for (int i = 0; i < Output.BUFFER_SIZE; i += 4) {
                 for (Sequencer sequencer : sequencer) {
                     sequencer.tick();
                 }
@@ -267,35 +264,43 @@ public class Output implements Runnable {
                 sample_left_int4 = (int) (left4 * 32767.0D * sequencer[sequencer.length - 4].getVolume());
                 sample_right_int4 = (int) (right4 * 32767.0D * sequencer[sequencer.length - 4].getVolume());
 
-                buffer1[i] = ((byte) (sample_left_int1 & 0xFF));
-                buffer1[(i + 1)] = ((byte) (sample_left_int1 >> 8 & 0xFF));
-                buffer1[(i + 2)] = ((byte) (sample_right_int1 & 0xFF));
-                buffer1[(i + 3)] = ((byte) (sample_right_int1 >> 8 & 0xFF));
+                buffers[0][i] = ((byte) (sample_left_int1 & 0xFF));
+                buffers[0][(i + 1)] = ((byte) (sample_left_int1 >> 8 & 0xFF));
+                buffers[0][(i + 2)] = ((byte) (sample_right_int1 & 0xFF));
+                buffers[0][(i + 3)] = ((byte) (sample_right_int1 >> 8 & 0xFF));
 
-                buffer2[i] = ((byte) (sample_left_int2 & 0xFF));
-                buffer2[(i + 1)] = ((byte) (sample_left_int2 >> 8 & 0xFF));
-                buffer2[(i + 2)] = ((byte) (sample_right_int2 & 0xFF));
-                buffer2[(i + 3)] = ((byte) (sample_right_int2 >> 8 & 0xFF));
+                buffers[1][i] = ((byte) (sample_left_int2 & 0xFF));
+                buffers[1][(i + 1)] = ((byte) (sample_left_int2 >> 8 & 0xFF));
+                buffers[1][(i + 2)] = ((byte) (sample_right_int2 & 0xFF));
+                buffers[1][(i + 3)] = ((byte) (sample_right_int2 >> 8 & 0xFF));
 
-                buffer3[i] = ((byte) (sample_left_int3 & 0xFF));
-                buffer3[(i + 1)] = ((byte) (sample_left_int3 >> 8 & 0xFF));
-                buffer3[(i + 2)] = ((byte) (sample_right_int3 & 0xFF));
-                buffer3[(i + 3)] = ((byte) (sample_right_int3 >> 8 & 0xFF));
+                buffers[2][i] = ((byte) (sample_left_int3 & 0xFF));
+                buffers[2][(i + 1)] = ((byte) (sample_left_int3 >> 8 & 0xFF));
+                buffers[2][(i + 2)] = ((byte) (sample_right_int3 & 0xFF));
+                buffers[2][(i + 3)] = ((byte) (sample_right_int3 >> 8 & 0xFF));
 
-                buffer4[i] = ((byte) (sample_left_int4 & 0xFF));
-                buffer4[(i + 1)] = ((byte) (sample_left_int4 >> 8 & 0xFF));
-                buffer4[(i + 2)] = ((byte) (sample_right_int4 & 0xFF));
-                buffer4[(i + 3)] = ((byte) (sample_right_int4 >> 8 & 0xFF));
+                buffers[3][i] = ((byte) (sample_left_int4 & 0xFF));
+                buffers[3][(i + 1)] = ((byte) (sample_left_int4 >> 8 & 0xFF));
+                buffers[3][(i + 2)] = ((byte) (sample_right_int4 & 0xFF));
+                buffers[3][(i + 3)] = ((byte) (sample_right_int4 >> 8 & 0xFF));
+            }
+            int bb = 0;
+            Iterator<Tickable> it = lines.iterator();
+            while (it.hasNext()) {
+                Tickable au = it.next();
+                if (bb < buffers.length-4) {
+                    au.tick(buffers[bb + 4]);
+                }
+                bb++;
             }
             try {
-                pin1.reset();
-                pin2.reset();
-                pin3.reset();
-                pin4.reset();
-                mixingAudioInputStream.read(buffer5);
-                audioWriter.write(buffer5);
-                horde.drawVisualizer(buffer5);
-                sourceLine.write(buffer5, 0, BUFFER_SIZE);
+                for (InputStream pin : pins) {
+                    pin.reset();
+                }
+                mixingAudioInputStream.read(bufferOut);
+                audioWriter.write(bufferOut);
+                horde.drawVisualizer(bufferOut);
+                sourceLine.write(bufferOut, 0, BUFFER_SIZE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -376,5 +381,9 @@ public class Output implements Runnable {
         for (int i = 0; i < value.length(); i++) {
             output.write(value.charAt(i));
         }
+    }
+
+    public void addLine(Tickable audioObject) {
+        lines.add(audioObject);
     }
 }

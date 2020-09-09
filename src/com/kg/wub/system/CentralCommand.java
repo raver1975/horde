@@ -9,10 +9,11 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CentralCommand<lastSeenMidi> {
 
-    public static ArrayList<AudioObject> aolist = new ArrayList<AudioObject>();
+    public static CopyOnWriteArrayList<AudioObject> aolist = new CopyOnWriteArrayList<>();
     public static PlayingField pf = new PlayingField();
     static public CentralCommandNode ccn = new CentralCommandNode();
     static int yOffset = 40;
@@ -43,6 +44,7 @@ public class CentralCommand<lastSeenMidi> {
 //		System.out.println("key pressed:"+s);
 //        getLastSeenMidi();
         Iterator<AudioObject> ii = aolist.iterator();
+
         while (ii.hasNext()) {
             AudioObject au = ii.next();
             if (au != null && au.midiMap != null && au.midiMap.containsKey(s) && !lastSeenMidi.containsKey(s)) {

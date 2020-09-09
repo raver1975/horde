@@ -1,5 +1,7 @@
 package com.kg.wub.system;
 
+import com.kg.TheHorde;
+import com.kg.synth.Output;
 import com.kg.wub.AudioObject;
 import com.sun.media.sound.WaveFileWriter;
 
@@ -10,14 +12,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
-public class PlayingField extends Canvas implements MouseListener, MouseMotionListener, KeyListener, ComponentListener, MouseWheelListener {
+public class PlayingField extends Canvas implements MouseListener, MouseMotionListener, KeyListener, ComponentListener, MouseWheelListener, Tickable {
 
     int oldWidth;
     public static JFrame frame;
@@ -37,7 +37,6 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
     private double lengthInPixels;
     private double bytesPerPixel;
     private int lengthInBytes;
-    static private int bufferSize = 8192;
     boolean pause = true;
     protected int playByte;
     private boolean moverlock;
@@ -187,41 +186,56 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
                 }
             }
         }).start();
-        startPlaying();
-    }
-
-    private void startPlaying() {
-        line = getLine();
-        new Thread(new Runnable() {
-
-            public void run() {
-                top:
-                while (true) {
-                    if (pause) {
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        continue top;
-                    }
-                    playByte += bufferSize;
-                    if (playByte + bufferSize >= data.length) {
-
-                        if (playByte < data.length) {
-                            int b = data.length - playByte - (data.length - playByte) % AudioObject.frameSize;
-                            line.write(data, playByte, b);
-                            playByte += bufferSize + b;
-                        }
-                        pause = true;
-                        continue top;
-                    }
-
-                    line.write(data, playByte, bufferSize);
+        while (true) {
+            try {
+                TheHorde.output.addLine(this);
+                break;
+            } catch (Exception e) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
                 }
             }
-        }).start();
+        }
+
+    }
+
+    public void tick(byte[] buffer) {
+        if (pause) {
+            Arrays.fill(buffer, (byte) 0);
+            return;
+        }
+
+
+//        playByte += Output.BUFFER_SIZE;
+//        if (playByte + Output.BUFFER_SIZE>= data.length) {
+//
+//            if (playByte < data.length) {
+//                int b = data.length - playByte - (data.length - playByte) % TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
+//                line.write(data, playByte, b);
+//                playByte += Output.BUFFER_SIZE + b;
+//            }
+//            pause = true;
+//            continue top;
+//        }
+//
+//        line.write(data, playByte, bufferSize);
+        if (playByte < data.length - Output.BUFFER_SIZE) {
+
+            System.arraycopy(data, playByte, buffer, 0, Output.BUFFER_SIZE);
+            playByte += Output.BUFFER_SIZE;
+            return;
+        }
+        if (playByte < data.length) {
+//                        line.write(data, j, i.endBytes - j);
+            Arrays.fill(buffer, (byte) 0);
+            System.arraycopy(data, playByte, buffer, 0, data.length - playByte);
+            playByte += data.length - playByte;
+            return;
+        }
+        Arrays.fill(buffer, (byte) 0);
+
     }
 
     Thread makeDataThread = null;
@@ -231,7 +245,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
         if (CentralCommand.ccn.nodes.size() == 0) {
             return;
         }
-        if (makeDataThread!=null) {
+        if (makeDataThread != null) {
             if (makeDataThread.isAlive()) {
                 makeDataThread.stop();
             }
@@ -259,12 +273,12 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
                 lengthInPixels = maxx - minx;
                 bytesPerPixel = CentralCommand.ccn.nodes.get(0).ao.data.length / CentralCommand.ccn.nodes.get(0).rect.width;
                 lengthInBytes = (int) (lengthInPixels * bytesPerPixel);
-                lengthInBytes += lengthInBytes % AudioObject.frameSize;
+                lengthInBytes += lengthInBytes % TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
 
                 Iterator<Node> ii = CentralCommand.ccn.nodes.iterator();
                 while (ii.hasNext()) {
                     Node node = ii.next();
-                    node.image = new SamplingGraph().createWaveForm(node.ao.analysis.getSegments(), node.ao.analysis.getDuration(), node.ao.data, AudioObject.audioFormat, (int) (node.ao.data.length * (double) oldWidth / lengthInBytes), CentralCommand.yOffset - 1);
+                    node.image = new SamplingGraph().createWaveForm(node.ao.analysis.getSegments(), node.ao.analysis.getDuration(), node.ao.data, TheHorde.output.mixingAudioInputStream.getFormat(), (int) (node.ao.data.length * (double) oldWidth / lengthInBytes), CentralCommand.yOffset - 1);
                     double oldbb = node.rect.width;
                     node.rect.width = (node.ao.data.length * (double) oldWidth / lengthInBytes);
                     if (node.rect.width < 1)
@@ -284,16 +298,17 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
                 lengthInPixels = maxx - minx;
                 bytesPerPixel = CentralCommand.ccn.nodes.get(0).ao.data.length / CentralCommand.ccn.nodes.get(0).rect.width;
                 lengthInBytes = (int) (lengthInPixels * bytesPerPixel);
-                lengthInBytes += lengthInBytes % AudioObject.frameSize;
+                lengthInBytes += lengthInBytes % TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
                 data = new byte[lengthInBytes];
-
-                for (Node node : CentralCommand.ccn.nodes) {
+                Iterator<Node> it = CentralCommand.ccn.nodes.iterator();
+                while (it.hasNext()) {
+                    Node node = it.next();
                     if (node.isMute()) {
                         continue;
                     }
                     node.rect.x -= minx;
                     int start = (int) (node.rect.x / lengthInPixels * (double) lengthInBytes);
-                    start -= start % AudioObject.frameSize;
+                    start -= start % TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
                     short g, h;
                     for (int i = 0; i < node.ao.data.length; i += 2) {
                         g = data[i + start];
@@ -428,8 +443,8 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     private void save(File file) {
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        long length = (long) (data.length / AudioObject.frameSize);
-        AudioInputStream audioInputStreamTemp = new AudioInputStream(bais, AudioObject.audioFormat, length);
+        long length = (long) (data.length / TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize());
+        AudioInputStream audioInputStreamTemp = new AudioInputStream(bais, TheHorde.output.mixingAudioInputStream.getFormat(), length);
         WaveFileWriter writer = new WaveFileWriter();
         FileOutputStream fos;
         try {
@@ -552,7 +567,9 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (CentralCommand.ccn.nodes.size()==0){return;}
+        if (CentralCommand.ccn.nodes.size() == 0) {
+            return;
+        }
         int x = (int) (e.getX() + offset);
         int y = e.getY();
         y -= y % CentralCommand.yOffset;
@@ -563,7 +580,7 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
             // getWidth());
             // lengthinbytes*playpos/width=playbyte
             playByte = (int) (lengthInBytes * (double) (x) / lengthInPixels);
-            playByte += playByte % AudioObject.frameSize;
+            playByte += playByte % TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
             if (playByte < 0)
                 playByte = 0;
             pause = false;
@@ -591,7 +608,9 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (CentralCommand.ccn.nodes.size()==0){return;}
+        if (CentralCommand.ccn.nodes.size() == 0) {
+            return;
+        }
         if (moved) {
             makeData();
         }
@@ -649,22 +668,22 @@ public class PlayingField extends Canvas implements MouseListener, MouseMotionLi
 
     }
 
-    public SourceDataLine getLine() {
+/*    public SourceDataLine getLine() {
         SourceDataLine res = null;
-        DataLine.Info info = new DataLine.Info(SourceDataLine.class, AudioObject.audioFormat);
+        DataLine.Info info = new DataLine.Info(SourceDataLine.class, TheHorde.output.mixingAudioInputStream.getFormat());
         try {
             res = (SourceDataLine) AudioSystem.getLine(info);
-            res.open(AudioObject.audioFormat);
+            res.open(TheHorde.output.mixingAudioInputStream.getFormat());
             res.start();
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
         return res;
-    }
+    }*/
 
     public int convertTimeToByte(double time) {
-        int c = (int) (time * AudioObject.sampleRate * AudioObject.frameSize);
-        c += c % AudioObject.frameSize;
+        int c = (int) (time * Output.SAMPLE_RATE * TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize());
+        c += c % TheHorde.output.mixingAudioInputStream.getFormat().getFrameSize();
         return c;
     }
 

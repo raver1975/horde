@@ -193,7 +193,7 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
         int y = this.getHeight();
         g.setColor(Color.black);
         g.fillRect(0, 0, x, y);
-        g.drawImage(samplingGraph.createWaveForm(au.analysis.getSegments(), au.analysis.getDuration(), au.data, AudioObject.audioFormat, getWidth(), 200), 0, 100, null);
+        g.drawImage(samplingGraph.createWaveForm(au.analysis.getSegments(), au.analysis.getDuration(), au.data, TheHorde.output.mixingAudioInputStream.getFormat(), getWidth(), 200), 0, 100, null);
         g.setColor(Color.white);
         g.drawLine(0, 200, getWidth(), 200);
 
