@@ -130,16 +130,16 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
             g1.setColor(new Color(255, 255, 0, 127));
             g1.fillRect(x1 + 1, 100, x2 - 1, 200);
         }
-
-        if (au.currentlyPlaying != null) {
+        Interval currentlyPlaying= au.queue.peek();
+        if (currentlyPlaying != null) {
             g1.setColor(Color.red.darker().darker().darker());
-            if (hovering != null && hovering.equals(au.currentlyPlaying))
+            if (hovering != null && hovering.equals(currentlyPlaying))
                 g1.setColor(new Color(150, 100, 100));
-            int x3 = (int) (((au.currentlyPlaying.te.getStart() / au.analysis.getDuration()) * (double) getWidth()) + .5d);
-            int x4 = (int) (((au.currentlyPlaying.te.getDuration() / au.analysis.getDuration()) * (double) getWidth()) + .5d);
-            g1.fillRect(x3 + 1, au.currentlyPlaying.y + 1, x4, 18);
-            int x1 = (int) ((au.currentlyPlaying.te.getStart() / au.analysis.getDuration()) * (double) getWidth() + .5d);
-            int x2 = (int) ((au.currentlyPlaying.te.getDuration() / au.analysis.getDuration()) * (double) getWidth() + .5d);
+            int x3 = (int) (((currentlyPlaying.te.getStart() / au.analysis.getDuration()) * (double) getWidth()) + .5d);
+            int x4 = (int) (((currentlyPlaying.te.getDuration() / au.analysis.getDuration()) * (double) getWidth()) + .5d);
+            g1.fillRect(x3 + 1, currentlyPlaying.y + 1, x4, 18);
+            int x1 = (int) ((currentlyPlaying.te.getStart() / au.analysis.getDuration()) * (double) getWidth() + .5d);
+            int x2 = (int) ((currentlyPlaying.te.getDuration() / au.analysis.getDuration()) * (double) getWidth() + .5d);
             g1.setColor(new Color(255, 0, 0, 127));
             g1.fillRect(x1 + 1, 100, x2 - 1, 200);
         }
@@ -358,12 +358,12 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                     }
                 }
             }
-            if (au.currentlyPlaying != null) {
-                int x3 = (int) (((au.currentlyPlaying.te.getStart() / au.analysis.getDuration()) * (double) getWidth()) + .5d);
-                int x4 = (int) ((((au.currentlyPlaying.te.getStart() + au.currentlyPlaying.te.getDuration()) / au.analysis.getDuration()) * (double) getWidth()) + .5d);
-                if (x >= x3 && x <= x4 && y >= au.currentlyPlaying.y && y <= au.currentlyPlaying.y + 20) {
-
-                    au.breakPlay = true;
+            Interval currentlyPlaying= au.queue.peek();
+            if (currentlyPlaying != null) {
+                int x3 = (int) (((currentlyPlaying.te.getStart() / au.analysis.getDuration()) * (double) getWidth()) + .5d);
+                int x4 = (int) ((((currentlyPlaying.te.getStart() + currentlyPlaying.te.getDuration()) / au.analysis.getDuration()) * (double) getWidth()) + .5d);
+                if (x >= x3 && x <= x4 && y >= currentlyPlaying.y && y <= currentlyPlaying.y + 20) {
+                    au.queue.remove(currentlyPlaying);
                 }
             }
             return;
@@ -506,11 +506,12 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                     au.queue.remove(i);
                 }
             }
-            if (au.currentlyPlaying != null) {
-                int x3 = (int) (((au.currentlyPlaying.te.getStart() / au.analysis.getDuration()) * (double) getWidth()) + .5d);
-                int x4 = (int) ((((au.currentlyPlaying.te.getStart() + au.currentlyPlaying.te.getDuration()) / au.analysis.getDuration()) * (double) getWidth()) + .5d);
-                if (x >= x3 && x <= x4 && y >= au.currentlyPlaying.y && y <= au.currentlyPlaying.y + 20) {
-                    au.breakPlay = true;
+            Interval currentlyPlaying= au.queue.peek();
+            if (currentlyPlaying != null) {
+                int x3 = (int) (((currentlyPlaying.te.getStart() / au.analysis.getDuration()) * (double) getWidth()) + .5d);
+                int x4 = (int) ((((currentlyPlaying.te.getStart() + currentlyPlaying.te.getDuration()) / au.analysis.getDuration()) * (double) getWidth()) + .5d);
+                if (x >= x3 && x <= x4 && y >= currentlyPlaying.y && y <= currentlyPlaying.y + 20) {
+                    au.queue.remove(currentlyPlaying);
                 }
             }
             return;
@@ -652,8 +653,6 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
 
         if (y >= 80 && y < 100) {
             List<Interval> list1 = new LinkedList<Interval>(au.queue);
-            if (au.currentlyPlaying != null)
-                list1.add(au.currentlyPlaying);
             hovering = null;
             for (int i = 0; i < list1.size(); i++) {
                 if (list1.get(i).y == 80 && loc >= list1.get(i).te.getStart() && loc <= list1.get(i).te.getStart() + list1.get(i).te.getDuration()) {
@@ -705,9 +704,6 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
             @Override
             public void windowClosing(WindowEvent e) {
                 au.pause = true;
-                au.breakPlay = true;
-                // au.queue.clear();
-                // CentralCommand.remove(au);
             }
         });
 
@@ -752,10 +748,9 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
         } else if (e.getKeyCode() == KeyEvent.VK_L)
             au.loop = !au.loop;
         else if (e.getKeyCode() == KeyEvent.VK_S)
-            au.breakPlay = true;
+            au.queue.poll();
         else if (e.getKeyCode() == KeyEvent.VK_C) {
             au.queue.clear();
-            au.breakPlay = true;
         } else if (e.getKeyCode() == KeyEvent.VK_F5) {
             au.midiMap.clear();
         } else if (e.getKeyCode() == KeyEvent.VK_F6) {
@@ -807,7 +802,6 @@ public class MusicCanvas extends JComponent implements MouseListener, MouseMotio
                 //Timestretch
             }
             au.pause = true;
-            au.breakPlay = true;
             CentralCommand.pf.makeData();
         }
 //		else if (e.getKeyCode() == KeyEvent.VK_F7) {

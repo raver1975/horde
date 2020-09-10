@@ -5,6 +5,7 @@ import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.TrackAnalysis;
 import com.kg.TheHorde;
 import com.kg.python.SpotifyDLTest;
+import com.kg.synth.ByteRingBuffer;
 import com.kg.synth.Output;
 import com.kg.synth.Sequencer;
 import com.kg.wub.system.*;
@@ -18,11 +19,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Queue;
 import java.util.*;
 
-public class AudioObject implements Serializable,Tickable {
+public class AudioObject implements Serializable, Tickable {
 
     /**
      *
@@ -38,8 +40,7 @@ public class AudioObject implements Serializable,Tickable {
     public transient MusicCanvas mc;
     //    public transient byte[] line;
     public transient Queue<Interval> queue;
-    public transient Interval currentlyPlaying;
-    public transient boolean breakPlay;
+    //    public transient Interval currentlyPlaying;
     public transient boolean pause = false;
     public transient boolean loop = false;
     public transient HashMap<String, Interval> midiMap = new HashMap<>();
@@ -157,7 +158,7 @@ public class AudioObject implements Serializable,Tickable {
                 if (TheHorde.output != null) {
                     bpm = Sequencer.bpm;
                     if (bpm < 1) {
-                        bpm = Math.floor(au.analysis.getTempo()*10f)/10f;
+                        bpm = Math.floor(au.analysis.getTempo() * 10f) / 10f;
                         TheHorde.bpm.setTargetValue(bpm);
                     }
 
@@ -186,7 +187,7 @@ public class AudioObject implements Serializable,Tickable {
         if (TheHorde.output != null) {
             bpm = Sequencer.bpm;
             if (bpm < 1) {
-                bpm = Math.floor(ta.getTempo()*10f)/10f;
+                bpm = Math.floor(ta.getTempo() * 10f) / 10f;
                 TheHorde.bpm.setTargetValue(bpm);
             }
             System.out.println("newest tempo=" + bpm);
@@ -278,51 +279,113 @@ public class AudioObject implements Serializable,Tickable {
         TheHorde.output.addLine(this);
     }
 
-    int jPos;
+
+    public int countLength(ArrayList<Interval> list) {
+        int duration = 0;
+        for (Interval i : list) {
+            duration += i.lengthBytes;
+        }
+        return duration;
+    }
 
     @Override
     public boolean tick(byte[] buffer) {
-//            line = getLine();
-        if (pause) {
-//            arrayFill(buffer, (byte) 0);
+        //get next buffer length bits
+
+        if (pause || queue.isEmpty()) {
             return false;
         }
-        if (currentlyPlaying == null) {
-            if (!queue.isEmpty()) {
-                currentlyPlaying = queue.poll();
-                jPos = Math.max(0, currentlyPlaying.startBytes);
+        ArrayList<Interval> q = new ArrayList<>(queue);
+        if (loop) {
+            while (countLength(q) < buffer.length) {
+                q.addAll(queue);
             }
         }
-        if (currentlyPlaying != null) {
-//            Interval i = queue.poll();
-            if (breakPlay) {
-                breakPlay = false;
-                currentlyPlaying = null;
+        if (position < queue.peek().startBytes || position >= queue.peek().endBytes) {
+            position = queue.peek().startBytes;
+        }
+        int byteMark = 0;
+        for (Interval i : q) {
+            if (position < i.endBytes - (buffer.length - byteMark)) {
+                System.arraycopy(data, position, buffer, byteMark, buffer.length - byteMark);
+                position += (buffer.length - byteMark);
+                break;
+            }// - (buffer.length-byteMark) && position < data.length - (buffer.length-byteMark)) {
+            else {
+                int bitsLeft = Math.min(i.endBytes - position, buffer.length - byteMark);
+                System.arraycopy(data, position, buffer, byteMark, bitsLeft);
+                byteMark += bitsLeft;
+                position += bitsLeft;
+                if (position >= i.endBytes) {
+                    Interval ii = queue.poll();
+                    if (ii != null) {
+                        if (loop) {
+                            queue.add(ii);
+                        }
+                        ii=queue.peek();
+                        if (ii!=null){
+                            position = ii.startBytes;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+
+//        if (currentlyPlaying == null) {
+//            if (!queue.isEmpty()) {
+//                currentlyPlaying = queue.poll();
+//                jPos = Math.max(0, currentlyPlaying.startBytes);
+//            } else {
 //                arrayFill(buffer, (byte) 0);
-                return false;
-            }
-            if (jPos <= currentlyPlaying.endBytes - Output.BUFFER_SIZE && jPos < data.length - Output.BUFFER_SIZE) {
-                System.arraycopy(data, jPos, buffer, 0, Output.BUFFER_SIZE);
-                jPos += Output.BUFFER_SIZE;
-                position = jPos;
-                return true;
-            }
-            if (jPos < currentlyPlaying.endBytes && data.length > currentlyPlaying.endBytes) {
-//                        line.write(data, j, i.endBytes - j);
-                arrayFill(buffer, (byte) 0);
-                System.arraycopy(data, jPos, buffer, 0, currentlyPlaying.endBytes - jPos);
-                jPos += currentlyPlaying.endBytes - jPos;
-                position = jPos;
-            }
-            if (loop) {
-                queue.add(currentlyPlaying);
-            }
-            currentlyPlaying = null;
-        }
-        else{
-            arrayFill(buffer, (byte) 0);
-        }
-        return false;
+//                return false;
+//            }
+//        }
+////            Interval i = queue.poll();
+//        if (breakPlay) {
+//            breakPlay = false;
+//            currentlyPlaying = null;
+////                arrayFill(buffer, (byte) 0);
+//            return false;
+//        }
+//        if (brb == null) {
+//            brb = new ByteRingBuffer(Output.BUFFER_SIZE);
+//        }
+//
+//
+//        if (jPos <= currentlyPlaying.endBytes - buffer.length && jPos < data.length - buffer.length) {
+//            brb.write(data, jPos, buffer.length);
+////                System.arraycopy(data, jPos, buffer, 0, Output.BUFFER_SIZE);
+//            brb.read(buffer);
+//            jPos += buffer.length;
+//            position = jPos;
+//            return true;
+//        }
+//
+//        if (jPos < currentlyPlaying.endBytes && data.length >= currentlyPlaying.endBytes) {
+////                        line.write(data, j, i.endBytes - j);
+////                arrayFill(buffer, (byte) 0);
+////                System.arraycopy(data, jPos, buffer, 0, currentlyPlaying.endBytes - jPos);
+//            brb.write(data, jPos, currentlyPlaying.endBytes - jPos);
+////                System.arraycopy(data, jPos, buffer, 0, Output.BUFFER_SIZE);
+//            byte[] b = new byte[buffer.length - (currentlyPlaying.endBytes - jPos)];
+//            jPos += (currentlyPlaying.endBytes - jPos);
+//
+//            if (loop) {
+//                queue.add(currentlyPlaying);
+//            }
+//            currentlyPlaying = null;
+//            tick(b);
+////            jPos += b.length;
+//            position = jPos;
+//            brb.write(b, 0, b.length);
+//            brb.read(buffer);
+//            return true;
+//        }
+//        System.out.println("nevere HERE");
+////        System.exit(0);
+//        return false;
+
     }
 
 	/*public TrackAnalysis echoNest(File file) {
@@ -511,9 +574,9 @@ public class AudioObject implements Serializable,Tickable {
         fa.setTempo(analysis.getTempo());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         LinkedList<Interval> ll = new LinkedList<Interval>();
-        if (currentlyPlaying != null) {
-            ll.add(currentlyPlaying);
-        }
+//        if (currentlyPlaying != null) {
+//            ll.add(currentlyPlaying);
+//        }
         ll.addAll(queue);
         int bytecnt = 0;
         if (ll.size() == 0 && mc.hovering != null)
@@ -702,6 +765,7 @@ public class AudioObject implements Serializable,Tickable {
     }
 
     private static final int SMALL = 16;
+
     public static void arrayFill(byte[] array, byte value) {
         int len = array.length;
         int lenB = len < SMALL ? len : SMALL;

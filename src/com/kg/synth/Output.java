@@ -17,7 +17,7 @@ public class Output implements Runnable {
     public static Output instance;
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
-    public static final int BUFFER_SIZE = 16384;
+    public static final int BUFFER_SIZE = 16384*2;
     private final TheHorde horde;
 
     public Synthesizer[] synthesizers;
