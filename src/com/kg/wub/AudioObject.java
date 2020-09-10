@@ -288,11 +288,21 @@ public class AudioObject implements Serializable, Tickable {
         return duration;
     }
 
+    boolean lqs = false;
+
     @Override
     public boolean tick(byte[] buffer) {
         //get next buffer length bits
+        if (queue.size() == 0) {
+            lqs = true;
+            return false;
+        }
+        if (queue.size() > 0 && lqs) {
+            position = queue.peek().startBytes;
+        }
+        lqs = false;
 
-        if (pause || queue.isEmpty()) {
+        if (pause) {
             return false;
         }
         ArrayList<Interval> q = new ArrayList<>(queue);
@@ -300,37 +310,86 @@ public class AudioObject implements Serializable, Tickable {
             while (countLength(q) < buffer.length) {
                 q.addAll(queue);
             }
+            q.addAll(q);
         }
-        if (position < queue.peek().startBytes || position >= queue.peek().endBytes) {
-            position = queue.peek().startBytes;
-        }
-        int byteMark = 0;
-        for (Interval i : q) {
-            if (position < i.endBytes - (buffer.length - byteMark)) {
-                System.arraycopy(data, position, buffer, byteMark, buffer.length - byteMark);
-                position += (buffer.length - byteMark);
-                break;
-            }// - (buffer.length-byteMark) && position < data.length - (buffer.length-byteMark)) {
-            else {
-                int bitsLeft = Math.min(i.endBytes - position, buffer.length - byteMark);
-                System.arraycopy(data, position, buffer, byteMark, bitsLeft);
-                byteMark += bitsLeft;
-                position += bitsLeft;
-                if (position >= i.endBytes) {
-                    Interval ii = queue.poll();
-                    if (ii != null) {
-                        if (loop) {
-                            queue.add(ii);
-                        }
-                        ii=queue.peek();
-                        if (ii!=null){
-                            position = ii.startBytes;
-                        }
-                    }
+        Iterator<Interval> it = q.iterator();
+        Interval exam = it.next();
+        for (int hh = 0; hh < buffer.length; ) {
+            if (exam != null && position >= exam.endBytes) {
+                if (it.hasNext()) {
+                    exam = it.next();
+                } else {
+                    exam = null;
+                }
+                if (exam != null) {
+                    position = exam.startBytes;
+                }
+                if (loop) {
+                    queue.add(queue.peek());
+                }
+                queue.poll();
+            }
+            if (exam != null) {
+                int canCopy = exam.endBytes - position;
+                canCopy = Math.min(buffer.length - hh, canCopy);
+                System.arraycopy(data, position, buffer, hh, canCopy);
+//                buffer[hh] = data[position];
+                hh += canCopy;
+                position += canCopy;
+            } else {
+                while (hh < buffer.length) {
+                    buffer[hh++] = 0;
                 }
             }
         }
+//        if (queue.size() > 0) {
+//            Interval iv = queue.peek();
+//            while (iv!=null&&!(position >= iv.startBytes && position <= iv.endBytes)) {
+//                if (loop) {
+//                    queue.add(iv);
+//                }
+//                queue.poll();
+//                iv = queue.peek();
+//            }
+//        }
+
+
+//        if (position < queue.peek().startBytes || position >= queue.peek().endBytes) {
+//            position = queue.peek().startBytes;
+//        }
+//        int byteMark = 0;
+//        for (Interval i : q) {
+//            if (byteMark == buffer.length) {
+//                break;
+//            }
+
+            /*if (position < i.endBytes - (buffer.length - byteMark)) {
+                System.arraycopy(data, position, buffer, byteMark, buffer.length - byteMark);
+                position += (buffer.length - byteMark);
+                byteMark = buffer.length;
+            }// - (buffer.length-byteMark) && position < data.length - (buffer.length-byteMark)) {
+            else {
+                int bitsLeft = Math.max(0, Math.min(Math.min(i.endBytes - position, buffer.length - byteMark), data.length - position));
+                System.arraycopy(data, position, buffer, byteMark, bitsLeft);
+                byteMark += bitsLeft;
+                position += bitsLeft;
+            }
+            if (position >= i.endBytes || position >= data.length) {
+                Interval ii = queue.poll();
+                if (loop) {
+                    queue.add(ii);
+                }
+                byteSkip=1;
+            }*/
+//        }
+//        ByteBuffer bb = ByteBuffer.allocate(buffer.length);
+//        for (Interval i : q) {
+//            if bb.
+//        }
+
         return true;
+    }
+
 
 //        if (currentlyPlaying == null) {
 //            if (!queue.isEmpty()) {
@@ -386,7 +445,7 @@ public class AudioObject implements Serializable, Tickable {
 ////        System.exit(0);
 //        return false;
 
-    }
+//        }
 
 	/*public TrackAnalysis echoNest(File file) {
 		int cnt = 0;
