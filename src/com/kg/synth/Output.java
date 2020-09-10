@@ -4,6 +4,7 @@ import com.kg.TheHorde;
 import com.kg.wub.system.Tickable;
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.util.MixingAudioInputStream;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
 import java.io.*;
@@ -32,7 +33,7 @@ public class Output implements Runnable {
     private boolean running = false;
 
     private boolean paused = false;
-    private SourceDataLine sourceLine = null;
+    private MySourceDataLine sourceLine = null;
     private OutputStream audioWriter = null;
 
     double right1 = 0.0D;
@@ -48,12 +49,13 @@ public class Output implements Runnable {
     private int lastStep = -1;
     private final List<Tickable> lines = new ArrayList<>();
     private final byte[] bufferOut = new byte[BUFFER_SIZE];
+    private final byte[] lasBufferOut = new byte[BUFFER_SIZE];
 
     public Output(TheHorde horde) {
         instance = this;
         this.horde = horde;
 //        soundSystem();
-        sourceLine = AudioFileCreator.getSourceDataLine();
+        sourceLine = new MySourceDataLine(AudioFileCreator.getSourceDataLine());
         try {
             audioWriter = new BufferedOutputStream(new FileOutputStream("test.wav"));
         } catch (FileNotFoundException e) {
@@ -157,7 +159,6 @@ public class Output implements Runnable {
         int sample_left_int4 = 0;
         int sample_right_int4 = 0;
 
-        long counter_vis=0;
         while (running) {
             if (paused) {
                 try {
@@ -182,7 +183,7 @@ public class Output implements Runnable {
                 left4 = right4 = 0;
 
                 tmp = synthesizers[0].stereoOutput();
-                int col = PARTS-1;
+                int col = PARTS - 1;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left1 += tmp[0];
@@ -205,7 +206,7 @@ public class Output implements Runnable {
                 buffers[0][(i + 3)] = ((byte) (sample_right_int1 >> 8 & 0xFF));
 
                 tmp = synthesizers[1].stereoOutput();
-                col = PARTS-2;
+                col = PARTS - 2;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left2 += tmp[0];
@@ -229,7 +230,7 @@ public class Output implements Runnable {
 
 
                 tmp = synthesizers[2].stereoOutput();
-                col = PARTS-3;
+                col = PARTS - 3;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left3 += tmp[0];
@@ -253,7 +254,7 @@ public class Output implements Runnable {
 
 
                 tmp = synthesizers[3].stereoOutput();
-                col = PARTS-4;
+                col = PARTS - 4;
                 delay[col].input(tmp[2]);
                 reverb[col].input(tmp[3]);
                 left4 += tmp[0];
@@ -294,10 +295,9 @@ public class Output implements Runnable {
                 mixingAudioInputStream.activeInputStreams = bb + 15;
                 mixingAudioInputStream.read(bufferOut);
                 audioWriter.write(bufferOut);
-                if (counter_vis++ % 4==0){
-                    horde.drawVisualizer(bufferOut);
-                }
-                sourceLine.write(bufferOut, 0, BUFFER_SIZE);
+                horde.drawVisualizer(bufferOut);
+                sourceLine.waitFor(bufferOut);
+//                sourceLine.write(bufferOut, 0, BUFFER_SIZE);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -387,6 +387,7 @@ public class TheHorde extends Application {
         bpm.targetValueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                newValue=Math.floor(newValue.floatValue()*10f)/10f;
                 System.out.println("bpm:\t" + newValue);
                 for (Sequencer seq : output.getSequencers()) {
                     seq.setBpm(newValue.doubleValue());
@@ -1002,7 +1003,7 @@ public class TheHorde extends Application {
         fft.forward(buf);
         float[] ret = new float[width];
         for (int i = 0; i < width; i++) {
-            ret[i] = fft.getAvg(i);
+            ret[i] = Math.min(fft.getAvg(i),3f);
         }
         return ret;
 //        y = FFT6.fft(complexSignal);

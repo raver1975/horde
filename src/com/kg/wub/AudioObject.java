@@ -157,7 +157,7 @@ public class AudioObject implements Serializable,Tickable {
                 if (TheHorde.output != null) {
                     bpm = Sequencer.bpm;
                     if (bpm < 1) {
-                        bpm = au.analysis.getTempo();
+                        bpm = Math.floor(au.analysis.getTempo()*10f)/10f;
                         TheHorde.bpm.setTargetValue(bpm);
                     }
 
@@ -186,7 +186,7 @@ public class AudioObject implements Serializable,Tickable {
         if (TheHorde.output != null) {
             bpm = Sequencer.bpm;
             if (bpm < 1) {
-                bpm = ta.getTempo();
+                bpm = Math.floor(ta.getTempo()*10f)/10f;
                 TheHorde.bpm.setTargetValue(bpm);
             }
             System.out.println("newest tempo=" + bpm);

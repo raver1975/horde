@@ -204,7 +204,7 @@ public class Regulator extends Region implements RegulatorControl {
                 return "targetValue";
             }
         };
-        decimals = new IntegerPropertyBase(0) {
+        decimals = new IntegerPropertyBase(1) {
             @Override
             public void set(final int VALUE) {
                 super.set(clamp(0, 2, VALUE));
