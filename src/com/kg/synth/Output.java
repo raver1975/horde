@@ -1,14 +1,9 @@
 package com.kg.synth;
 
 import com.kg.TheHorde;
-import com.kg.wub.AudioObject;
-import com.kg.wub.system.CentralCommand;
 import com.kg.wub.system.Tickable;
 import com.myronmarston.music.AudioFileCreator;
 import com.myronmarston.util.MixingAudioInputStream;
-import edu.princeton.cs.algs4.In;
-import org.encog.bot.browse.range.Input;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
 import java.io.*;
@@ -21,7 +16,7 @@ public class Output implements Runnable {
     public static Output instance;
     private static Thread thread = null;
     public static double SAMPLE_RATE = 44100;
-    public static final int BUFFER_SIZE = 16384/2;
+    public static final int BUFFER_SIZE = 16384;
     private final TheHorde horde;
 
     public Synthesizer[] synthesizers;
@@ -162,7 +157,7 @@ public class Output implements Runnable {
         int sample_left_int4 = 0;
         int sample_right_int4 = 0;
 
-
+        long counter_vis=0;
         while (running) {
             if (paused) {
                 try {
@@ -299,7 +294,9 @@ public class Output implements Runnable {
                 mixingAudioInputStream.activeInputStreams = bb + 15;
                 mixingAudioInputStream.read(bufferOut);
                 audioWriter.write(bufferOut);
-                horde.drawVisualizer(bufferOut);
+                if (counter_vis++ % 4==0){
+                    horde.drawVisualizer(bufferOut);
+                }
                 sourceLine.write(bufferOut, 0, BUFFER_SIZE);
             } catch (IOException e) {
                 e.printStackTrace();

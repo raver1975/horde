@@ -4,10 +4,7 @@ import com.kg.fft.FFT;
 import com.kg.python.SpotifyDLTest;
 import com.kg.synth.*;
 import com.kg.wub.AudioObject;
-import com.kg.wub.system.AudioUtils;
 import com.kg.wub.system.CentralCommand;
-import com.kg.wub.system.Song;
-import com.kg.wub.system.SongManager;
 import com.myronmarston.music.Instrument;
 import eu.hansolo.fx.regulators.GradientLookup;
 import eu.hansolo.fx.regulators.Regulator;
@@ -162,7 +159,7 @@ public class TheHorde extends Application {
         });
 
         final Button wub = (Button) scene.lookup("#wub");
-        wub.setOnAction(new EventHandler<ActionEvent>() {
+        wub.setOnAction(new EventHandler<>() {
             @Override
             public void handle(ActionEvent event) {
                 new Thread(new Runnable() {
@@ -934,7 +931,7 @@ public class TheHorde extends Application {
     private double[] accel = new double[256];
 
     boolean visLock = false;
-
+    float[] fftf=new float[256];
     public void drawVisualizer(final byte[] buffer5) {
         if (visLock) {
             return;
@@ -946,7 +943,7 @@ public class TheHorde extends Application {
                 if (visualizerCanvas != null) {
                     double width = visualizerCanvas.getWidth();
                     double height = visualizerCanvas.getHeight();
-                    float[] fft = calculateFFT(buffer5, 256);
+                    fftf = calculateFFT(buffer5, 256);
                     GraphicsContext gc = visualizerCanvas.getGraphicsContext2D();
                     gc.setFill(Color.BLACK);
                     gc.fillRect(0, 0, width, height);
@@ -955,8 +952,8 @@ public class TheHorde extends Application {
                     gc.setLineWidth(dw + .03f);
                     for (int i = 0; i < 256; i++) {
                         double perc = (double) i / width;
-                        int l = (int) (perc * fft.length);
-                        double mag = fft[l];
+                        int l = (int) (perc * fftf.length);
+                        double mag = fftf[l];
                         Color co = gradientLookup.getColorAt(Math.min(1, mag / 2));
 //                Color co1=new Color(co.getRed(),co.getGreen(),co.getBlue(),1d);
                         Color lastco = gradientLookup.getColorAt(Math.min(1, lastBytes[l] / 2));
