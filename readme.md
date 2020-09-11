@@ -2,6 +2,8 @@
 
 AI powered music groovebox.
 
+[![The Horde](https://img.youtube.com/vi/FjkpVbbDtMY/0.jpg)](https://www.youtube.com/watch?v=FjkpVbbDtMY)
+
 ## Current Features
 
 * 11 instrument MIDI synthesizers
@@ -9,7 +11,7 @@ AI powered music groovebox.
 * 2 simulated Roland bass synthesizers (TB-303)
 * 2 simulated Roland drum synthesizers (TR-808 or TR-909) 
 * records entire session into WAV file
-* Grab a track from spotify, chop it up.
+* Grab a track from spotify, split into stem files, and then chop it up.
 * Spleeter stem separation
 * Tatum based sampler
 
@@ -39,10 +41,10 @@ gradle run
 
 
 * Use Spleeter to divide song into stems
-STEM0 - none
-STEM2 - vocals, other
-STEM4 - vocals,bass,drum,other
-STEM5 - vocals,piano,bass,drum,other
+  * STEM0 - none
+  * STEM2 - vocals, other
+  * STEM4 - vocals,bass,drum,other
+  * STEM5 - vocals,piano,bass,drum,other
 
 * tempo in beats per minute to timeshift song
 (0 to change tempo to match song)
