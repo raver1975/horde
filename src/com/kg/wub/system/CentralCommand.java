@@ -16,6 +16,8 @@ public class CentralCommand<lastSeenMidi> {
     public static CopyOnWriteArrayList<AudioObject> aolist = new CopyOnWriteArrayList<>();
     public static PlayingField pf = new PlayingField();
     static public CentralCommandNode ccn = new CentralCommandNode();
+    public static Interval setMidiHov;
+    public static AudioObject setMidiAu;
     static int yOffset = 40;
     public static File lastDirectory = new File(System.getProperty("user.dir"));
 
@@ -31,28 +33,16 @@ public class CentralCommand<lastSeenMidi> {
     }
 
 
-    private static ExpiringMap<String, String> lastSeenMidi = new TimeoutMap<>(1000);
 
-    public static List<String> getLastSeenMidi() {
-        String[] a = lastSeenMidi.keySet().toArray(new String[0]);
-        Arrays.sort(a);
-//        System.out.println(Arrays.toString(a));
-        return Arrays.asList(a);
-    }
 
     public static void midi(String s) {
-//		System.out.println("key pressed:"+s);
-//        getLastSeenMidi();
-        Iterator<AudioObject> ii = aolist.iterator();
-
-        while (ii.hasNext()) {
-            AudioObject au = ii.next();
-            if (au != null && au.midiMap != null && au.midiMap.containsKey(s) && !lastSeenMidi.containsKey(s)) {
+        for (AudioObject au : aolist) {
+//            System.out.println("looking for:"+s+"\t"+Arrays.toString(new HashMap[]{au.midiMap}));
+            if (au != null && au.midiMap != null && au.midiMap.containsKey(s)) {
                 System.out.println("found mapping");
                 au.queue.add(au.midiMap.get(s));
             }
         }
-        lastSeenMidi.put(s, "");
     }
 
     public static void addRectangleNoMoveY(Node n) {

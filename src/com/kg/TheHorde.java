@@ -387,7 +387,7 @@ public class TheHorde extends Application {
         bpm.targetValueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                newValue=Math.floor(newValue.floatValue()*10f)/10f;
+                newValue = Math.floor(newValue.floatValue() * 10f) / 10f;
                 System.out.println("bpm:\t" + newValue);
                 for (Sequencer seq : output.getSequencers()) {
                     seq.setBpm(newValue.doubleValue());
@@ -588,6 +588,16 @@ public class TheHorde extends Application {
                 }
                 int x = (int) (e.getX() / (sequencerCanvas.getWidth() / 16));
                 int y = (int) ((sequencerCanvas.getHeight() - e.getY()) / (sequencerCanvas.getHeight() / canvasYHeight) - canvasYoffset);
+
+                if (CentralCommand.setMidiHov != null && CentralCommand.setMidiAu != null) {
+                    String midiString = "midi-" + String.format("%02d", selectedSequencer) + "-" + String.format("%03d", y);
+                    CentralCommand.setMidiAu.midiMap.put(midiString, CentralCommand.setMidiHov);
+                    System.out.println(midiString);
+                    CentralCommand.setMidiAu = null;
+                    CentralCommand.setMidiHov = null;
+                }
+
+
                 BasslinePattern bassline = output.getSequencers()[selectedSequencer].getBassline();
                 if (bassline != null) {
                     if (e.getButton() == MouseButton.PRIMARY) {
@@ -932,7 +942,8 @@ public class TheHorde extends Application {
     private double[] accel = new double[256];
 
     boolean visLock = false;
-    float[] fftf=new float[256];
+    float[] fftf = new float[256];
+
     public void drawVisualizer(final byte[] buffer5) {
         if (visLock) {
             return;
@@ -1003,7 +1014,7 @@ public class TheHorde extends Application {
         fft.forward(buf);
         float[] ret = new float[width];
         for (int i = 0; i < width; i++) {
-            ret[i] = Math.min(fft.getAvg(i),3f);
+            ret[i] = Math.min(fft.getAvg(i), 3f);
         }
         return ret;
 //        y = FFT6.fft(complexSignal);

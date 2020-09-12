@@ -97,7 +97,7 @@ public class InstrumentSequencer extends Sequencer {
                             setChannel(channel);
                             noteOn.add(pitch);
                             audioSynthesizer.getReceiver().send(new ShortMessage(ShortMessage.NOTE_ON, channel, pitch, vel), -1);
-                            CentralCommand.midi("midi-"+String.format("%02d",channel)+"-"+String.format("%02d",pitch));
+                            CentralCommand.midi("midi-" + String.format("%02d", channel) + "-" + String.format("%03d", (pitch - 23)));
                         } catch (MidiUnavailableException e) {
                             e.printStackTrace();
                         } catch (InvalidMidiDataException e) {

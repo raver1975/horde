@@ -288,19 +288,13 @@ public class AudioObject implements Serializable, Tickable {
         return duration;
     }
 
-    boolean lqs = false;
 
     @Override
     public boolean tick(byte[] buffer) {
         //get next buffer length bits
         if (queue.size() == 0) {
-            lqs = true;
             return false;
         }
-        if (queue.size() > 0 && lqs) {
-            position = queue.peek().startBytes;
-        }
-        lqs = false;
 
         if (pause) {
             return false;
@@ -314,8 +308,12 @@ public class AudioObject implements Serializable, Tickable {
         }
         Iterator<Interval> it = q.iterator();
         Interval exam = it.next();
+        if (position < exam.startBytes) {
+            position = exam.startBytes;
+        }
         for (int hh = 0; hh < buffer.length; ) {
             if (exam != null && position >= exam.endBytes) {
+                position = exam.startBytes;
                 if (it.hasNext()) {
                     exam = it.next();
                 } else {
@@ -341,6 +339,7 @@ public class AudioObject implements Serializable, Tickable {
                     buffer[hh++] = 0;
                 }
             }
+
         }
 //        if (queue.size() > 0) {
 //            Interval iv = queue.peek();
