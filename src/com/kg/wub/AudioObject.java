@@ -288,16 +288,22 @@ public class AudioObject implements Serializable, Tickable {
         return duration;
     }
 
+    boolean lhs = true;
 
     @Override
     public boolean tick(byte[] buffer) {
         //get next buffer length bits
         if (queue.size() == 0) {
+            lhs = true;
             return false;
         }
 
         if (pause) {
             return false;
+        }
+        if (lhs) {
+            position = queue.peek().startBytes;
+            lhs = false;
         }
         ArrayList<Interval> q = new ArrayList<>(queue);
         if (loop) {
