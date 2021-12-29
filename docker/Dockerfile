@@ -1,0 +1,31 @@
+
+#FROM gradle:jdk8-alpine as gradleimage
+#WORKDIR /work
+#RUN apt-get install -y git
+
+
+FROM openjdk:8
+#FROM gradle:jdk8
+COPY --from=python:3.6 / /
+#COPY --from=gradle:jdk8-slim / /
+
+ARG SPLEETER_VERSION=1.5.3
+ENV MODEL_PATH /model
+
+RUN mkdir -p /model
+RUN apt-get update && apt-get install -y ffmpeg libsndfile1
+RUN pip install musdb museval
+RUN pip install spleeter==${SPLEETER_VERSION}
+
+#ENTRYPOINT ["spleeter"]
+RUN apt-get update && apt-get install -y git gradle
+WORKDIR /work
+#RUN pip install gradle
+#USER root                # This changes default user to root
+#RUN chown -R gradle /work/horde # This changes ownership of folder
+#USER gradle              # This changes the user back to the default user "gradle"
+#RUN ./gradlew build --stacktrace
+RUN git clone --branch dockerintegration https://github.com/raver1975/horde.git /work/horde
+WORKDIR /work/horde
+RUN gradle jproRun
+#ENTRYPOINT ["gradle","jproRun"]

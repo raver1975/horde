@@ -20,7 +20,7 @@ plugins {
     id 'java'
     id 'application'
 //    id 'java-library'
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 //    id 'com.redock.classpathtofile' version '0.0.1'
 //    id 'org.bytedeco.gradle-javacpp-build' version '1.5.24-SNAPSHOT'
