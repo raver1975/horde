@@ -4,7 +4,7 @@
 #RUN apt-get install -y git
 
 
-FROM openjdk:8
+FROM openjdk:11
 #FROM gradle:jdk8
 COPY --from=python:3.6 / /
 #COPY --from=gradle:jdk8-slim / /
@@ -18,7 +18,7 @@ RUN pip install musdb museval
 RUN pip install spleeter==${SPLEETER_VERSION}
 
 #ENTRYPOINT ["spleeter"]
-RUN apt-get update && apt-get install -y git gradle
+RUN apt-get update && apt-get install -y git zip unzip curl wget
 WORKDIR /work
 #RUN pip install gradle
 #USER root                # This changes default user to root
@@ -27,5 +27,11 @@ WORKDIR /work
 #RUN ./gradlew build --stacktrace
 RUN git clone --branch dockerintegration https://github.com/raver1975/horde.git /work/horde
 WORKDIR /work/horde
-RUN gradle jproRun
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+RUN curl -s "https://get.sdkman.io" | bash
+RUN chmod a+x "/root/.sdkman/bin/sdkman-init.sh"
+RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle && gradle jproRun
+
+#RUN gradle wrapper --gradle-version 7.3.3
+#RUN gradlew --version
 #ENTRYPOINT ["gradle","jproRun"]

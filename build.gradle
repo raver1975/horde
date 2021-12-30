@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
         classpath 'com.sandec.jpro:jpro-plugin-gradle:2021.2.2'
-        //classpath 'org.openjfx:javafx-plugin:0.0.10'
+        classpath 'org.openjfx:javafx-plugin:0.0.10'
     }
     repositories {
         mavenLocal()
