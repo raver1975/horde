@@ -4,8 +4,8 @@
 #RUN apt-get install -y git
 
 
-#FROM openjdk:11
-FROM adoptopenjdk:11-hotspot-focal
+FROM openjdk:11
+#FROM adoptopenjdk:11-hotspot-focal
 
 #FROM gradle:jdk8
 COPY --from=python:3.6 / /
