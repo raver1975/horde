@@ -4,7 +4,9 @@
 #RUN apt-get install -y git
 
 
-FROM openjdk:11
+#FROM openjdk:11
+FROM adoptopenjdk:11-hotspot-focal
+
 #FROM gradle:jdk8
 COPY --from=python:3.6 / /
 #COPY --from=gradle:jdk8-slim / /
@@ -19,6 +21,8 @@ RUN pip install spleeter==${SPLEETER_VERSION}
 
 
 RUN apt-get update && apt-get install -y git zip unzip curl wget
+RUN apt-get update && apt-get -y install xorg gtk2-engines libasound2 libgtk2.0-0
+
 WORKDIR /work
 #RUN pip install gradle
 #USER root                # This changes default user to root
@@ -30,8 +34,10 @@ WORKDIR /work/horde
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN curl -s "https://get.sdkman.io" | bash
 RUN chmod a+x "/root/.sdkman/bin/sdkman-init.sh"
-RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle
+RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle && gradle jproRun
 #RUN gradle wrapper --gradle-version 7.3.3
-#RUN gradlew --version
+RUN gradle jproRelease
+RUN unzip /work/horde/build/distributions/horde-jpro.zip
+RUN gradle jproRun
 #ENTRYPOINT ["gradle","jproRun"]
 ENTRYPOINT ["bash"]
