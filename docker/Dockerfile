@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y ffmpeg libsndfile1
 RUN pip install musdb museval
 RUN pip install spleeter==${SPLEETER_VERSION}
 
-#ENTRYPOINT ["spleeter"]
+
 RUN apt-get update && apt-get install -y git zip unzip curl wget
 WORKDIR /work
 #RUN pip install gradle
@@ -30,8 +30,8 @@ WORKDIR /work/horde
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN curl -s "https://get.sdkman.io" | bash
 RUN chmod a+x "/root/.sdkman/bin/sdkman-init.sh"
-RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle && gradle jproRun
-
+RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle
 #RUN gradle wrapper --gradle-version 7.3.3
 #RUN gradlew --version
 #ENTRYPOINT ["gradle","jproRun"]
+ENTRYPOINT ["bash"]
