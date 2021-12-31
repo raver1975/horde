@@ -1,0 +1,2 @@
+
+git pull && docker build -t horde . && docker run -i --expose=808 horde
