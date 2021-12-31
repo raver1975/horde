@@ -34,7 +34,7 @@ WORKDIR /work/horde
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN curl -s "https://get.sdkman.io" | bash
 RUN chmod a+x "/root/.sdkman/bin/sdkman-init.sh"
-RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle && gradle wrapper --gradle-version 7.3.3
+RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle && gradle wrapper --gradle-version 7.3.3 && gradle jproRelease
 #RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle && gradle wrapper --gradle-version 7.3.3
 #RUN gradle jproRelease
 #RUN unzip /work/horde/build/distributions/horde-jpro.zip
