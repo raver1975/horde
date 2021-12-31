@@ -212,6 +212,7 @@ jpro {
 
     //jpro server port
     port = 8080
+    openURLOnStartup = false
 
 }
 
