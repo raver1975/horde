@@ -45,4 +45,5 @@ RUN #nohup /work/horde/gradlew jproRun & sleep infinity
 ENTRYPOINT /work/horde/gradlew jproRun && /bin/bash
 RUN git pull
 EXPOSE 8080
+RUN apt-get install -y pulseaudio
 #ENTRYPOINT ["gradle jproRun"]
