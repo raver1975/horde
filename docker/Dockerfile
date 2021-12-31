@@ -35,9 +35,9 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN curl -s "https://get.sdkman.io" | bash
 RUN chmod a+x "/root/.sdkman/bin/sdkman-init.sh"
 RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle
-#RUN gradle wrapper --gradle-version 7.3.3
+RUN gradle wrapper --gradle-version 7.3.3
 #RUN gradle jproRelease
 #RUN unzip /work/horde/build/distributions/horde-jpro.zip
 #RUN gradle jproRun
-ENTRYPOINT ["gradle","jproRun"]
+ENTRYPOINT ["gradlew","jproRun"]
 #ENTRYPOINT ["gradle jproRun"]
