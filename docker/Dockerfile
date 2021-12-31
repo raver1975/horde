@@ -43,4 +43,5 @@ RUN /work/horde/gradlew jproRelease
 RUN ls /work/horde/
 RUN #nohup /work/horde/gradlew jproRun & sleep infinity
 ENTRYPOINT /work/horde/gradlew jproRun && /bin/bash
+EXPOSE 8080
 #ENTRYPOINT ["gradle jproRun"]
