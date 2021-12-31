@@ -21,7 +21,7 @@ RUN pip install spleeter==${SPLEETER_VERSION}
 
 
 RUN apt-get update && apt-get install -y git zip unzip curl wget
-RUN apt-get update && apt-get -y install xorg gtk2-engines libasound2 libgtk2.0-0
+RUN apt-get update && apt-get -y install xorg gtk2-engines libasound2 libgtk2.0-0 <1
 
 WORKDIR /work
 #RUN pip install gradle
