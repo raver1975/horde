@@ -39,5 +39,5 @@ RUN source "/root/.sdkman/bin/sdkman-init.sh" && sdk install gradle
 #RUN gradle jproRelease
 #RUN unzip /work/horde/build/distributions/horde-jpro.zip
 #RUN gradle jproRun
-#ENTRYPOINT ["gradle","jproRun"]
-ENTRYPOINT ["gradle jproRun"]
+ENTRYPOINT ["gradle","jproRun"]
+#ENTRYPOINT ["gradle jproRun"]
