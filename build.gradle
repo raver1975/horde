@@ -133,6 +133,7 @@ compileJava {
                 '--module-path',classpathJavaFX.asPath,
                 '--add-exports', 'java.desktop/com.sun.media.sound=ALL-UNNAMED',
                 '--add-modules', 'javafx.fxml,javafx.controls'
+
         ]
     }
 }
@@ -206,6 +207,8 @@ jpro {
     // JVMArgs << '-agentlib:jdwp=transport=dt_socket,server=n,address=5006,suspend=y'
 
     JVMArgs << '-Xmx1000m'
+    JVMArgs << '--add-exports'
+    JVMArgs << 'java.desktop/com.sun.media.sound=ALL-UNNAMED'
 
     //jpro server port
     port = 8080
